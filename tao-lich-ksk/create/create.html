@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tạo mới lịch khám đơn vị | MWK Điều phối KSK</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: { 
+                        primary: { DEFAULT: '#27496D', hover: '#1F3D5A' }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome v6 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="shortcut icon" href="#">
+</head>
+<body data-depth="sub" data-active-nav="nav-tao-lich-ksk" data-breadcrumb="Tạo mới lịch khám đơn vị" class="bg-[#F4F5F7] font-sans text-[#1F2937] antialiased h-screen overflow-hidden flex flex-col">
+
+    <div class="flex h-full w-full overflow-hidden">
+        <!-- SIDEBAR CONTAINER -->
+        <div id="sidebar-container" class="flex flex-shrink-0 h-full"></div>
+
+        <!-- MAIN CONTAINER -->
+        <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-[#F4F5F7] relative">
+            <!-- HEADER CONTAINER -->
+            <div id="header-container"></div>
+
+            <!-- MAIN SCROLL & CONTENT WRAPPER -->
+            <div class="flex-1 overflow-y-auto flex flex-col justify-between">
+                <main class="p-5 space-y-4 flex-1">
+                    <!-- Page Title & Navigation Header Card -->
+                    <div class="flex items-center justify-between gap-4 bg-white p-4 rounded-[4px] border border-[#D9DEE5]">
+                        <div class="flex items-center gap-3">
+                            <div>
+                                <h1 class="text-xl font-bold text-[#1F2937]">Tạo mới Lịch KSK</h1>
+                                <p class="text-xs text-[#6B7280] mt-0.5">Ghi nhận thông tin khách hàng và khởi tạo lựa chọn các loại lịch KSK triển khai</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FORM CONTAINER CARD -->
+                    <div class="bg-white p-5 rounded-[4px] border border-[#D9DEE5]">
+                        <form id="ksk-create-form" onsubmit="return false;" class="space-y-4">
+                            
+                            <!-- STEP 1: THÔNG TIN KHÁCH HÀNG & PAKD (PARTIAL: step1-customer-info.html) -->
+                            <div id="step1-customer-info-container"></div>
+
+                            <!-- STEP 2: TẠO LỊCH & LỰA CHỌN LOẠI LỊCH (PARTIAL: step2-schedule-select.html) -->
+                            <div id="step2-schedule-select-container"></div>
+
+                        </form>
+                    </div>
+                </main>
+
+                <!-- STICKY ACTION BAR (PARTIAL: sticky-action-bar.html) -->
+                <div id="sticky-action-bar-container"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MODAL XEM ĐỊNH MỨC KSK (PARTIAL: modal-dinh-muc.html) -->
+    <div id="modal-dinh-muc-container"></div>
+
+    <!-- MODAL THÊM MỚI LỊCH THỬ NGHIỆM (PARTIAL: modal-add-schedule.html) -->
+    <div id="modal-add-schedule-container"></div>
+
+    <!-- MAIN JAVASCRIPT & DATA-STORE INTEGRATION -->
+    <script src="../../js/data-store.js"></script>
+    <script src="../../js/main.js"></script>
+    <script src="create.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            await loadCreateSubComponents();
+            initCreateModule();
+        });
+
+        async function loadCreateSubComponents() {
+            const components = [
+                { id: 'step1-customer-info-container', path: 'step1-customer-info.html' },
+                { id: 'step2-schedule-select-container', path: 'step2-schedule-select.html' },
+                { id: 'sticky-action-bar-container', path: 'sticky-action-bar.html' },
+                { id: 'modal-dinh-muc-container', path: 'modal-dinh-muc.html' },
+                { id: 'modal-add-schedule-container', path: 'modal-add-schedule.html' }
+            ];
+
+            for (const c of components) {
+                const elem = document.getElementById(c.id);
+                if (!elem) continue;
+                try {
+                    const res = await fetch(c.path);
+                    if (res.ok) {
+                        elem.innerHTML = await res.text();
+                    } else {
+                        loadFallbackComponent(c.id, elem);
+                    }
+                } catch (err) {
+                    loadFallbackComponent(c.id, elem);
+                }
+            }
+        }
+
+        function loadFallbackComponent(id, elem) {
+            if (id === 'step1-customer-info-container') {
+                elem.innerHTML = `
+<!-- ================= MÀN 1: THÔNG TIN KHÁCH HÀNG / THÔNG TIN CHUNG ================= -->
+<div id="step-1-panel" class="space-y-4">
+
+    <!-- CARD 1: MÃ ĐỐI TƯỢNG VÀ SỬ DỤNG PAKD -->
+    <div class="bg-white border border-[#D9DEE5] rounded-[4px] p-4 space-y-3">
+        <div class="flex items-center justify-between border-b border-[#E6EAF0] pb-2">
+            <div class="flex items-center gap-2">
+                <input type="checkbox" id="suDungPAKD" class="w-4 h-4 text-[#27496D] rounded border-[#D9DEE5] focus:ring-[#27496D] cursor-pointer" onchange="if (typeof handleSuDungPAKDToggle === 'function') handleSuDungPAKDToggle(this.checked)">
+                <label for="suDungPAKD" class="sys-label font-bold text-xs text-[#1F2937] mb-0 cursor-pointer select-none">Sử dụng Phương án kinh doanh (PAKD)</label>
+            </div>
+        </div>
+
+        <div id="pakd-input-group" class="space-y-2">
+            <div class="flex items-center gap-1.5">
+                <label for="customerCode" class="sys-label font-bold text-xs text-[#1F2937] mb-0">Mã đối tượng</label>
+                <div class="relative group cursor-pointer inline-flex items-center">
+                    <i class="fa-regular fa-circle-question text-[#6B7280] text-xs hover:text-[#27496D] transition-colors"></i>
+                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 hidden group-hover:block w-64 p-2 bg-[#1F2937] text-white text-[11px] rounded shadow-lg z-20 pointer-events-none">
+                        Nhập mã đối tượng trong Phương án kinh doanh (PAKD) để tự động đồng bộ dữ liệu.
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative flex items-center">
+                <input type="text" id="customerCode" placeholder="Nhập mã đối tượng trong PAKD" class="sys-input text-xs pr-36 h-9">
+                <button type="button" id="btn-fetch-pakd" onclick="handleFetchPakd()" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#27496D] hover:text-[#1F3D5A] font-semibold text-xs transition-colors cursor-pointer flex items-center gap-1">
+                    <span>Lấy thông tin PAKD</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CARD 2: THÔNG TIN CHUNG -->
+    <div class="bg-white border border-[#D9DEE5] rounded-[4px] p-4 space-y-4">
+        <div class="border-b border-[#E6EAF0] pb-2.5">
+            <h3 class="text-sm font-bold text-[#1F2937]">Thông tin chung</h3>
+        </div>
+
+        <!-- Hidden input for backward compatibility -->
+        <input type="hidden" id="pakdStatus" value="Không có PAKD">
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <!-- Row 1 Col 1: CBKD * -->
+            <div>
+                <label for="cbkd" class="sys-label font-bold text-xs text-[#1F2937]">CBKD <span class="text-[#D32F2F]">*</span></label>
+                <input type="text" id="cbkd" placeholder="Tự động điền khi có PAKD" class="sys-input text-xs h-9">
+            </div>
+
+            <!-- Row 1 Col 2: Mã nhân viên * -->
+            <div>
+                <label for="maNhanVien" class="sys-label font-bold text-xs text-[#1F2937]">Mã nhân viên <span class="text-[#D32F2F]">*</span></label>
+                <input type="text" id="maNhanVien" placeholder="Tự động điền khi có PAKD" class="sys-input text-xs h-9">
+            </div>
+
+            <!-- Row 2 Col 1: Tên đơn vị KSK * -->
+            <div>
+                <label for="customerName" class="sys-label font-bold text-xs text-[#1F2937]">Tên đơn vị KSK <span class="text-[#D32F2F]">*</span></label>
+                <input type="text" id="customerName" placeholder="Tự động điền khi có PAKD" class="sys-input text-xs h-9">
+            </div>
+
+            <!-- Row 2 Col 2: Địa chỉ * -->
+            <div>
+                <label for="address" class="sys-label font-bold text-xs text-[#1F2937]">Địa chỉ <span class="text-[#D32F2F]">*</span></label>
+                <input type="text" id="address" placeholder="Tự động điền khi có PAKD" class="sys-input text-xs h-9">
+            </div>
+
+            <!-- Row 3 Col 1: Số lượng khách * -->
+            <div>
+                <label for="estimatedCount" class="sys-label font-bold text-xs text-[#1F2937]">Số lượng khách <span class="text-[#D32F2F]">*</span></label>
+                <input type="number" id="estimatedCount" min="0" placeholder="Tự động điền khi có PAKD" class="sys-input text-xs h-9">
+            </div>
+
+            <!-- Row 3 Col 2: Thời gian khám * -->
+            <div>
+                <label for="examDate" class="sys-label font-bold text-xs text-[#1F2937]">Thời gian khám <span class="text-[#D32F2F]">*</span></label>
+                <div class="relative">
+                    <input type="date" id="examDate" placeholder="Tự động điền khi có PAKD" class="sys-input text-xs h-9 pr-9">
+                    <i class="fa-regular fa-calendar absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none text-xs"></i>
+                </div>
+            </div>
+
+            <!-- Row 4 Col 1: Người liên hệ -->
+            <div>
+                <label for="contactPerson" class="sys-label font-bold text-xs text-[#1F2937]">Người liên hệ</label>
+                <input type="text" id="contactPerson" placeholder="Tự động điền khi có PAKD" class="sys-input text-xs h-9">
+            </div>
+
+            <!-- Row 4 Col 2: Ghi chú hợp đồng -->
+            <div>
+                <label for="contractNote" class="sys-label font-bold text-xs text-[#1F2937]">Ghi chú hợp đồng</label>
+                <input type="text" id="contractNote" placeholder="Tự động điền khi có PAKD" class="sys-input text-xs h-9">
+            </div>
+        </div>
+    </div>
+
+    <!-- CARD 3: FOOTER ACTIONS -->
+    <div class="bg-white border border-[#D9DEE5] rounded-[4px] p-4 flex items-center justify-end gap-3">
+        <button type="button" id="btn-step1-next" class="px-5 py-2 rounded-[4px] bg-[#27496D] hover:bg-[#1F3D5A] text-white font-medium text-xs transition-colors cursor-pointer shadow-2xs">
+            Lưu & Thêm lịch chi tiết
+        </button>
+        <a href="../index.html" class="px-5 py-2 rounded-[4px] bg-white border border-[#D9DEE5] hover:bg-[#F3F6FA] text-[#374151] font-medium text-xs transition-colors text-center">
+            Thoát
+        </a>
+    </div>
+
+</div>
+                `;
+            } else if (id === 'step2-schedule-select-container') {
+                elem.innerHTML = `
+<!-- ================= MÀN 2: TẠO LỊCH (DỮ LIỆU THẬT MAPPED THỜI GIAN THỰC) ================= -->
+<div id="step-2-panel" class="space-y-4 hidden">
+    
+    <!-- 1. THẺ THÔNG TIN KHÁCH HÀNG (MAPPING DỮ LIỆU THẬT TỪ THÔNG TIN CHUNG) -->
+    <div class="bg-white rounded-[4px] border border-[#D9DEE5] p-4 space-y-2">
+        <div class="flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3 flex-wrap">
+                <span id="step2-display-pakd-badge" class="badge-warning">
+                    <i class="fa-solid fa-circle-info text-[10px]"></i>Không có PAKD
+                </span>
+                <h2 id="step2-display-customer-name" class="text-sm font-bold text-[#1F2937] uppercase flex items-center gap-2">
+                    CHƯA NHẬP TÊN KHÁCH HÀNG
+                    <i class="fa-solid fa-circle-info text-[#9CA3AF] text-xs hover:text-[#27496D] cursor-pointer" title="Thông tin hợp đồng & Phương án kinh doanh"></i>
+                </h2>
+            </div>
+        </div>
+
+        <div class="text-xs text-[#4B5563] pt-0.5">
+            <span class="text-[#6B7280]">Số lượng khách:</span>
+            <strong id="step2-display-guest-count" class="text-[#1F2937] font-bold ml-1">0</strong>
+        </div>
+    </div>
+
+    <!-- 2. KHU VỰC LỰA CHỌN LOẠI LỊCH (TOGGLE SWITCHES) -->
+    <div class="bg-[#F4F5F7] rounded-[4px] border border-[#D9DEE5] p-3 flex items-center gap-4 flex-wrap">
+        <span class="text-xs font-bold text-[#1F2937] uppercase tracking-wide shrink-0">Lịch bao gồm:</span>
+        
+        <div class="flex items-center gap-6 flex-wrap">
+            <!-- Toggle 1: Ngoại viện -->
+            <label class="inline-flex items-center cursor-pointer select-none gap-2">
+                <div class="relative">
+                    <input type="checkbox" id="toggle-ngoai-vien" checked onchange="handleStep2ToggleChange()" class="sr-only peer">
+                    <div class="w-9 h-5 bg-[#CBD5E1] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#27496D]"></div>
+                </div>
+                <span class="text-xs font-semibold text-[#1F2937]">Ngoại viện</span>
+            </label>
+
+            <!-- Toggle 2: Tại viện -->
+            <label class="inline-flex items-center cursor-pointer select-none gap-2">
+                <div class="relative">
+                    <input type="checkbox" id="toggle-tai-vien" checked onchange="handleStep2ToggleChange()" class="sr-only peer">
+                    <div class="w-9 h-5 bg-[#CBD5E1] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#27496D]"></div>
+                </div>
+                <span class="text-xs font-semibold text-[#1F2937]">Tại viện</span>
+            </label>
+
+            <!-- Toggle 3: Lịch phường -->
+            <label class="inline-flex items-center cursor-pointer select-none gap-2">
+                <div class="relative">
+                    <input type="checkbox" id="toggle-lich-phuong" checked onchange="handleStep2ToggleChange()" class="sr-only peer">
+                    <div class="w-9 h-5 bg-[#CBD5E1] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#27496D]"></div>
+                </div>
+                <span class="text-xs font-semibold text-[#1F2937]">Lịch phường</span>
+            </label>
+        </div>
+    </div>
+
+    <!-- 3. KHU VỰC CÁC BOX LỊCH (SIDE-BY-SIDE 3 CỘT) -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        
+        <!-- BOX 1: LỊCH NGOẠI VIỆN -->
+        <div id="box-ngoai-vien" class="bg-white border border-[#D9DEE5] rounded-[4px] p-4 space-y-3">
+            <div class="flex items-center justify-between border-b border-[#E6EAF0] pb-2.5">
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" id="check-box-ngoai-vien" onchange="updateSummaryStats()" class="w-4 h-4 text-[#27496D] rounded-[2px] border-[#D9DEE5]">
+                    <h3 class="text-xs font-bold text-[#1F2937]">Lịch ngoại viện: <span id="count-ngoai-vien" class="text-[#27496D]">0</span></h3>
+                </div>
+                <a href="javascript:void(0)" onclick="handleXemDinhMuc('Ngoại viện')" class="text-xs font-semibold text-[#27496D] hover:underline">Xem định mức</a>
+            </div>
+
+            <div class="flex items-center justify-around py-3 bg-[#F4F5F7] rounded-[4px] border border-[#D9DEE5]">
+                <div class="text-center flex-1">
+                    <div class="text-[11px] font-medium text-[#6B7280] mb-0.5">Tổng khách</div>
+                    <div class="text-lg font-bold text-[#1F2937]" id="guest-ngoai-vien">0</div>
+                </div>
+                <div class="w-px h-7 bg-[#D9DEE5]"></div>
+                <div class="text-center flex-1">
+                    <div class="text-[11px] font-medium text-[#6B7280] mb-0.5">Tổng nhân sự</div>
+                    <div class="text-lg font-bold text-[#1F2937]" id="staff-ngoai-vien">0</div>
+                </div>
+            </div>
+
+            <div id="container-card-list-ngoai-vien" class="space-y-3"></div>
+
+            <div>
+                <button type="button" onclick="handleAddSchedule('Ngoại viện')" class="btn-primary w-full text-xs">
+                    <i class="fa-solid fa-plus text-xs"></i>
+                    <span>Thêm lịch</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- BOX 2: LỊCH TẠI VIỆN -->
+        <div id="box-tai-vien" class="bg-white border border-[#D9DEE5] rounded-[4px] p-4 space-y-3">
+            <div class="flex items-center justify-between border-b border-[#E6EAF0] pb-2.5">
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" id="check-box-tai-vien" onchange="updateSummaryStats()" class="w-4 h-4 text-[#27496D] rounded-[2px] border-[#D9DEE5]">
+                    <h3 class="text-xs font-bold text-[#1F2937]">Lịch tại viện: <span id="count-tai-vien" class="text-[#2E7D32]">0</span></h3>
+                </div>
+                <a href="javascript:void(0)" onclick="handleXemDinhMuc('Tại viện')" class="text-xs font-semibold text-[#27496D] hover:underline">Xem định mức</a>
+            </div>
+
+            <div class="flex items-center justify-around py-3 bg-[#F4F5F7] rounded-[4px] border border-[#D9DEE5]">
+                <div class="text-center flex-1">
+                    <div class="text-[11px] font-medium text-[#6B7280] mb-0.5">Tổng khách</div>
+                    <div class="text-lg font-bold text-[#1F2937]" id="guest-tai-vien">0</div>
+                </div>
+                <div class="w-px h-7 bg-[#D9DEE5]"></div>
+                <div class="text-center flex-1">
+                    <div class="text-[11px] font-medium text-[#6B7280] mb-0.5">Tổng nhân sự</div>
+                    <div class="text-lg font-bold text-[#1F2937]" id="staff-tai-vien">0</div>
+                </div>
+            </div>
+
+            <div id="container-card-list-tai-vien" class="space-y-3"></div>
+
+            <div>
+                <button type="button" onclick="handleAddSchedule('Tại viện')" class="btn-primary w-full text-xs">
+                    <i class="fa-solid fa-plus text-xs"></i>
+                    <span>Thêm lịch</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- BOX 3: LỊCH PHƯỜNG -->
+        <div id="box-lich-phuong" class="bg-white border border-[#D9DEE5] rounded-[4px] p-4 space-y-3">
+            <div class="flex items-center justify-between border-b border-[#E6EAF0] pb-2.5">
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" id="check-box-lich-phuong" onchange="updateSummaryStats()" class="w-4 h-4 text-[#27496D] rounded-[2px] border-[#D9DEE5]">
+                    <h3 class="text-xs font-bold text-[#1F2937]">Lịch phường: <span id="count-lich-phuong" class="text-[#7E22CE]">0</span></h3>
+                </div>
+                <a href="javascript:void(0)" onclick="handleXemDinhMuc('Lịch phường')" class="text-xs font-semibold text-[#27496D] hover:underline">Xem định mức</a>
+            </div>
+
+            <div class="flex items-center justify-around py-3 bg-[#F4F5F7] rounded-[4px] border border-[#D9DEE5]">
+                <div class="text-center flex-1">
+                    <div class="text-[11px] font-medium text-[#6B7280] mb-0.5">Tổng khách</div>
+                    <div class="text-lg font-bold text-[#1F2937]" id="guest-lich-phuong">0</div>
+                </div>
+                <div class="w-px h-7 bg-[#D9DEE5]"></div>
+                <div class="text-center flex-1">
+                    <div class="text-[11px] font-medium text-[#6B7280] mb-0.5">Tổng nhân sự</div>
+                    <div class="text-lg font-bold text-[#1F2937]" id="staff-lich-phuong">0</div>
+                </div>
+            </div>
+
+            <div id="container-card-list-lich-phuong" class="space-y-3"></div>
+
+            <div>
+                <button type="button" onclick="handleAddSchedule('Lịch phường')" class="btn-primary w-full text-xs">
+                    <i class="fa-solid fa-plus text-xs"></i>
+                    <span>Thêm lịch</span>
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+                `;
+            } else if (id === 'sticky-action-bar-container') {
+                elem.innerHTML = `
+<!-- 4. THANH HÀNH ĐỘNG DƯỚI CÙNG (CỐ ĐỊNH DƯỚI CÙNG HIS ACTION BAR) -->
+<div id="sticky-bottom-action-bar" class="hidden his-bottom-bar">
+    <!-- Phía cùng bên tay trái: Nút Quay lại -->
+    <button type="button" onclick="switchToStep(1)" class="btn-secondary text-xs">
+        <i class="fa-solid fa-arrow-left text-xs"></i>
+        <span>Quay lại thông tin khách hàng</span>
+    </button>
+
+    <!-- Phía bên tay phải: Checkbox Chọn tất cả -> Thống kê Đã chọn -> Nút Lưu nháp -> Nút Xoá -> Nút Thoát -> Nút Gửi tổng hợp -->
+    <div class="flex items-center gap-3 flex-wrap text-xs">
+        <label class="flex items-center gap-2 cursor-pointer font-semibold text-xs text-[#374151] select-none">
+            <input type="checkbox" id="check-select-all-step2" onchange="handleSelectAllStep2(this)" class="w-4 h-4 text-[#27496D] rounded-[2px] border-[#D9DEE5]">
+            <span>Chọn tất cả</span>
+        </label>
+
+        <div class="flex items-center gap-2 text-[#4B5563] font-medium px-1">
+            <span class="font-bold text-[#1F2937]">Đã chọn:</span>
+            <span>Ngoại viện: <strong id="summary-ngoai-vien" class="text-[#1F2937] font-bold">0</strong></span>
+            <span>Tại viện: <strong id="summary-tai-vien" class="text-[#1F2937] font-bold">0</strong></span>
+            <span>Lịch phường: <strong id="summary-lich-phuong" class="text-[#1F2937] font-bold">0</strong></span>
+        </div>
+
+        <a href="../index.html" class="btn-secondary text-xs">
+            <i class="fa-solid fa-xmark text-xs"></i>
+            <span>Thoát</span>
+        </a>
+        
+        <button type="button" onclick="handleDeleteCustomerCard()" class="btn-danger text-xs">
+            <i class="fa-solid fa-trash-can text-xs"></i>
+            <span>Xoá</span>
+        </button>
+
+
+        <button type="button" id="btn-step2-save-draft" onclick="saveDraftStep2()" class="btn-secondary text-xs">
+            <i class="fa-solid fa-floppy-disk text-xs"></i>
+            <span>Lưu nháp</span>
+        </button>
+
+        <button type="button" id="btn-submit-tong-hop-step2" onclick="handleSubmitTongHopStep2()" class="btn-primary text-xs">
+            <i class="fa-solid fa-paper-plane text-xs"></i>
+            <span>Gửi tổng hợp</span>
+        </button>
+    </div>
+</div>
+                `;
+            } else if (id === 'modal-dinh-muc-container') {
+                elem.innerHTML = `
+<!-- MODAL XEM ĐỊNH MỨC KSK -->
+<div id="modal-view-dinh-muc" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-[4px] max-w-4xl w-full max-h-[90vh] shadow-lg border border-[#D9DEE5] flex flex-col overflow-hidden">
+        
+        <!-- Header Modal -->
+        <div class="px-5 h-[52px] border-b border-[#D9DEE5] flex items-center justify-between bg-[#F4F5F7]">
+            <div class="flex items-center gap-2.5">
+                <div class="w-7 h-7 rounded-[4px] bg-[#E8F1FB] text-[#27496D] flex items-center justify-center text-sm font-bold">
+                    <i class="fa-solid fa-sliders"></i>
+                </div>
+                <div>
+                    <h3 id="modal-dinh-muc-title" class="font-semibold text-[#1F2937] text-sm">Cấu hình định mức tiếp nhận & Nhân sự KSK</h3>
+                </div>
+            </div>
+            <button type="button" onclick="closeDinhMucModal()" class="w-8 h-8 rounded-[4px] text-[#9CA3AF] hover:text-[#1F2937] hover:bg-[#F3F6FA] flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="px-5 border-b border-[#D9DEE5] bg-white flex items-center gap-4 h-10">
+            <button type="button" id="tab-btn-ngoai-vien" onclick="switchDinhMucModalTab('Ngoại viện')" class="h-full px-1 text-xs font-bold border-b-2 border-[#27496D] text-[#27496D] transition-colors flex items-center gap-1.5 cursor-pointer">
+                <i class="fa-solid fa-truck-medical text-xs"></i> Định mức Ngoại viện
+            </button>
+            <button type="button" id="tab-btn-tai-vien" onclick="switchDinhMucModalTab('Tại viện')" class="h-full px-1 text-xs font-medium text-[#6B7280] hover:text-[#1F2937] border-b-2 border-transparent transition-colors flex items-center gap-1.5 cursor-pointer">
+                <i class="fa-solid fa-hospital text-xs"></i> Định mức Tại viện
+            </button>
+            <button type="button" id="tab-btn-lich-phuong" onclick="switchDinhMucModalTab('Lịch phường')" class="h-full px-1 text-xs font-medium text-[#6B7280] hover:text-[#1F2937] border-b-2 border-transparent transition-colors flex items-center gap-1.5 cursor-pointer">
+                <i class="fa-solid fa-building-flag text-xs"></i> Định mức Lịch phường
+            </button>
+        </div>
+
+        <!-- Content Body -->
+        <div class="flex-1 overflow-y-auto p-5 space-y-4 text-xs">
+            <div id="dinh-muc-modal-content">
+                <!-- Dynamic Content -->
+            </div>
+        </div>
+
+        <!-- Footer Modal -->
+        <div class="px-5 py-3 bg-[#F4F5F7] border-t border-[#D9DEE5] flex items-center justify-between text-xs text-[#6B7280]">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-database text-[#27496D]"></i>
+                <span>Dữ liệu được cập nhật từ Master Data Cấu hình định mức hệ thống</span>
+            </div>
+            <button type="button" onclick="closeDinhMucModal()" class="btn-secondary text-xs">
+                Đóng
+            </button>
+        </div>
+
+    </div>
+</div>
+                `;
+            } else if (id === 'modal-add-schedule-container') {
+                elem.innerHTML = `
+<!-- MODAL PLACEHOLDER CHO THÊM LỊCH -->
+<div id="modal-add-schedule-placeholder" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-[4px] max-w-md w-full shadow-lg border border-[#D9DEE5] overflow-hidden space-y-4 p-5">
+        <div class="flex items-center justify-between border-b border-[#D9DEE5] pb-3">
+            <div class="flex items-center gap-2">
+                <div class="w-7 h-7 rounded-[4px] bg-[#E8F1FB] text-[#27496D] flex items-center justify-center font-bold">
+                    <i class="fa-solid fa-calendar-plus text-xs"></i>
+                </div>
+                <h3 id="modal-placeholder-title" class="font-semibold text-[#1F2937] text-sm">Thêm mới lịch</h3>
+            </div>
+            <button type="button" onclick="closeAddScheduleModal()" class="text-[#9CA3AF] hover:text-[#1F2937]">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+        </div>
+
+        <div class="space-y-3 text-xs">
+            <div class="p-3 bg-[#FFF3E0] border border-[#FFCC80] rounded-[4px] text-[#ED6C02] font-medium">
+                <i class="fa-solid fa-circle-info mr-1"></i>
+                <span id="modal-placeholder-msg">Màn thêm chi tiết đợt khám sẽ triển khai sau</span>
+            </div>
+
+            <div>
+                <label class="sys-label">Tên đợt khám / Lịch</label>
+                <input type="text" id="modal-input-name" placeholder="VD: Khám sức khỏe đợt 1" class="sys-input text-xs">
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="sys-label">Số lượng khách</label>
+                    <input type="number" id="modal-input-guests" value="100" class="sys-input text-xs">
+                </div>
+                <div>
+                    <label class="sys-label">Số lượng nhân sự</label>
+                    <input type="number" id="modal-input-staff" value="10" class="sys-input text-xs">
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-[#D9DEE5]">
+            <button type="button" onclick="closeAddScheduleModal()" class="btn-secondary text-xs">
+                Hủy bỏ
+            </button>
+            <button type="button" onclick="confirmMockAddSchedule()" class="btn-primary text-xs">
+                Tạo dữ liệu thử nghiệm
+            </button>
+        </div>
+    </div>
+</div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

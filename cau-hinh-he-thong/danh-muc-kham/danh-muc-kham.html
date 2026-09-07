@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cấu hình danh mục sơ đồ khám | MWK Điều phối KSK</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: { 
+                        primary: { DEFAULT: '#27496D', hover: '#1F3D5A' }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome v6 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="shortcut icon" href="#">
+</head>
+<body data-depth="sub" data-active-nav="nav-danh-muc-kham" data-breadcrumb="Cấu hình danh mục sơ đồ khám" data-custom-pagination="true" class="bg-[#F4F5F7] font-sans text-[#1F2937] antialiased h-screen overflow-hidden flex flex-col">
+
+    <div class="flex h-full w-full overflow-hidden">
+        <!-- SIDEBAR CONTAINER -->
+        <div id="sidebar-container" class="flex flex-shrink-0 h-full"></div>
+
+        <!-- MAIN CONTAINER -->
+        <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-[#F4F5F7]">
+            <!-- HEADER CONTAINER -->
+            <div id="header-container"></div>
+
+            <!-- MAIN CONTENT -->
+            <main class="flex-1 overflow-y-auto p-5 space-y-4">
+                <!-- Header Top Bar Card -->
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-4 rounded-[4px] border border-[#D9DEE5]">
+                    <div>
+                        <h1 class="text-xl font-bold text-[#1F2937]">Cấu hình danh mục sơ đồ khám</h1>
+                        <p class="text-xs text-[#6B7280] mt-0.5">Cấu hình các vị trí thực hiện cho từng danh mục khám</p>
+                    </div>
+                    
+                    <!-- COMPONENT CONTAINER: NÚT THÊM CẤU HÌNH DANH MỤC -->
+                    <div id="create-component-container"></div>
+                </div>
+
+                <!-- SEARCH & FILTER TOOLBAR CARD -->
+                <div class="bg-white p-3.5 rounded-[4px] border border-[#D9DEE5] space-y-3">
+                    <!-- Search Input -->
+                    <div class="relative w-full">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] text-xs"></i>
+                        <input type="text" id="search-input" oninput="handleSearchFilterChange()" placeholder="Tìm kiếm theo tên danh mục khám..." class="w-full h-9 pl-9 pr-3 bg-white border border-[#D9DEE5] rounded-[4px] text-xs text-[#1F2937] placeholder-[#9CA3AF] focus:outline-none focus:border-[#27496D] transition-colors">
+                    </div>
+
+                    <!-- Filter Options Row -->
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-2.5 border-t border-[#E6EAF0]">
+                        <div class="flex flex-wrap items-center gap-3">
+                            <div class="flex items-center gap-2">
+                                <label class="sys-label !mb-0 whitespace-nowrap">Cơ sở khám:</label>
+                                <select id="filter-facility" onchange="handleSearchFilterChange()" class="sys-select text-xs min-w-[160px]">
+                                    <!-- Populated dynamically -->
+                                </select>
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                <label class="sys-label !mb-0 whitespace-nowrap">Trạng thái:</label>
+                                <select id="filter-status" onchange="handleSearchFilterChange()" class="sys-select text-xs min-w-[160px]">
+                                    <option value="">Tất cả trạng thái</option>
+                                    <option value="ON">ON (Đang sử dụng)</option>
+                                    <option value="OFF">OFF (Ngừng sử dụng)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Reset Button -->
+                        <button type="button" onclick="resetSearchAndFilter()" class="btn-secondary text-xs shrink-0" title="Đặt lại bộ lọc">
+                            <i class="fa-solid fa-rotate-left text-xs"></i>
+                            <span>Đặt lại</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- DATA TABLE & PAGINATION UNIFIED CONTAINER -->
+                <div class="bg-white rounded-[4px] border border-[#D9DEE5] overflow-hidden flex flex-col">
+                    <div class="overflow-x-auto">
+                        <table class="table-his">
+                            <thead>
+                                <tr>
+                                    <th class="py-3 px-3 w-14 text-center">STT</th>
+                                    <th class="py-3 px-3">Tên danh mục khám</th>
+                                    <th class="py-3 px-3">Vị trí thực hiện</th>
+                                    <th class="py-3 px-3">Ghi chú</th>
+                                    <th class="py-3 px-3 text-center w-36">Trạng thái</th>
+                                    <th class="py-3 px-3 text-center w-32">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body" class="divide-y divide-[#E6EAF0] text-xs">
+                                <!-- Render dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Pagination Container -->
+                    <div id="pagination-container"></div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- MODAL CONTAINERS -->
+    <div id="detail-component-container"></div>
+    <div id="edit-component-container"></div>
+    <div id="delete-component-container"></div>
+
+    <!-- Scripts -->
+    <script src="../../js/data-store.js"></script>
+    <script src="../../js/main.js"></script>
+    <script>
+        let categoriesData = [];
+        let currentPage = 1;
+        let pageSize = 10;
+
+        function changePageSize(val) {
+            pageSize = parseInt(val) || 20;
+            currentPage = 1;
+            renderTable(getFilteredData());
+        }
+
+        async function loadModalComponent(containerId, componentPath) {
+            try {
+                const res = await fetch(componentPath);
+                if (res.ok) {
+                    const html = await res.text();
+                    const container = document.getElementById(containerId);
+                    if (container) {
+                        container.innerHTML = html;
+                        container.querySelectorAll('script').forEach(oldScript => {
+                            const newScript = document.createElement('script');
+                            Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                            newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                            oldScript.parentNode.replaceChild(newScript, oldScript);
+                        });
+                    }
+                }
+            } catch (err) {
+                console.error("Error loading component:", componentPath, err);
+            }
+        }
+
+        function populateFacilityFilterDropdown() {
+            const select = document.getElementById('filter-facility');
+            if (!select) return;
+            
+            const activeFacilities = MWKDataStore.getActiveFacilities();
+            select.innerHTML = '<option value="">Tất cả cơ sở</option>' + 
+                activeFacilities.map(f => `<option value="${f.name}">${f.name}</option>`).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            populateFacilityFilterDropdown();
+            
+            await Promise.all([
+                loadModalComponent('create-component-container', 'create/create.html'),
+                loadModalComponent('detail-component-container', 'detail/detail.html'),
+                loadModalComponent('edit-component-container', 'edit/edit.html'),
+                loadModalComponent('delete-component-container', 'delete/delete.html')
+            ]);
+
+            categoriesData = MWKDataStore.getExamCategories();
+            renderTable(categoriesData);
+
+            window.addEventListener('mwk_exam_categories_changed', function() {
+                categoriesData = MWKDataStore.getExamCategories();
+                handleSearchFilterChange();
+            });
+            window.addEventListener('mwk_facilities_changed', function() {
+                populateFacilityFilterDropdown();
+            });
+        });
+
+        function getFilteredData() {
+            const searchVal = document.getElementById('search-input') ? document.getElementById('search-input').value.trim().toLowerCase() : '';
+            const statusVal = document.getElementById('filter-status') ? document.getElementById('filter-status').value : '';
+            const facilityVal = document.getElementById('filter-facility') ? document.getElementById('filter-facility').value : '';
+
+            return categoriesData.filter(item => {
+                const matchesSearch = !searchVal || (item.name && item.name.toLowerCase().includes(searchVal));
+                const matchesStatus = !statusVal || (statusVal === 'ON' ? (item.status === true || item.status === 'ON') : (item.status === false || item.status === 'OFF'));
+                
+                let matchesFacility = true;
+                if (facilityVal) {
+                    matchesFacility = item.locations && item.locations.some(loc => {
+                        const facName = typeof loc === 'string' ? loc : loc.facility;
+                        return facName === facilityVal;
+                    });
+                }
+
+                return matchesSearch && matchesStatus && matchesFacility;
+            });
+        }
+
+        function handleSearchFilterChange() {
+            currentPage = 1;
+            const filtered = getFilteredData();
+            renderTable(filtered);
+        }
+
+        function resetSearchAndFilter() {
+            if(document.getElementById('search-input')) document.getElementById('search-input').value = '';
+            if(document.getElementById('filter-status')) document.getElementById('filter-status').value = '';
+            if(document.getElementById('filter-facility')) document.getElementById('filter-facility').value = '';
+            handleSearchFilterChange();
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+
+            const total = data.length;
+
+            if (total === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="py-12 text-center">
+                            <div class="flex flex-col items-center justify-center text-[#9CA3AF]">
+                                <i class="fa-solid fa-box-open text-4xl mb-3 text-[#CBD5E1]"></i>
+                                <p class="font-medium text-sm text-[#4B5563]">Không tìm thấy danh mục khám phù hợp</p>
+                                <p class="text-xs text-[#9CA3AF] mt-1">Vui lòng thay đổi từ khóa hoặc bộ lọc tìm kiếm</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                renderPagination(0, 0, 0);
+                return;
+            }
+
+            const totalPages = Math.ceil(total / pageSize);
+            if (currentPage > totalPages) currentPage = totalPages;
+            const startIdx = (currentPage - 1) * pageSize;
+            const endIdx = Math.min(startIdx + pageSize, total);
+            const pageItems = data.slice(startIdx, endIdx);
+
+            pageItems.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-[#F7F9FC] border-b border-[#E6EAF0] transition-colors';
+
+                const isChecked = item.status === true || item.status === 'ON';
+                const statusBadge = isChecked ? 
+                    `<span class="badge-success">ON - Sử dụng</span>` : 
+                    `<span class="badge-danger">OFF - Ngừng</span>`;
+
+                let locationsHtml = '-';
+                if (item.locations && item.locations.length > 0) {
+                    locationsHtml = item.locations.map(loc => {
+                        const facName = typeof loc === 'string' ? loc : (loc.facility ? `${loc.facility}: ${loc.locationName}` : loc);
+                        return `<span class="inline-block px-1.5 py-0.5 bg-[#E8F1FB] text-[#27496D] border border-[#B3CDE6] rounded-[2px] text-[11px] font-medium mr-1 mb-1">
+                            <i class="fa-solid fa-hospital text-[10px] mr-1"></i>${facName}
+                        </span>`;
+                    }).join('');
+                }
+
+                tr.innerHTML = `
+                    <td class="py-2.5 px-3 text-center text-[#6B7280] font-medium">${startIdx + index + 1}</td>
+                    <td class="py-2.5 px-3 font-bold text-[#1F2937]">${item.name}</td>
+                    <td class="py-2.5 px-3 text-[#374151]">${locationsHtml}</td>
+                    <td class="py-2.5 px-3 text-[#6B7280]">${item.note || '-'}</td>
+                    <td class="py-2.5 px-3 text-center">
+                        <div class="flex items-center justify-center gap-2">
+                            ${statusBadge}
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleCategoryStatus(${item.id}, this.checked)" class="sr-only peer">
+                                <div class="w-8 h-4 bg-[#D9DEE5] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-[#D9DEE5] after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-[#27496D]"></div>
+                            </label>
+                        </div>
+                    </td>
+                    <td class="py-2.5 px-3 text-center">
+                        <div class="flex items-center justify-center gap-1.5">
+                            <button onclick="openDetailModal(${item.id})" class="btn-icon" title="Xem chi tiết">
+                                <i class="fa-solid fa-eye text-xs text-[#27496D]"></i>
+                            </button>
+                            <button onclick="openEditModal(${item.id})" class="btn-icon" title="Chỉnh sửa">
+                                <i class="fa-solid fa-pen-to-square text-xs text-[#ED6C02]"></i>
+                            </button>
+                            <button onclick="openDeleteModal(${item.id})" class="btn-icon" title="Xóa">
+                                <i class="fa-solid fa-trash-can text-xs text-[#D32F2F]"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            renderPagination(total, startIdx + 1, endIdx);
+        }
+
+        function renderPagination(total, start, end) {
+            const container = document.getElementById('pagination-container');
+            if (!container) return;
+
+            if (total === 0) {
+                container.innerHTML = '';
+                return;
+            }
+
+            const totalPages = Math.ceil(total / pageSize);
+
+            let html = `
+                <div class="p-3 border-t border-[#D9DEE5] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs bg-white">
+                    <div class="flex items-center gap-2 text-[#4B5563]">
+                        <span>Hiển thị</span>
+                        <select onchange="changePageSize(this.value)" class="h-8 px-2 bg-white border border-[#D9DEE5] rounded-[4px] text-xs text-[#1F2937] font-medium focus:outline-none focus:border-[#27496D] cursor-pointer">
+                            <option value="10" ${pageSize === 10 ? 'selected' : ''}>10</option>
+                            <option value="20" ${pageSize === 20 ? 'selected' : ''}>20</option>
+                            <option value="50" ${pageSize === 50 ? 'selected' : ''}>50</option>
+                            <option value="100" ${pageSize === 100 ? 'selected' : ''}>100</option>
+                        </select>
+                        <span>bản ghi.</span>
+                        <span class="font-medium text-[#4B5563] ml-2">
+                            ${start}-${end} trong tổng ${total}
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <button type="button" onclick="goToPage(1)" ${currentPage === 1 ? 'disabled' : ''} class="h-8 w-8 flex items-center justify-center text-[#4B5563] hover:text-[#1F2937] hover:bg-[#F3F6FA] rounded-[4px] disabled:opacity-30 cursor-pointer transition-colors" title="Trang đầu">
+                            <i class="fa-solid fa-angles-left text-[11px]"></i>
+                        </button>
+                        <button type="button" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} class="h-8 w-8 flex items-center justify-center text-[#4B5563] hover:text-[#1F2937] hover:bg-[#F3F6FA] rounded-[4px] disabled:opacity-30 cursor-pointer transition-colors" title="Trang trước">
+                            <i class="fa-solid fa-chevron-left text-[11px]"></i>
+                        </button>
+            `;
+
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === currentPage) {
+                    html += `<button type="button" class="h-8 min-w-[32px] px-2.5 bg-white border border-[#27496D] text-[#27496D] font-bold rounded-[4px] cursor-pointer flex items-center justify-center">${i}</button>`;
+                } else if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    html += `<button type="button" onclick="goToPage(${i})" class="h-8 min-w-[32px] px-2.5 text-[#374151] hover:bg-[#F3F6FA] font-medium rounded-[4px] cursor-pointer flex items-center justify-center transition-colors">${i}</button>`;
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    html += `<span class="px-1.5 text-[#9CA3AF]">...</span>`;
+                }
+            }
+
+            html += `
+                        <button type="button" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} class="h-8 w-8 flex items-center justify-center text-[#4B5563] hover:text-[#1F2937] hover:bg-[#F3F6FA] rounded-[4px] disabled:opacity-30 cursor-pointer transition-colors" title="Trang sau">
+                            <i class="fa-solid fa-chevron-right text-[11px]"></i>
+                        </button>
+                        <button type="button" onclick="goToPage(${totalPages})" ${currentPage === totalPages ? 'disabled' : ''} class="h-8 w-8 flex items-center justify-center text-[#4B5563] hover:text-[#1F2937] hover:bg-[#F3F6FA] rounded-[4px] disabled:opacity-30 cursor-pointer transition-colors" title="Trang cuối">
+                            <i class="fa-solid fa-angles-right text-[11px]"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            renderTable(getFilteredData());
+        }
+
+        function toggleCategoryStatus(id, isChecked) {
+            const newStatus = isChecked ? 'ON' : 'OFF';
+            if (MWKDataStore.updateExamCategoryStatus) {
+                MWKDataStore.updateExamCategoryStatus(id, newStatus);
+            } else {
+                window.updateCategory(id, { status: isChecked });
+            }
+            if (window.showToast) {
+                window.showToast(`Đã chuyển trạng thái danh mục sang ${newStatus}`, 'success');
+            }
+        }
+
+        // --- GLOBAL HELPER FUNCTIONS FOR MODALS & CRUD ---
+        if (!MWKDataStore.getExamCategories) {
+            MWKDataStore.getExamCategories = function() { return MWKDataStore.getCategories(); };
+        }
+        if (!MWKDataStore.addExamCategory) {
+            MWKDataStore.addExamCategory = function(item) { return MWKDataStore.addCategory(item); };
+        }
+        if (!MWKDataStore.updateExamCategoryStatus) {
+            MWKDataStore.updateExamCategoryStatus = function(id, status) {
+                const isChecked = status === 'ON' || status === true;
+                const cat = MWKDataStore.getCategoryById(id);
+                if (cat) MWKDataStore.updateCategory(id, { ...cat, status: isChecked });
+            };
+        }
+
+        window.getCategoryById = function(id) {
+            return MWKDataStore.getCategoryById ? MWKDataStore.getCategoryById(id) : MWKDataStore.getCategories().find(c => c.id === id);
+        };
+
+        window.updateCategory = function(id, data) {
+            MWKDataStore.updateCategory(id, data);
+        };
+
+        window.deleteCategoryById = function(id) {
+            MWKDataStore.deleteCategory(id);
+        };
+    </script>
+</body>
+</html>

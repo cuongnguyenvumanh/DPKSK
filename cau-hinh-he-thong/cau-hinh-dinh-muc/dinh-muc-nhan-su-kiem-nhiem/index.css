@@ -1,0 +1,55 @@
+/* SUB-TAB 4: ĐỊNH MỨC NHÂN SỰ KIÊM NHIỆM - ENTERPRISE MATRIX STYLES */
+.kiem-nhiem-matrix-table {
+    border-radius: 0 !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+}
+
+.kiem-nhiem-matrix-table td, .kiem-nhiem-matrix-table th {
+    border-right: 1px solid #D9DEE7 !important;
+    border-bottom: 1px solid #D9DEE7 !important;
+}
+
+.kiem-nhiem-matrix-table tbody tr:hover {
+    background-color: #F7F9FC !important;
+}
+
+/* STICKY COLUMNS LAYER HIERARCHY */
+
+/* Level 50: Top Left Corner Headers TH (Col 1..4) */
+.kn-sticky-corner-1 { position: sticky !important; top: 0 !important; left: 0px !important; z-index: 50 !important; background-color: #32475B !important; color: #FFFFFF !important; }
+.kn-sticky-corner-2 { position: sticky !important; top: 0 !important; left: 140px !important; z-index: 50 !important; background-color: #32475B !important; color: #FFFFFF !important; }
+.kn-sticky-corner-3 { position: sticky !important; top: 0 !important; left: 190px !important; z-index: 50 !important; background-color: #32475B !important; color: #FFFFFF !important; }
+.kn-sticky-corner-4 { position: sticky !important; top: 0 !important; left: 340px !important; z-index: 50 !important; background-color: #32475B !important; color: #FFFFFF !important; box-shadow: 2px 0 6px rgba(0, 0, 0, 0.12) !important; }
+
+/* Level 30: Scrolling Staffing Headers TH */
+.kn-sticky-header-staff { position: sticky !important; top: 0 !important; z-index: 30 !important; background-color: #32475B !important; color: #FFFFFF !important; }
+
+/* Level 20: Body Sticky Columns TD */
+.kn-sticky-col-1 { position: sticky !important; left: 0px !important; z-index: 20 !important; width: 140px !important; min-width: 140px !important; max-width: 140px !important; background-color: #F8FAFC !important; vertical-align: middle !important; }
+.kn-sticky-col-2 { position: sticky !important; left: 140px !important; z-index: 20 !important; width: 50px !important; min-width: 50px !important; max-width: 50px !important; background-color: #F8FAFC !important; vertical-align: middle !important; text-align: center !important; }
+.kn-sticky-col-3 { position: sticky !important; left: 190px !important; z-index: 20 !important; width: 150px !important; min-width: 150px !important; max-width: 150px !important; background-color: #F8FAFC !important; vertical-align: middle !important; text-align: center !important; }
+.kn-sticky-col-4 { position: sticky !important; left: 340px !important; z-index: 20 !important; width: 140px !important; min-width: 140px !important; max-width: 140px !important; background-color: #F8FAFC !important; vertical-align: middle !important; box-shadow: 2px 0 6px rgba(0, 0, 0, 0.08) !important; }
+
+/* Evaluation Badge Styles */
+.badge-tiem-nang {
+    background-color: #ECFDF5;
+    color: #047857;
+    border: 1px solid #A7F3D0;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 11px;
+    display: inline-block;
+}
+
+.badge-khong-tiem-nang {
+    background-color: #FEF2F2;
+    color: #B91C1C;
+    border: 1px solid #FECACA;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 11px;
+    display: inline-block;
+}

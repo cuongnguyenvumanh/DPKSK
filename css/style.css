@@ -1,0 +1,508 @@
+/* ==========================================================================
+   MWK - ENTERPRISE MEDICAL / HIS SYSTEM DESIGN SYSTEM TOKENS & STYLES
+   ========================================================================== */
+
+/* Custom scrollbar for sidebar & table containers */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #F4F5F7;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #CBD5E1;
+    border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #94A3B8;
+}
+
+/* Sidebar transition & collapsible states */
+.sidebar-expanded {
+    width: 204px !important;
+}
+.sidebar-collapsed {
+    width: 56px !important;
+}
+
+/* Hide text & toggles when sidebar is collapsed */
+.sidebar-collapsed .nav-text,
+.sidebar-collapsed .logo-text,
+.sidebar-collapsed .section-header,
+.sidebar-collapsed .collapse-arrow,
+.sidebar-collapsed #report-stat-toggle,
+.sidebar-collapsed #system-config-toggle,
+.sidebar-collapsed #ksk-manage-toggle {
+    display: none !important;
+}
+
+/* Ensure submenus stay visible as vertical icon lists when collapsed */
+.sidebar-collapsed .submenu {
+    display: flex !important;
+    flex-direction: column !important;
+    padding-left: 0 !important;
+    margin-top: 0.25rem !important;
+    gap: 0.25rem !important;
+}
+
+.sidebar-collapsed .nav-item {
+    justify-content: center !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    width: 2.25rem !important;
+    height: 2.25rem !important;
+    margin: 0 auto !important;
+    position: relative !important;
+    border-radius: 6px !important;
+}
+
+.sidebar-collapsed .nav-item i {
+    width: auto !important;
+    font-size: 1rem !important;
+    margin: 0 !important;
+}
+
+/* Tooltip on hover when collapsed */
+.sidebar-collapsed .nav-item[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: 3rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #1F2937;
+    color: #FFFFFF;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.35rem 0.65rem;
+    border-radius: 4px;
+    white-space: nowrap;
+    z-index: 9999;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    pointer-events: none;
+}
+
+/* ==========================================================================
+   UNIFIED HIS COMPONENT UTILITY CLASSES
+   ========================================================================== */
+
+/* Cards / Boxes */
+.his-card {
+    background-color: #FFFFFF;
+    border: 1px solid #D9DEE5;
+    border-radius: 4px;
+    padding: 16px;
+}
+
+/* System Form Controls */
+.sys-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 6px;
+}
+
+.sys-input, .sys-select {
+    width: 100%;
+    height: 36px;
+    border: 1px solid #D9DEE5;
+    border-radius: 4px;
+    padding: 0 12px;
+    font-size: 14px;
+    color: #1F2937;
+    background-color: #FFFFFF;
+    outline: none;
+    transition: border-color 150ms;
+}
+
+.sys-input:focus, .sys-select:focus {
+    border-color: #27496D;
+}
+
+/* Buttons */
+.btn-primary {
+    height: 36px;
+    background-color: #27496D;
+    color: #FFFFFF;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 4px;
+    padding: 0 16px;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: background-color 150ms;
+}
+.btn-primary:hover {
+    background-color: #1F3D5A;
+}
+
+.btn-secondary {
+    height: 36px;
+    background-color: #FFFFFF;
+    color: #374151;
+    border: 1px solid #D9DEE5;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 4px;
+    padding: 0 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: background-color 150ms;
+}
+.btn-secondary:hover {
+    background-color: #F3F6FA;
+}
+
+.btn-danger {
+    height: 36px;
+    background-color: #FFFFFF;
+    color: #D32F2F;
+    border: 1px solid #D32F2F;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 4px;
+    padding: 0 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: background-color 150ms;
+}
+.btn-danger:hover {
+    background-color: #FEECEC;
+}
+
+.btn-icon {
+    width: 32px;
+    height: 32px;
+    border: 1px solid #D9DEE5;
+    border-radius: 4px;
+    background-color: #FFFFFF;
+    color: #4B5563;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 150ms;
+}
+.btn-icon:hover {
+    background-color: #F3F6FA;
+    color: #27496D;
+}
+
+/* Badges */
+.badge-success {
+    background-color: #E6F4EA;
+    border: 1px solid #A5D6A7;
+    color: #2E7D32;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.badge-warning {
+    background-color: #FFF3E0;
+    border: 1px solid #FFCC80;
+    color: #ED6C02;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.badge-danger {
+    background-color: #FDECEC;
+    border: 1px solid #F5B5B5;
+    color: #D32F2F;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Enterprise HIS Tables */
+.table-his {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 14px;
+}
+
+.table-his thead th {
+    background-color: #27496D;
+    color: #FFFFFF;
+    height: 44px;
+    font-weight: 600;
+    text-align: left;
+    padding: 0 12px;
+    border: none;
+}
+
+.table-his tbody td {
+    height: 44px;
+    border-bottom: 1px solid #E6EAF0;
+    padding: 0 12px;
+    color: #1F2937;
+}
+
+.table-his tbody tr:hover {
+    background-color: #F7F9FC;
+}
+
+/* Sticky Action Bar */
+.his-bottom-bar {
+    position: sticky;
+    bottom: 0;
+    z-index: 30;
+    height: 56px;
+    background-color: #EEF3F8;
+    border-top: 1px solid #D9DEE5;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+/* ==========================================================================
+   DATA GRID ENTERPRISE LAYOUT STYLES (3-ZONE SYNCHRONIZED GRID)
+   ========================================================================== */
+.data-grid {
+    display: flex;
+    position: relative;
+    border: 1px solid #D9DEE5;
+    border-radius: 4px 4px 0 0;
+    background-color: #FFFFFF;
+    height: auto;
+    width: 100%;
+    overflow: hidden;
+}
+
+.grid-left {
+    display: flex;
+    flex-direction: column;
+    z-index: 20;
+    border-right: 1px solid #D9DEE5;
+    background-color: #FFFFFF;
+    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.04);
+}
+
+.grid-center {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    overflow-x: auto;
+    overflow-y: hidden;
+    background-color: #FFFFFF;
+}
+
+.grid-right {
+    display: flex;
+    flex-direction: column;
+    z-index: 20;
+    border-left: 1px solid #D9DEE5;
+    background-color: #FFFFFF;
+    box-shadow: -2px 0 6px rgba(0, 0, 0, 0.04);
+}
+
+.grid-header {
+    height: 44px;
+    min-height: 44px;
+    max-height: 44px;
+    background-color: #27496D;
+    color: #FFFFFF;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    user-select: none;
+}
+
+.header-cell, .grid-header .header-cell {
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.grid-body {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    overflow: visible;
+}
+
+.grid-left .grid-body::-webkit-scrollbar,
+.grid-right .grid-body::-webkit-scrollbar {
+    width: 0px;
+    display: none;
+}
+.grid-left .grid-body,
+.grid-right .grid-body {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.grid-row {
+    height: 44px;
+    min-height: 44px;
+    max-height: 44px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #E6EAF0;
+    box-sizing: border-box;
+    transition: background-color 0.15s ease;
+    font-size: 12px;
+    color: #1F2937;
+}
+
+.grid-row:hover, .grid-row.is-hovered {
+    background-color: #F7F9FC !important;
+}
+
+.grid-cell, .grid-row .cell {
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    box-sizing: border-box;
+    height: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Segmented Pill Buttons (Loại hình công việc) */
+.pill-btn {
+    height: 32px;
+    padding: 0 14px;
+    border-radius: 4px;
+    border: 1px solid #D9DEE5;
+    background-color: #FFFFFF;
+    color: #374151;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 150ms ease;
+    user-select: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.pill-btn:hover {
+    border-color: #27496D;
+    color: #27496D;
+    background-color: #F4F7FA;
+}
+.pill-btn.active {
+    background-color: #27496D;
+    border-color: #27496D;
+    color: #FFFFFF;
+    font-weight: 600;
+    box-shadow: 0 1px 2px rgba(39, 73, 109, 0.2);
+}
+
+/* Anchor Navigation Right Bar */
+.anchor-nav-item {
+    display: block;
+    padding: 6px 10px;
+    border-radius: 2px;
+    color: #4B5563;
+    font-weight: 500;
+    transition: all 150ms ease;
+    border-left: 2px solid transparent;
+    text-decoration: none;
+}
+.anchor-nav-item:hover {
+    color: #27496D;
+    background-color: #F4F5F7;
+}
+.anchor-nav-item.active {
+    color: #27496D;
+    font-weight: 700;
+    border-left-color: #27496D;
+    background-color: #E8F1FB;
+}
+
+/* ==========================================================================
+   SCHEDULE STATUS BADGES (ENTERPRISE UNIFIED STATUS STYLES)
+   ========================================================================== */
+.schedule-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 20px;
+    height: 20px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 11px;
+    line-height: 16px;
+    font-weight: 500;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+
+.status-new {
+    background: #EAF7EA;
+    color: #4CAF50;
+    border: 1px solid #BFE3BF;
+}
+
+.status-pending-summary,
+.status-pending-approval,
+.status-pending-coordination {
+    background: #EAF3FF;
+    color: #4A90E2;
+    border: 1px solid #C7DFFF;
+}
+
+.status-summary,
+.status-approved,
+.status-coordinated {
+    background: #1976D2;
+    color: #FFFFFF;
+    border: 1px solid #1976D2;
+}
+
+.status-completed {
+    background: #168A2F;
+    color: #FFFFFF;
+    border: 1px solid #168A2F;
+}
+
+.status-returned {
+    background: #FEE2E2;
+    color: #DC2626;
+    border: 1px solid #FCA5A5;
+}
+
+.status-unknown {
+    background: #F3F4F6;
+    color: #6B7280;
+    border: 1px solid #D1D5DB;
+}
+
+

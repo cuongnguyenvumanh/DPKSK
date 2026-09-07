@@ -1,0 +1,44 @@
+<!-- 4. THANH HÀNH ĐỘNG DƯỚI CÙNG (CỐ ĐỊNH DƯỚI CÙNG HIS ACTION BAR) -->
+<div id="sticky-bottom-action-bar" class="hidden his-bottom-bar">
+    <!-- Phía cùng bên tay trái: Nút Quay lại -->
+    <button type="button" onclick="switchToStep(1)" class="btn-secondary text-xs">
+        <i class="fa-solid fa-arrow-left text-xs"></i>
+        <span>Quay lại thông tin khách hàng</span>
+    </button>
+
+    <!-- Phía bên tay phải: Checkbox Chọn tất cả -> Thống kê Đã chọn -> Nút Lưu nháp -> Nút Xoá -> Nút Thoát -> Nút Gửi tổng hợp -->
+    <div class="flex items-center gap-3 flex-wrap text-xs">
+        <label class="flex items-center gap-2 cursor-pointer font-semibold text-xs text-[#374151] select-none">
+            <input type="checkbox" id="check-select-all-step2" onchange="handleSelectAllStep2(this)" class="w-4 h-4 text-[#27496D] rounded-[2px] border-[#D9DEE5]">
+            <span>Chọn tất cả</span>
+        </label>
+
+        <div class="flex items-center gap-2 text-[#4B5563] font-medium px-1">
+            <span class="font-bold text-[#1F2937]">Đã chọn:</span>
+            <span>Ngoại viện: <strong id="summary-ngoai-vien" class="text-[#1F2937] font-bold">0</strong></span>
+            <span>Tại viện: <strong id="summary-tai-vien" class="text-[#1F2937] font-bold">0</strong></span>
+            <span>Lịch phường: <strong id="summary-lich-phuong" class="text-[#1F2937] font-bold">0</strong></span>
+        </div>
+
+        <a href="../index.html" class="btn-secondary text-xs">
+            <i class="fa-solid fa-xmark text-xs"></i>
+            <span>Thoát</span>
+        </a>
+        
+        <button type="button" onclick="handleDeleteCustomerCard()" class="btn-danger text-xs">
+            <i class="fa-solid fa-trash-can text-xs"></i>
+            <span>Xoá</span>
+        </button>
+
+
+        <button type="button" id="btn-step2-save-draft" onclick="saveDraftStep2()" class="btn-secondary text-xs">
+            <i class="fa-solid fa-floppy-disk text-xs"></i>
+            <span>Lưu nháp</span>
+        </button>
+
+        <button type="button" id="btn-submit-tong-hop-step2" onclick="handleSubmitTongHopStep2()" class="btn-primary text-xs">
+            <i class="fa-solid fa-paper-plane text-xs"></i>
+            <span>Gửi tổng hợp</span>
+        </button>
+    </div>
+</div>

@@ -1,0 +1,99 @@
+<!-- SUB-TAB 3: ĐỊNH MỨC KHÁM CÁC CHUYÊN KHOA VIEW TEMPLATE (ENTERPRISE MATRIX DESIGN) -->
+<div class="flex-1 flex flex-col min-h-0 overflow-hidden relative bg-[#F5F7FA]">
+    <!-- INNER SUB-TAB CONTROL BAR -->
+    <div class="bg-white border-b border-[#D9DEE7] px-4 py-2 flex items-center justify-between flex-shrink-0">
+        <div class="flex items-center gap-2">
+            <button type="button" id="ck-inner-tab-thuong-quy" onclick="switchInnerChuyenKhoaTab('thuongQuy')" class="px-4 py-1.5 rounded-[6px] text-xs font-bold transition-all cursor-pointer bg-[#0F6CBD] text-white shadow-xs">
+                <i class="fa-solid fa-list-check mr-1.5"></i>
+                <span>Định mức khám các dịch vụ thường quy</span>
+            </button>
+            <button type="button" id="ck-inner-tab-tieu-hoa" onclick="switchInnerChuyenKhoaTab('tieuHoa')" class="px-4 py-1.5 rounded-[6px] text-xs font-semibold transition-all cursor-pointer bg-[#E5E7EB] hover:bg-[#D1D5DB] text-[#374151]">
+                <i class="fa-solid fa-stomach mr-1.5"></i>
+                <span>Định mức dịch vụ CK tiêu hóa</span>
+            </button>
+        </div>
+
+        <div id="ck-add-row-action-container" class="hidden">
+            <button type="button" onclick="addNewChuyenKhoaRow()" class="px-3.5 h-[32px] bg-[#0F6CBD] hover:bg-[#1E7FE5] text-white rounded-[6px] text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer">
+                <i class="fa-solid fa-plus text-[10px]"></i>
+                <span>Thêm dòng</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- RECTANGULAR MATRIX WRAPPER -->
+    <div class="border border-t-0 border-[#D9DEE7] bg-white shadow-none rounded-none flex-1 flex flex-col min-h-0 relative">
+        <div class="overflow-auto max-h-full custom-scrollbar flex-1">
+            <table class="w-full text-left text-xs border-collapse select-none ck-matrix-table font-sans">
+                <thead class="uppercase font-semibold text-[11px]">
+                    <tr id="ck-matrix-header-tier1">
+                        <!-- Dynamic Header Tier 1 -->
+                    </tr>
+                    <tr id="ck-matrix-header-tier2">
+                        <!-- Dynamic Header Tier 2 -->
+                    </tr>
+                </thead>
+                <tbody id="ck-matrix-body-container" class="divide-y divide-[#E5E7EB] text-[#1F2937]">
+                    <!-- Dynamic Matrix Rows -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- MODAL 1: THÊM NHÓM ĐỐI TƯỢNG MỚI (TAB I) -->
+        <div id="add-group-modal-thuongquy" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+            <div class="bg-white rounded-lg shadow-2xl max-w-sm w-full space-y-4 border border-[#D9DEE7] overflow-hidden">
+                <div class="bg-[#2F3E4E] text-white py-3.5 px-4 font-bold text-sm flex items-center justify-between">
+                    <span>Thêm nhóm đối tượng mới</span>
+                    <button type="button" onclick="hideCkModal('add-group-modal-thuongquy')" class="text-slate-300 hover:text-white"><i class="fa-solid fa-xmark text-xs"></i></button>
+                </div>
+                <div class="px-5 py-2 space-y-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Tên nhóm đối tượng mới <span class="text-rose-500">*</span></label>
+                        <input type="text" id="ck-new-group-name" placeholder="Ví dụ: Bệnh viện, Học viện..." class="w-full text-xs h-[36px] px-3 border border-[#D1D5DB] rounded-[6px] focus:outline-none focus:border-[#0F6CBD] font-medium text-[#1F2937]">
+                    </div>
+                </div>
+                <div class="flex items-center justify-end gap-2.5 pb-4 px-5">
+                    <button type="button" onclick="hideCkModal('add-group-modal-thuongquy')" class="px-4 h-[36px] bg-[#E5E7EB] hover:bg-[#D1D5DB] text-[#374151] rounded-[6px] text-xs font-semibold transition-colors cursor-pointer">Hủy</button>
+                    <button type="button" onclick="confirmAddThuongQuyGroup()" class="px-4 h-[36px] bg-[#0F6CBD] hover:bg-[#1E7FE5] text-white rounded-[6px] text-xs font-semibold shadow-xs transition-colors cursor-pointer">Xác nhận thêm</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL 2: THÊM CƠ SỞ KHÁM MỚI (TAB II) -->
+        <div id="add-facility-modal-tieuhoa" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+            <div class="bg-white rounded-lg shadow-2xl max-w-sm w-full space-y-4 border border-[#D9DEE7] overflow-hidden">
+                <div class="bg-[#2F3E4E] text-white py-3.5 px-4 font-bold text-sm flex items-center justify-between">
+                    <span>Thêm cơ sở khám mới</span>
+                    <button type="button" onclick="hideCkModal('add-facility-modal-tieuhoa')" class="text-slate-300 hover:text-white"><i class="fa-solid fa-xmark text-xs"></i></button>
+                </div>
+                <div class="px-5 py-2 space-y-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Tên cơ sở khám mới <span class="text-rose-500">*</span></label>
+                        <input type="text" id="ck-new-facility-name" placeholder="Ví dụ: Vĩnh Phúc, Hải Phòng..." class="w-full text-xs h-[36px] px-3 border border-[#D1D5DB] rounded-[6px] focus:outline-none focus:border-[#0F6CBD] font-medium text-[#1F2937]">
+                    </div>
+                </div>
+                <div class="flex items-center justify-end gap-2.5 pb-4 px-5">
+                    <button type="button" onclick="hideCkModal('add-facility-modal-tieuhoa')" class="px-4 h-[36px] bg-[#E5E7EB] hover:bg-[#D1D5DB] text-[#374151] rounded-[6px] text-xs font-semibold transition-colors cursor-pointer">Hủy</button>
+                    <button type="button" onclick="confirmAddTieuHoaFacility()" class="px-4 h-[36px] bg-[#0F6CBD] hover:bg-[#1E7FE5] text-white rounded-[6px] text-xs font-semibold shadow-xs transition-colors cursor-pointer">Xác nhận thêm</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL 3: XÁC NHẬN XÓA DÒNG / CỘT -->
+        <div id="delete-confirm-modal-ck" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+            <div class="bg-white rounded-lg shadow-2xl max-w-sm w-full space-y-4 border border-[#D9DEE7] text-center overflow-hidden">
+                <div class="bg-[#2F3E4E] text-white py-3.5 px-4 font-bold text-sm flex items-center justify-between">
+                    <span>Xác nhận xóa</span>
+                    <i class="fa-solid fa-triangle-exclamation text-amber-400"></i>
+                </div>
+                <div class="px-6 py-2">
+                    <p id="ck-delete-modal-msg" class="text-xs text-[#1F2937]">Bạn có chắc chắn muốn xóa mục này khỏi hệ thống không?</p>
+                </div>
+                <div class="flex items-center justify-center gap-3 pb-5 px-6">
+                    <button type="button" onclick="hideCkModal('delete-confirm-modal-ck')" class="px-4 h-[36px] bg-[#E5E7EB] hover:bg-[#D1D5DB] text-[#374151] rounded-[6px] text-xs font-semibold transition-colors cursor-pointer">Hủy</button>
+                    <button type="button" onclick="confirmDeleteChuyenKhoaTarget()" class="px-4 h-[36px] bg-rose-600 hover:bg-rose-700 text-white rounded-[6px] text-xs font-bold shadow-xs transition-colors cursor-pointer">Xác nhận xóa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

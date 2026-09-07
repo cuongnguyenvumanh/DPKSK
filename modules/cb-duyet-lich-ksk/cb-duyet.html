@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duyệt lịch KSK - System HIS</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome 6 Pro CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Global System HIS Styles -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <!-- Local Module Styles -->
+    <link rel="stylesheet" href="./assets/cb-duyet.css">
+    <link rel="shortcut icon" href="#">
+</head>
+<body class="bg-[#F4F5F7] text-[#1F2937] antialiased flex h-screen overflow-hidden" data-depth="sub" data-active-nav="nav-cb-duyet-lich-ksk" data-breadcrumb="Duyệt lịch KSK">
+
+    <!-- Unified Sidebar Component -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Outer Flex Container -->
+    <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+        <!-- Unified Header Component -->
+        <div id="header-container"></div>
+
+        <!-- Main Workspace Scrollable Area -->
+        <main class="flex-1 overflow-y-auto p-4 md:p-6 space-y-5 custom-scrollbar">
+
+            <!-- 1. Page Header & Top Bar -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 rounded-[4px] border border-[#D9DEE5] shadow-2xs">
+                <div>
+                    <h1 class="text-xl font-bold text-[#1F2937] flex items-center gap-2.5">
+                        <i class="fa-solid fa-user-check text-[#27496D] text-lg"></i>
+                        <span>Duyệt lịch KSK</span>
+                    </h1>
+                    <p class="text-xs text-[#6B7280] mt-1">
+                        Danh sách lịch KSK tuần, lịch phát sinh và lịch phường đang chờ CB Duyệt phê duyệt; hỗ trợ xem chi tiết, tìm kiếm, lọc và phân trang.
+                    </p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button type="button" id="btn-refresh-data" class="btn-secondary sys-control-h36 text-xs flex items-center gap-1.5 px-3">
+                        <i class="fa-solid fa-rotate text-[#27496D]"></i>
+                        <span>Làm mới</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 2. Summary Metric Cards (4 Dynamic Cards) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Card 1: Tổng lịch chờ duyệt -->
+                <div class="his-card p-4 rounded-[4px] border border-[#D9DEE5] bg-white flex items-center justify-between min-h-[104px] shadow-2xs">
+                    <div class="space-y-1">
+                        <span class="text-xs font-semibold text-[#6B7280] uppercase tracking-wider">Tổng lịch chờ duyệt</span>
+                        <div class="text-2xl font-bold text-[#27496D]" id="sum-total-pending">0</div>
+                        <span class="text-[11px] text-[#2563EB] font-medium flex items-center gap-1">
+                            <i class="fa-solid fa-clock text-[10px]"></i> Đang chờ phê duyệt
+                        </span>
+                    </div>
+                    <div class="w-12 h-12 rounded-[4px] bg-[#E8F1FB] text-[#27496D] flex items-center justify-center text-xl flex-shrink-0">
+                        <i class="fa-solid fa-user-check"></i>
+                    </div>
+                </div>
+
+                <!-- Card 2: Lịch tuần -->
+                <div class="his-card p-4 rounded-[4px] border border-[#D9DEE5] bg-white flex items-center justify-between min-h-[104px] shadow-2xs">
+                    <div class="space-y-1">
+                        <span class="text-xs font-semibold text-[#6B7280] uppercase tracking-wider">Lịch tuần</span>
+                        <div class="text-2xl font-bold text-[#2E7D32]" id="sum-weekly">0</div>
+                        <span class="text-[11px] text-[#6B7280]">Lịch khám định kỳ hàng tuần</span>
+                    </div>
+                    <div class="w-12 h-12 rounded-[4px] bg-[#E6F4EA] text-[#2E7D32] flex items-center justify-center text-xl flex-shrink-0">
+                        <i class="fa-regular fa-calendar-check"></i>
+                    </div>
+                </div>
+
+                <!-- Card 3: Lịch phát sinh -->
+                <div class="his-card p-4 rounded-[4px] border border-[#D9DEE5] bg-white flex items-center justify-between min-h-[104px] shadow-2xs">
+                    <div class="space-y-1">
+                        <span class="text-xs font-semibold text-[#6B7280] uppercase tracking-wider">Lịch phát sinh</span>
+                        <div class="text-2xl font-bold text-[#ED6C02]" id="sum-incident">0</div>
+                        <span class="text-[11px] text-[#6B7280]">Lịch đột xuất & bóc tách</span>
+                    </div>
+                    <div class="w-12 h-12 rounded-[4px] bg-[#FFF3E0] text-[#ED6C02] flex items-center justify-center text-xl flex-shrink-0">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                </div>
+
+                <!-- Card 4: Lịch phường -->
+                <div class="his-card p-4 rounded-[4px] border border-[#D9DEE5] bg-white flex items-center justify-between min-h-[104px] shadow-2xs">
+                    <div class="space-y-1">
+                        <span class="text-xs font-semibold text-[#6B7280] uppercase tracking-wider">Lịch phường</span>
+                        <div class="text-2xl font-bold text-[#7E22CE]" id="sum-ward">0</div>
+                        <span class="text-[11px] text-[#6B7280]">Khám sức khỏe cộng đồng</span>
+                    </div>
+                    <div class="w-12 h-12 rounded-[4px] bg-[#F3E8FF] text-[#7E22CE] flex items-center justify-center text-xl flex-shrink-0">
+                        <i class="fa-solid fa-house-medical"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Tab Control Bar -->
+            <div class="flex items-center gap-2 border-b border-[#D9DEE5] bg-white px-4 pt-2 rounded-t-[4px]">
+                <button type="button" id="tab-all" data-type="ALL" class="approval-tab-btn px-4 py-2.5 text-xs font-bold border-b-2 border-[#27496D] text-[#27496D] transition-colors">
+                    <i class="fa-solid fa-list text-xs mr-1"></i> Tất cả (<span id="tab-count-all">0</span>)
+                </button>
+                <button type="button" id="tab-weekly" data-type="LICH_TUAN" class="approval-tab-btn px-4 py-2.5 text-xs font-medium border-b-2 border-transparent text-[#6B7280] hover:text-[#1F2937] transition-colors">
+                    <i class="fa-regular fa-calendar-check text-xs mr-1"></i> Lịch tuần (<span id="tab-count-weekly">0</span>)
+                </button>
+                <button type="button" id="tab-incident" data-type="LICH_PHAT_SINH" class="approval-tab-btn px-4 py-2.5 text-xs font-medium border-b-2 border-transparent text-[#6B7280] hover:text-[#1F2937] transition-colors">
+                    <i class="fa-solid fa-bolt text-xs mr-1"></i> Lịch phát sinh (<span id="tab-count-incident">0</span>)
+                </button>
+                <button type="button" id="tab-ward" data-type="LICH_PHUONG" class="approval-tab-btn px-4 py-2.5 text-xs font-medium border-b-2 border-transparent text-[#6B7280] hover:text-[#1F2937] transition-colors">
+                    <i class="fa-solid fa-house-medical text-xs mr-1"></i> Lịch phường (<span id="tab-count-ward">0</span>)
+                </button>
+            </div>
+
+            <!-- 4. Filter Bar Card -->
+            <div class="his-card p-4 rounded-[4px] border border-[#D9DEE5] bg-white shadow-2xs space-y-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
+                    <!-- Search Input -->
+                    <div class="lg:col-span-2">
+                        <label class="sys-label text-[11px] font-semibold text-[#4B5563] mb-1 block">TÌM KIẾM</label>
+                        <div class="search-input-wrapper">
+                            <span class="search-input-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                            <input type="text" id="filter-search" class="sys-input search-input-field sys-control-h36 text-xs w-full rounded-[4px] border-[#D9DEE5]" placeholder="Nhập mã lịch, mã lịch tổng, tên đơn vị, CB phụ trách...">
+                        </div>
+                    </div>
+
+                    <!-- Type Dropdown -->
+                    <div>
+                        <label class="sys-label text-[11px] font-semibold text-[#4B5563] mb-1 block">LOẠI LỊCH</label>
+                        <select id="filter-type" class="sys-select sys-control-h36 text-xs w-full rounded-[4px] border-[#D9DEE5]">
+                            <option value="">-- Tất cả loại lịch --</option>
+                            <option value="LICH_TUAN">Lịch tuần</option>
+                            <option value="LICH_PHAT_SINH">Lịch phát sinh</option>
+                            <option value="LICH_PHUONG">Lịch phường</option>
+                        </select>
+                    </div>
+
+                    <!-- Facility Dropdown -->
+                    <div>
+                        <label class="sys-label text-[11px] font-semibold text-[#4B5563] mb-1 block">CƠ SỞ KHÁM</label>
+                        <select id="filter-facility" class="sys-select sys-control-h36 text-xs w-full rounded-[4px] border-[#D9DEE5]">
+                            <option value="">-- Tất cả cơ sở --</option>
+                            <option value="MEDLATEC Ba Đình">MEDLATEC Ba Đình</option>
+                            <option value="MEDLATEC Cầu Giấy">MEDLATEC Cầu Giấy</option>
+                            <option value="MEDLATEC Thanh Xuân">MEDLATEC Thanh Xuân</option>
+                            <option value="MEDLATEC Tây Hồ">MEDLATEC Tây Hồ</option>
+                            <option value="Ngoại viện">Ngoại viện</option>
+                        </select>
+                    </div>
+
+                    <!-- Status Dropdown -->
+                    <div>
+                        <label class="sys-label text-[11px] font-semibold text-[#4B5563] mb-1 block">TRẠNG THÁI DUYỆT</label>
+                        <select id="filter-status" class="sys-select sys-control-h36 text-xs w-full rounded-[4px] border-[#D9DEE5]">
+                            <option value="">-- Tất cả trạng thái --</option>
+                            <option value="CHO_CB_DUYET">Chờ duyệt</option>
+                            <option value="DANG_DUYET_BUOC_1">Đang duyệt bước 1 (KHDN)</option>
+                            <option value="DANG_DUYET_BUOC_2">Đang duyệt bước 2 (KSK)</option>
+                            <option value="QUA_HAN">Quá hạn xử lý</option>
+                            <option value="DA_DUYET">Đã duyệt hoàn tất</option>
+                            <option value="TRA_LAI">Đã trả lại</option>
+                        </select>
+                    </div>
+
+                    <!-- Date Range: From Date -->
+                    <div>
+                        <label class="sys-label text-[11px] font-semibold text-[#4B5563] mb-1 block">TỪ NGÀY</label>
+                        <input type="date" id="filter-from-date" class="sys-input sys-control-h36 text-xs w-full rounded-[4px] border-[#D9DEE5]">
+                    </div>
+                </div>
+
+                <!-- Filter Actions Row -->
+                <div class="flex items-center justify-end gap-2 pt-2 border-t border-[#E6EAF0]">
+                    <button type="button" id="btn-reset-filter" class="btn-secondary sys-control-h36 text-xs px-3 flex items-center gap-1.5">
+                        <i class="fa-solid fa-xmark text-xs"></i> Xóa bộ lọc
+                    </button>
+                    <button type="button" id="btn-apply-filter" class="btn-primary sys-control-h36 text-xs px-4 flex items-center gap-1.5">
+                        <i class="fa-solid fa-filter text-xs"></i> Áp dụng lọc
+                    </button>
+                </div>
+            </div>
+
+            <!-- 5. Sticky Action Bar (Hidden by default, shown when items checked) -->
+            <div id="approval-action-bar" class="approval-action-bar hidden flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div class="flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-full bg-[#2563EB] text-white flex items-center justify-center font-bold text-xs">
+                        <i class="fa-solid fa-check text-[10px]"></i>
+                    </span>
+                    <span class="text-xs font-semibold text-[#1E40AF]">
+                        Đã chọn <strong id="selected-child-count" class="text-[#2563EB] font-bold text-sm">0</strong> lịch lẻ (thuộc <strong id="selected-master-count" class="text-[#2563EB] font-bold text-sm">0</strong> lịch tổng)
+                    </span>
+                </div>
+                <div class="flex items-center gap-2 flex-wrap">
+                    <button type="button" id="btn-approve-selected" class="btn-primary text-xs sys-control-h36 px-3.5 bg-[#16A34A] hover:bg-[#15803D] flex items-center gap-1.5">
+                        <i class="fa-solid fa-circle-check text-xs"></i> Phê duyệt lịch đã chọn
+                    </button>
+                    <button type="button" id="btn-return-selected" class="btn-danger text-xs sys-control-h36 px-3.5 flex items-center gap-1.5">
+                        <i class="fa-solid fa-reply text-xs"></i> Trả lịch đã chọn (Bóc tách)
+                    </button>
+                    <button type="button" id="btn-return-master" class="btn-secondary text-xs sys-control-h36 px-3.5 text-[#DC2626] border-[#FCA5A5] hover:bg-[#FEE2E2] flex items-center gap-1.5">
+                        <i class="fa-solid fa-trash-can text-xs"></i> Trả toàn bộ lịch tổng
+                    </button>
+                </div>
+            </div>
+
+            <!-- 6. Grouped Enterprise Data Table -->
+            <div class="his-card rounded-[4px] border border-[#D9DEE5] bg-white overflow-hidden shadow-2xs">
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left border-collapse text-xs" id="approval-table">
+                        <thead>
+                            <tr class="bg-[#27496D] text-white h-[44px] font-semibold">
+                                <th class="p-2.5 text-center w-10">
+                                    <input type="checkbox" id="select-all-master-cb" class="w-4 h-4 rounded text-[#27496D] focus:ring-[#27496D] cursor-pointer">
+                                </th>
+                                <th class="p-2.5 text-center w-12">STT</th>
+                                <th class="p-2.5 w-32">Mã Lịch Tổng</th>
+                                <th class="p-2.5 w-28">Mã Lịch Lẻ</th>
+                                <th class="p-2.5 w-28">Loại Lịch</th>
+                                <th class="p-2.5 min-w-[200px]">Tên Đơn Vị / Khách Hàng</th>
+                                <th class="p-2.5 w-24">Ngày Khám</th>
+                                <th class="p-2.5 w-36">Buổi / Khung Giờ</th>
+                                <th class="p-2.5 text-right w-20">SL Khách</th>
+                                <th class="p-2.5 w-32">Cơ Sở Thực Hiện</th>
+                                <th class="p-2.5 w-32">CB Phụ Trách</th>
+                                <th class="p-2.5 text-center w-36">Trạng Thái</th>
+                                <th class="p-2.5 text-center w-32">Thời Hạn Duyệt</th>
+                                <th class="p-2.5 text-center w-24">Hành Động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="approval-table-body" class="divide-y divide-[#E6EAF0]">
+                            <!-- Dynamically Rendered Rows via JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Empty State Container (Hidden when table has rows) -->
+                <div id="table-empty-state" class="hidden p-12 text-center bg-white space-y-2">
+                    <i class="fa-solid fa-folder-open text-4xl text-[#CBD5E1] mb-2"></i>
+                    <p class="text-sm font-bold text-[#4B5563]">Không tìm thấy lịch KSK nào chờ CB Duyệt</p>
+                    <p class="text-xs text-[#9CA3AF]">Vui lòng thay đổi điều kiện lọc hoặc kiểm tra lại luồng chuyển từ "Tổng hợp lịch KSK".</p>
+                </div>
+            </div>
+
+            <!-- 7. HIS Standard Pagination Footer -->
+            <div id="pagination-container" class="his-card p-3 rounded-[4px] border border-[#D9DEE5] bg-white flex flex-col sm:flex-row items-center justify-between gap-3 text-xs shadow-2xs">
+                <div class="flex items-center gap-3">
+                    <span class="text-[#6B7280]">Hiển thị</span>
+                    <select id="page-size-select" class="sys-select sys-control-h36 text-xs rounded-[4px] border-[#D9DEE5] px-2">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                    </select>
+                    <span class="text-[#6B7280]">bản ghi. <span id="pagination-count-text">0 - 0 trong tổng 0 lịch lẻ</span></span>
+                </div>
+                <div class="flex items-center gap-1" id="pagination-controls">
+                    <!-- Pagination buttons rendered dynamically -->
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ================= MODALS & DRAWERS ================= -->
+
+    <!-- Modal 1: Phê duyệt Lịch -->
+    <div id="modal-approve" class="fixed inset-0 z-50 bg-slate-900/50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-[4px] border border-[#D9DEE5] w-full max-w-md shadow-xl overflow-hidden animate-fade-in">
+            <div class="p-4 bg-[#27496D] text-white flex items-center justify-between">
+                <h3 class="font-bold text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-circle-check text-green-400"></i>
+                    <span>Xác nhận Phê duyệt Lịch KSK</span>
+                </h3>
+                <button type="button" onclick="closeModal('modal-approve')" class="text-white/80 hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
+            </div>
+            <div class="p-4 space-y-3 text-xs text-[#374151]">
+                <p class="font-medium text-sm text-[#1F2937]">Bạn có chắc chắn muốn phê duyệt danh sách các lịch đã chọn?</p>
+                <div class="bg-[#F8FAFC] p-3 rounded border border-[#E6EAF0] space-y-1">
+                    <p>Số lượng lịch lẻ phê duyệt: <strong id="approve-modal-count" class="text-[#27496D] font-bold">0</strong> lịch</p>
+                    <p>Bước phê duyệt: <strong id="approve-modal-step" class="text-[#2E7D32] font-bold">Bước 1 (BGĐ Khối KHDN)</strong></p>
+                </div>
+                <p class="text-[#6B7280]">Sau khi phê duyệt, thông tin sẽ được ghi log lịch sử và chuyển sang bước tiếp theo trong quy trình.</p>
+            </div>
+            <div class="p-3 bg-[#F4F5F7] border-t border-[#D9DEE5] flex justify-end gap-2">
+                <button type="button" onclick="closeModal('modal-approve')" class="btn-secondary text-xs sys-control-h36 px-4">Hủy</button>
+                <button type="button" id="btn-confirm-approve" class="btn-primary text-xs sys-control-h36 px-4 bg-[#16A34A] hover:bg-[#15803D]">Xác nhận Phê duyệt</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2: Trả toàn bộ Lịch Tổng -->
+    <div id="modal-return-all" class="fixed inset-0 z-50 bg-slate-900/50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-[4px] border border-[#D9DEE5] w-full max-w-lg shadow-xl overflow-hidden animate-fade-in">
+            <div class="p-4 bg-[#DC2626] text-white flex items-center justify-between">
+                <h3 class="font-bold text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-triangle-exclamation text-yellow-300"></i>
+                    <span>Trả lại toàn bộ Lịch tổng KSK</span>
+                </h3>
+                <button type="button" onclick="closeModal('modal-return-all')" class="text-white/80 hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
+            </div>
+            <div class="p-4 space-y-3 text-xs text-[#374151]">
+                <div class="p-3 bg-[#FEE2E2] text-[#991B1B] rounded border border-[#FCA5A5]">
+                    <p class="font-bold text-xs"><i class="fa-solid fa-circle-exclamation mr-1"></i> Cảnh báo Trả Toàn Bộ:</p>
+                    <p class="mt-0.5">Tất cả các lịch lẻ thuộc Lịch tổng này sẽ bị trả lại về bộ phận Tổng hợp. Vui lòng nhập rõ lý do.</p>
+                </div>
+                <div class="space-y-1 bg-[#F8FAFC] p-3 rounded border border-[#E6EAF0]">
+                    <p>Mã Lịch tổng: <strong id="return-all-master-id" class="text-[#27496D] font-bold">-</strong></p>
+                    <p>Tên Đơn vị: <strong id="return-all-unit-name" class="text-[#1F2937] font-bold">-</strong></p>
+                </div>
+                <div>
+                    <label class="sys-label text-xs font-bold text-[#1F2937] mb-1 block">LÝ DO TRẢ LẠI <span class="text-red-500">*</span></label>
+                    <textarea id="return-all-reason" rows="3" class="sys-input w-full p-2 text-xs rounded border-[#D9DEE5]" placeholder="Nhập chi tiết lý do trả lại toàn bộ lịch tổng..."></textarea>
+                </div>
+            </div>
+            <div class="p-3 bg-[#F4F5F7] border-t border-[#D9DEE5] flex justify-end gap-2">
+                <button type="button" onclick="closeModal('modal-return-all')" class="btn-secondary text-xs sys-control-h36 px-4">Hủy</button>
+                <button type="button" id="btn-confirm-return-all" class="btn-danger text-xs sys-control-h36 px-4">Xác nhận Trả Toàn Bộ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 3: Trả một vài Lịch lẻ (Bóc tách tự động) -->
+    <div id="modal-return-selected" class="fixed inset-0 z-50 bg-slate-900/50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-[4px] border border-[#D9DEE5] w-full max-w-lg shadow-xl overflow-hidden animate-fade-in">
+            <div class="p-4 bg-[#ED6C02] text-white flex items-center justify-between">
+                <h3 class="font-bold text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-code-branch"></i>
+                    <span>Trả Lịch Lẻ & Bóc Tách Lịch Phát Sinh</span>
+                </h3>
+                <button type="button" onclick="closeModal('modal-return-selected')" class="text-white/80 hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
+            </div>
+            <div class="p-4 space-y-3 text-xs text-[#374151]">
+                <div class="p-3 bg-[#FFF3E0] text-[#C2410C] rounded border border-[#FFCC80]">
+                    <p class="font-bold text-xs"><i class="fa-solid fa-circle-info mr-1"></i> Cơ chế Bóc Tách Tự Động:</p>
+                    <p class="mt-0.5">Các lịch lẻ được chọn sẽ tự động được hệ thống **bóc tách thành Lịch phát sinh độc lập** để xử lý riêng. Các lịch lẻ còn lại trong Lịch tổng vẫn tiếp tục luồng duyệt.</p>
+                </div>
+                <div class="space-y-1 bg-[#F8FAFC] p-3 rounded border border-[#E6EAF0]">
+                    <p>Số lịch lẻ chọn trả: <strong id="return-selected-count" class="text-[#ED6C02] font-bold">0</strong> lịch</p>
+                    <div id="return-selected-list" class="max-h-24 overflow-y-auto space-y-1 pt-1 text-[11px] text-[#4B5563]"></div>
+                </div>
+                <div>
+                    <label class="sys-label text-xs font-bold text-[#1F2937] mb-1 block">LÝ DO TRẢ LẠI <span class="text-red-500">*</span></label>
+                    <textarea id="return-selected-reason" rows="3" class="sys-input w-full p-2 text-xs rounded border-[#D9DEE5]" placeholder="Nhập lý do trả lại lịch lẻ..."></textarea>
+                </div>
+            </div>
+            <div class="p-3 bg-[#F4F5F7] border-t border-[#D9DEE5] flex justify-end gap-2">
+                <button type="button" onclick="closeModal('modal-return-selected')" class="btn-secondary text-xs sys-control-h36 px-4">Hủy</button>
+                <button type="button" id="btn-confirm-return-selected" class="btn-primary text-xs sys-control-h36 px-4 bg-[#ED6C02] hover:bg-[#C2410C]">Bóc Tách & Trả Lịch Lẻ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 4: Xem Chi Tiết Lịch KSK & Timeline 2 Bước -->
+    <div id="modal-schedule-detail" class="fixed inset-0 z-50 bg-slate-900/50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-[4px] border border-[#D9DEE5] w-full max-w-2xl shadow-xl overflow-hidden animate-fade-in flex flex-col max-h-[90vh]">
+            <div class="p-4 bg-[#27496D] text-white flex items-center justify-between flex-shrink-0">
+                <div class="flex items-center gap-3">
+                    <h3 class="font-bold text-sm">Chi Tiết Lịch KSK</h3>
+                    <span id="detail-modal-code-badge" class="px-2 py-0.5 bg-white/20 text-white rounded text-xs font-bold">-</span>
+                </div>
+                <button type="button" onclick="closeModal('modal-schedule-detail')" class="text-white/80 hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
+            </div>
+            
+            <div class="p-5 overflow-y-auto space-y-5 text-xs text-[#374151] custom-scrollbar flex-1">
+                
+                <!-- 2-Step Approval Progress Stepper -->
+                <div class="bg-[#F8FAFC] p-4 rounded-[4px] border border-[#E6EAF0] space-y-3">
+                    <h4 class="font-bold text-xs uppercase tracking-wider text-[#27496D] flex items-center gap-1.5">
+                        <i class="fa-solid fa-diagram-project"></i> Tiến Trình Phê Duyệt 2 Bước
+                    </h4>
+                    
+                    <div class="timeline-stepper">
+                        <!-- Line connecting steps -->
+                        <div id="detail-stepper-line" class="timeline-line"></div>
+                        
+                        <!-- Step 1: BGĐ Khối KHDN -->
+                        <div id="detail-step-1" class="timeline-step">
+                            <div class="timeline-step-circle">1</div>
+                            <div class="timeline-step-label">
+                                <div>BƯỚC 1</div>
+                                <div class="text-[10px] text-[#6B7280]">BGĐ Khối KHDN</div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: BGĐ Khối KSK -->
+                        <div id="detail-step-2" class="timeline-step">
+                            <div class="timeline-step-circle">2</div>
+                            <div class="timeline-step-label">
+                                <div>BƯỚC 2</div>
+                                <div class="text-[10px] text-[#6B7280]">BGĐ Khối KSK</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 1: Thông tin lịch -->
+                <div class="space-y-2">
+                    <h4 class="font-bold text-xs uppercase tracking-wider text-[#27496D] border-b border-[#E6EAF0] pb-1">1. THÔNG TIN LỊCH KHÁM</h4>
+                    <div class="grid grid-cols-2 gap-3 bg-[#F8FAFC] p-3 rounded border border-[#E6EAF0]">
+                        <div>Mã Lịch Lẻ: <strong id="detail-sch-id" class="text-[#1F2937] font-bold">-</strong></div>
+                        <div>Mã Lịch Tổng: <strong id="detail-master-id" class="text-[#27496D] font-bold">-</strong></div>
+                        <div>Loại Lịch: <strong id="detail-sch-type" class="text-[#1F2937]">-</strong></div>
+                        <div>Ngày Khám: <strong id="detail-exam-date" class="text-[#2E7D32] font-bold">-</strong></div>
+                        <div>Buổi / Giờ: <strong id="detail-session" class="text-[#1F2937]">-</strong></div>
+                        <div>Số Lượng Khách: <strong id="detail-quantity" class="text-[#27496D] font-bold">-</strong></div>
+                        <div>Cơ Sở Thực Hiện: <strong id="detail-facility" class="text-[#1F2937]">-</strong></div>
+                        <div>Cán Bộ Phụ Trách: <strong id="detail-pic" class="text-[#1F2937]">-</strong></div>
+                        <div class="col-span-2">Địa Điểm Khám: <span id="detail-location" class="text-[#1F2937] font-semibold">-</span></div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Thông tin đơn vị -->
+                <div class="space-y-2">
+                    <h4 class="font-bold text-xs uppercase tracking-wider text-[#27496D] border-b border-[#E6EAF0] pb-1">2. THÔNG TIN ĐƠN VỊ / KHÁCH HÀNG</h4>
+                    <div class="grid grid-cols-2 gap-3 bg-[#F8FAFC] p-3 rounded border border-[#E6EAF0]">
+                        <div>Tên Đơn Vị: <strong id="detail-unit-name" class="text-[#1F2937] font-bold">-</strong></div>
+                        <div>Người Liên Hệ: <span id="detail-contact-person" class="text-[#1F2937]">-</span></div>
+                        <div>Số Điện Thoại: <span id="detail-contact-phone" class="text-[#1F2937]">-</span></div>
+                        <div>Cán Bộ Lập Lịch: <span id="detail-submitted-by" class="text-[#1F2937]">-</span></div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Kế hoạch chuyên môn -->
+                <div class="space-y-2">
+                    <h4 class="font-bold text-xs uppercase tracking-wider text-[#27496D] border-b border-[#E6EAF0] pb-1">3. KẾ HOẠCH CHUYÊN MÔN & NHÂN SỰ</h4>
+                    <div class="bg-[#F8FAFC] p-3 rounded border border-[#E6EAF0] space-y-2">
+                        <div>Danh Mục Dự Kiến: <span id="detail-categories" class="font-semibold text-[#1F2937]">-</span></div>
+                        <div>Vị Trí Triển Khai: <span id="detail-locations" class="font-semibold text-[#1F2937]">-</span></div>
+                        <div>Tổng Số Nhân Sự Dự Kiến: <strong id="detail-staff-count" class="text-[#ED6C02] font-bold">-</strong> nhân sự</div>
+                    </div>
+                </div>
+
+                <!-- Section 4: Lịch sử xử lý timeline -->
+                <div class="space-y-2">
+                    <h4 class="font-bold text-xs uppercase tracking-wider text-[#27496D] border-b border-[#E6EAF0] pb-1">4. NHẬT KÝ LỊCH SỬ XỬ LÝ</h4>
+                    <div id="detail-history-timeline" class="space-y-2">
+                        <!-- History items rendered dynamically -->
+                    </div>
+                </div>
+
+            </div>
+            <div class="p-3 bg-[#F4F5F7] border-t border-[#D9DEE5] flex justify-end flex-shrink-0">
+                <button type="button" onclick="closeModal('modal-schedule-detail')" class="btn-secondary text-xs sys-control-h36 px-4">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Shared JS -->
+    <script src="../../js/data-store.js"></script>
+    <script src="../../js/main.js"></script>
+    <!-- Local Module JS -->
+    <script src="./cb-duyet.js"></script>
+</body>
+</html>

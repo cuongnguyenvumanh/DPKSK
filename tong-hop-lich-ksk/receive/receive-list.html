@@ -1,0 +1,192 @@
+<!-- ================= TAB CONTENT: TIẾP NHẬN LỊCH ================= -->
+<div class="space-y-4">
+    <!-- SEARCH & FILTER TOOLBAR CARD -->
+    <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] space-y-3">
+        <!-- Top Search Input -->
+        <div class="relative w-full">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] text-xs"></i>
+            <input type="text" id="receive-search-keyword" placeholder="Tìm kiếm theo mã lịch, tên đoàn khám hoặc tên khách hàng..." class="w-full h-9 pl-9 pr-3 bg-white border border-[#D9DEE5] rounded-[4px] text-xs text-[#1F2937] placeholder-[#9CA3AF] focus:outline-none focus:border-[#27496D] transition-colors">
+        </div>
+
+        <!-- Filter Options Grid (5 cột) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 pt-2 border-t border-[#E6EAF0]">
+            <!-- Date From -->
+            <div>
+                <label class="sys-label">Từ ngày</label>
+                <input type="date" id="receive-filter-date-from" class="sys-input text-xs">
+            </div>
+
+            <!-- Date To -->
+            <div>
+                <label class="sys-label">Đến ngày</label>
+                <input type="date" id="receive-filter-date-to" class="sys-input text-xs">
+            </div>
+
+            <!-- Schedule Form (Nguồn lịch) -->
+            <div>
+                <label class="sys-label">Nguồn lịch</label>
+                <select id="receive-filter-schedule-form" class="sys-select text-xs">
+                    <option value="">Tất cả nguồn lịch</option>
+                    <option value="Lịch tuần">Lịch tuần</option>
+                    <option value="Lịch phát sinh">Lịch phát sinh</option>
+                </select>
+            </div>
+
+            <!-- Facility -->
+            <div>
+                <label class="sys-label">Cơ sở thực hiện</label>
+                <select id="receive-filter-facility" class="sys-select text-xs">
+                    <option value="">Tất cả cơ sở</option>
+                </select>
+            </div>
+
+            <!-- Status -->
+            <div>
+                <label class="sys-label">Trạng thái</label>
+                <select id="receive-filter-status" class="sys-select text-xs">
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="Chờ tổng hợp">Chờ tổng hợp</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Filter Action Buttons -->
+        <div class="flex items-center justify-between pt-2 border-t border-[#E6EAF0] text-xs">
+            <span id="receive-count-info" class="text-[#6B7280] font-medium">Hiển thị <strong id="receive-count-num" class="text-[#1F2937]">0</strong> lịch chờ tiếp nhận</span>
+            <div class="flex items-center gap-2">
+                <button type="button" id="btn-receive-reset" class="btn-secondary text-xs">
+                    <i class="fa-solid fa-rotate-right text-xs"></i>
+                    <span>Đặt lại</span>
+                </button>
+                <button type="button" id="btn-receive-search" class="btn-primary text-xs">
+                    <i class="fa-solid fa-filter text-xs"></i>
+                    <span>Tra cứu</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB CONTROL: LOẠI LỊCH (Tất cả / Lịch tại viện / Lịch ngoại viện / Lịch phường) -->
+    <div class="flex items-center gap-4 bg-white border-b border-[#D9DEE5] h-10 px-4 text-xs font-semibold overflow-x-auto">
+        <button type="button" onclick="MWKReceive.switchLoaiLichTab('Tất cả')" id="receive-tab-all" class="receive-loai-lich-tab h-full border-b-2 border-[#27496D] text-[#27496D] font-bold px-1 transition-colors cursor-pointer">
+            Tất cả
+        </button>
+        <button type="button" onclick="MWKReceive.switchLoaiLichTab('Lịch tại viện')" id="receive-tab-tai-vien" class="receive-loai-lich-tab h-full border-b-2 border-transparent text-[#6B7280] hover:text-[#1F2937] px-1 transition-colors cursor-pointer">
+            Lịch tại viện
+        </button>
+        <button type="button" onclick="MWKReceive.switchLoaiLichTab('Lịch ngoại viện')" id="receive-tab-ngoai-vien" class="receive-loai-lich-tab h-full border-b-2 border-transparent text-[#6B7280] hover:text-[#1F2937] px-1 transition-colors cursor-pointer">
+            Lịch ngoại viện
+        </button>
+        <button type="button" onclick="MWKReceive.switchLoaiLichTab('Lịch phường')" id="receive-tab-phuong" class="receive-loai-lich-tab h-full border-b-2 border-transparent text-[#6B7280] hover:text-[#1F2937] px-1 transition-colors cursor-pointer">
+            Lịch phường
+        </button>
+    </div>
+
+    <!-- DATA GRID ENTERPRISE CONTAINER -->
+    <div class="bg-white rounded-[4px] border border-[#D9DEE5] overflow-hidden flex flex-col">
+        <div class="data-grid border-b-0">
+            <!-- 1. CỘT CỐ ĐỊNH BÊN TRÁI (388px) - GIỐNG MÀN LỊCH KHÁM ĐƠN VỊ -->
+            <div class="grid-left w-[388px] flex-shrink-0">
+                <div class="grid-header">
+                    <div class="header-cell w-[48px] justify-center">
+                        <input type="checkbox" id="receive-select-all-checkbox" onchange="MWKReceive.toggleSelectAll(this)" class="w-4 h-4 text-[#27496D] rounded-[2px] border-[#D9DEE5] cursor-pointer" title="Chọn tất cả">
+                    </div>
+                    <div class="header-cell w-[60px] justify-center">STT</div>
+                    <div class="header-cell w-[280px]">Tên đơn vị</div>
+                </div>
+                <div id="receive-grid-left-body" class="grid-body">
+                    <!-- Dynamic Rows -->
+                </div>
+            </div>
+
+            <!-- 2. VÙNG CUỘN NGANG Ở GIỮA (min-w-[1380px]) - GIỐNG MÀN LỊCH KHÁM ĐƠN VỊ -->
+            <div class="grid-center flex-1 overflow-x-auto custom-scrollbar">
+                <div class="grid-header min-w-[1380px]">
+                    <div class="header-cell w-[80px] justify-center">PAKD</div>
+                    <div class="header-cell w-[140px]">Mã đối tượng</div>
+                    <div class="header-cell w-[160px]">Tổng số lịch</div>
+                    <div class="header-cell w-[120px] justify-end">SL khách hàng</div>
+                    <div class="header-cell w-[120px] justify-end">Tổng nhân sự</div>
+                    <div class="header-cell w-[360px]">Địa chỉ</div>
+                    <div class="header-cell w-[220px] justify-center">Thời gian khám</div>
+                    <div class="header-cell w-[180px]">Người tạo</div>
+                </div>
+                <div id="receive-grid-center-body" class="grid-body min-w-[1380px]">
+                    <!-- Dynamic Rows -->
+                </div>
+            </div>
+
+            <!-- 3. CỘT CỐ ĐỊNH BÊN PHẢI (168px) -->
+            <div class="grid-right w-[168px] flex-shrink-0">
+                <div class="grid-header">
+                    <div class="header-cell w-full justify-center">Hành động</div>
+                </div>
+                <div id="receive-grid-right-body" class="grid-body">
+                    <!-- Dynamic Action Rows -->
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGINATION CONTAINER -->
+        <div id="receive-pagination-container"></div>
+    </div>
+</div>
+
+<!-- MODAL: TRẢ VỀ CÁN BỘ TẠO LỊCH -->
+<div id="modal-return-schedule" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-[4px] max-w-md w-full shadow-lg overflow-hidden border border-[#D9DEE5] flex flex-col">
+        <div class="px-5 h-[52px] border-b border-[#D9DEE5] flex items-center justify-between bg-[#F4F5F7]">
+            <div class="flex items-center gap-2.5 text-[#D32F2F]">
+                <i class="fa-solid fa-rotate-left text-base"></i>
+                <h3 class="font-semibold text-[#1F2937] text-sm">Trả về Lịch khám đơn vị</h3>
+            </div>
+            <button type="button" onclick="closeReturnModal()" class="w-8 h-8 rounded-[4px] text-[#9CA3AF] hover:text-[#1F2937] flex items-center justify-center">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+        </div>
+
+        <div class="p-5 space-y-3 text-xs">
+            <p class="text-[#4B5563] leading-relaxed">
+                Vui lòng nhập lý do trả lịch <strong id="return-modal-code" class="text-[#1F2937] font-bold">LK-2026-xxx</strong> về cho cán bộ tạo lịch hiệu chỉnh lại thông tin:
+            </p>
+            <div>
+                <label class="sys-label">Lý do trả về <span class="text-[#D32F2F]">*</span></label>
+                <textarea id="return-reason-input" rows="3" placeholder="Nhập lý do cụ thể (VD: Địa điểm bị trùng lịch, Thiếu thông tin số lượng...)" class="w-full p-2.5 bg-white border border-[#D9DEE5] rounded-[4px] text-xs text-[#1F2937] focus:outline-none focus:border-[#D32F2F] transition-colors"></textarea>
+            </div>
+        </div>
+
+        <div class="px-5 py-3 bg-[#F4F5F7] border-t border-[#D9DEE5] flex items-center justify-end gap-2">
+            <button type="button" onclick="closeReturnModal()" class="btn-secondary text-xs">
+                Hủy bỏ
+            </button>
+            <button type="button" id="btn-confirm-return" class="btn-danger text-xs">
+                Xác nhận trả về
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: XEM CHI TIẾT TẠI CHỖ (QUICK VIEW) -->
+<div id="modal-quick-view" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-[4px] max-w-2xl w-full shadow-lg overflow-hidden border border-[#D9DEE5] max-h-[90vh] flex flex-col">
+        <div class="px-5 h-[52px] border-b border-[#D9DEE5] flex items-center justify-between bg-[#F4F5F7]">
+            <div class="flex items-center gap-2.5 text-[#27496D]">
+                <i class="fa-solid fa-file-invoice text-base"></i>
+                <h3 class="font-semibold text-[#1F2937] text-sm">Chi tiết thông tin lịch tiếp nhận</h3>
+            </div>
+            <button type="button" onclick="closeQuickViewModal()" class="w-8 h-8 rounded-[4px] text-[#9CA3AF] hover:text-[#1F2937]">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+        </div>
+
+        <div id="quick-view-content" class="p-5 space-y-3 text-xs overflow-y-auto custom-scrollbar flex-1">
+            <!-- Dynamic view content -->
+        </div>
+
+        <div class="px-5 py-3 bg-[#F4F5F7] border-t border-[#D9DEE5] flex items-center justify-end">
+            <button type="button" onclick="closeQuickViewModal()" class="btn-secondary text-xs">
+                Đóng
+            </button>
+        </div>
+    </div>
+</div>

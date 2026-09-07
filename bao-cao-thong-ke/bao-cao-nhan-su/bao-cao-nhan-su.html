@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo cáo thống kê nhân sự tham gia đoàn khám | MWK Điều phối KSK</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: { 
+                        primary: { DEFAULT: '#27496D', hover: '#1F3D5A' }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome v6 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="shortcut icon" href="#">
+</head>
+<body data-depth="sub" data-active-nav="nav-report-nhan-su" data-breadcrumb="Báo cáo thống kê nhân sự tham gia đoàn khám" data-custom-pagination="true" class="bg-[#F4F5F7] font-sans text-[#1F2937] antialiased h-screen overflow-hidden flex flex-col">
+
+    <div class="flex h-full w-full overflow-hidden">
+        <!-- SIDEBAR CONTAINER -->
+        <div id="sidebar-container" class="flex flex-shrink-0 h-full"></div>
+
+        <!-- MAIN CONTAINER -->
+        <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-[#F4F5F7]">
+            <!-- HEADER CONTAINER -->
+            <div id="header-container"></div>
+
+            <!-- MAIN CONTENT -->
+            <main class="flex-1 overflow-y-auto p-5 space-y-4">
+                <!-- Page Title Card -->
+                <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5]">
+                    <h1 class="text-xl font-bold text-[#1F2937]">Báo cáo thống kê nhân sự tham gia đoàn khám</h1>
+                    <p class="text-xs text-[#6B7280] mt-0.5">Thống kê khối lượng công việc, tần suất tham gia đoàn khám của Bác sĩ, Điều dưỡng, KTV, Hộ lý</p>
+                </div>
+
+                <!-- 1. BỘ LỌC CARD -->
+                <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] space-y-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-3">
+                        <!-- Từ ngày -->
+                        <div>
+                            <label class="sys-label">Từ ngày</label>
+                            <input type="date" id="filter-from-date" onchange="handleFilterChange()" class="sys-input text-xs">
+                        </div>
+                        <!-- Đến ngày -->
+                        <div>
+                            <label class="sys-label">Đến ngày</label>
+                            <input type="date" id="filter-to-date" onchange="handleFilterChange()" class="sys-input text-xs">
+                        </div>
+                        <!-- Loại nhân sự -->
+                        <div>
+                            <label class="sys-label">Loại nhân sự</label>
+                            <select id="filter-staff-type" onchange="handleStaffTypeChange()" class="sys-select text-xs">
+                                <option value="">Tất cả loại nhân sự</option>
+                                <option value="Bác sĩ">Bác sĩ</option>
+                                <option value="Điều dưỡng">Điều dưỡng</option>
+                                <option value="Kỹ thuật viên">Kỹ thuật viên</option>
+                                <option value="Hộ lý">Hộ lý</option>
+                            </select>
+                        </div>
+
+                        <!-- Chuyên khoa -->
+                        <div>
+                            <label class="sys-label">Chuyên khoa</label>
+                            <select id="filter-specialty" onchange="handleFilterChange()" class="sys-select text-xs">
+                                <option value="">Tất cả chuyên khoa</option>
+                                <option value="Nội khoa">Nội khoa</option>
+                                <option value="Ngoại khoa">Ngoại khoa</option>
+                                <option value="CĐHA & Siêu âm">CĐHA & Siêu âm</option>
+                                <option value="Xét nghiệm">Xét nghiệm</option>
+                                <option value="Mắt">Mắt</option>
+                                <option value="Tai Mũi Họng">Tai Mũi Họng</option>
+                                <option value="Răng Hàm Mặt">Răng Hàm Mặt</option>
+                                <option value="Sản phụ khoa">Sản phụ khoa</option>
+                            </select>
+                        </div>
+
+                        <!-- Bằng cấp -->
+                        <div id="container-filter-degree">
+                            <label class="sys-label">Bằng cấp</label>
+                            <select id="filter-degree" onchange="handleFilterChange()" class="sys-select text-xs">
+                                <option value="">Tất cả bằng cấp</option>
+                                <option value="Chuyên khoa I">Chuyên khoa I</option>
+                                <option value="Chuyên khoa II">Chuyên khoa II</option>
+                                <option value="Thạc sĩ">Thạc sĩ</option>
+                                <option value="Tiến sĩ">Tiến sĩ</option>
+                                <option value="Cử nhân">Cử nhân</option>
+                            </select>
+                        </div>
+
+                        <!-- Vị trí/Công việc -->
+                        <div id="container-filter-position">
+                            <label class="sys-label">Vị trí/Công việc</label>
+                            <select id="filter-position" onchange="handleFilterChange()" class="sys-select text-xs">
+                                <option value="">Tất cả vị trí</option>
+                                <option value="Bác sĩ khám chính">Bác sĩ khám chính</option>
+                                <option value="Bác sĩ siêu âm">Bác sĩ siêu âm</option>
+                                <option value="Trưởng kíp điều dưỡng">Trưởng kíp điều dưỡng</option>
+                                <option value="Lấy máu xét nghiệm">Lấy máu xét nghiệm</option>
+                                <option value="Đo sinh hiệu & Thể lực">Đo sinh hiệu & Thể lực</option>
+                                <option value="Chụp X-Quang">Chụp X-Quang</option>
+                            </select>
+                        </div>
+
+                        <!-- Cơ sở khám -->
+                        <div>
+                            <label class="sys-label">Cơ sở khám</label>
+                            <select id="filter-facility" onchange="handleFilterChange()" class="sys-select text-xs">
+                                <!-- Dynamic -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex items-center justify-end gap-2 pt-2 border-t border-[#E6EAF0]">
+                        <button type="button" onclick="handleFilterChange()" class="btn-primary text-xs">
+                            <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                            <span>Tra cứu</span>
+                        </button>
+                        <button type="button" onclick="resetFilters()" class="btn-secondary text-xs">
+                            <i class="fa-solid fa-rotate-left text-xs"></i>
+                            <span>Đặt lại</span>
+                        </button>
+                        <button type="button" onclick="exportExcel()" class="btn-secondary text-xs">
+                            <i class="fa-solid fa-file-excel text-xs text-[#2E7D32]"></i>
+                            <span>Xuất Excel</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2. DASHBOARD KPI (4 Cards) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- KPI 1: Tổng số lượt tham gia -->
+                    <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-[4px] bg-[#E8F1FB] text-[#27496D] flex items-center justify-center text-lg flex-shrink-0 border border-[#B3CDE6]">
+                            <i class="fa-solid fa-user-doctor"></i>
+                        </div>
+                        <div>
+                            <span class="text-2xl font-bold text-[#1F2937] font-mono tracking-tight" id="kpi-total-participations">0</span>
+                            <h4 class="text-xs font-medium text-[#6B7280]">Tổng lượt nhân sự tham gia</h4>
+                        </div>
+                    </div>
+
+                    <!-- KPI 2: Bác sĩ tham gia -->
+                    <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-[4px] bg-[#E6F4EA] text-[#2E7D32] flex items-center justify-center text-lg flex-shrink-0 border border-[#A5D6A7]">
+                            <i class="fa-solid fa-stethoscope"></i>
+                        </div>
+                        <div>
+                            <span class="text-2xl font-bold text-[#1F2937] font-mono tracking-tight" id="kpi-doctors">0</span>
+                            <h4 class="text-xs font-medium text-[#6B7280]">Lượt Bác sĩ tham gia</h4>
+                        </div>
+                    </div>
+
+                    <!-- KPI 3: Điều dưỡng/KTV -->
+                    <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-[4px] bg-[#FFF3E0] text-[#ED6C02] flex items-center justify-center text-lg flex-shrink-0 border border-[#FFCC80]">
+                            <i class="fa-solid fa-user-nurse"></i>
+                        </div>
+                        <div>
+                            <span class="text-2xl font-bold text-[#1F2937] font-mono tracking-tight" id="kpi-nurses">0</span>
+                            <h4 class="text-xs font-medium text-[#6B7280]">Lượt Điều dưỡng & KTV</h4>
+                        </div>
+                    </div>
+
+                    <!-- KPI 4: Nhân sự trung bình / đoàn -->
+                    <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-[4px] bg-[#F4F5F7] text-[#27496D] flex items-center justify-center text-lg flex-shrink-0 border border-[#D9DEE5]">
+                            <i class="fa-solid fa-users-gear"></i>
+                        </div>
+                        <div>
+                            <span class="text-2xl font-bold text-[#1F2937] font-mono tracking-tight" id="kpi-avg-staff">0</span>
+                            <h4 class="text-xs font-medium text-[#6B7280]">Trung bình NS / Đoàn</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. BIỂU ĐỒ (CHARTS SECTION) -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <!-- Biểu đồ cột: Top nhân sự tham gia nhiều nhất -->
+                    <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] flex flex-col justify-between">
+                        <div class="flex items-center justify-between mb-3 border-b border-[#E6EAF0] pb-2">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-[#1F2937] flex items-center gap-2">
+                                <i class="fa-solid fa-chart-bar text-[#27496D]"></i> Top nhân sự có tần suất tham gia nhiều nhất
+                            </h3>
+                        </div>
+                        <div class="relative h-60">
+                            <canvas id="chart-top-staff"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Biểu đồ tròn: Cơ cấu loại nhân sự -->
+                    <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] flex flex-col justify-between">
+                        <div class="flex items-center justify-between mb-3 border-b border-[#E6EAF0] pb-2">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-[#1F2937] flex items-center gap-2">
+                                <i class="fa-solid fa-chart-pie text-[#2E7D32]"></i> Cơ cấu loại nhân sự tham gia đoàn khám
+                            </h3>
+                        </div>
+                        <div class="relative h-60">
+                            <canvas id="chart-staff-structure"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. BẢNG DỮ LIỆU CONTAINER -->
+                <div class="space-y-3">
+                    <div class="bg-white p-3 rounded-[4px] border border-[#D9DEE5] flex items-center justify-between">
+                        <div class="relative w-full max-w-md">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] text-xs"></i>
+                            <input type="text" id="search-input" oninput="handleSearchFilterChange()" placeholder="Tìm kiếm theo Mã NS, Tên nhân sự, Chuyên khoa..." class="w-full h-9 pl-9 pr-3 bg-white border border-[#D9DEE5] rounded-[4px] text-xs text-[#1F2937] focus:outline-none focus:border-[#27496D]">
+                        </div>
+                        <span class="text-xs text-[#6B7280] font-medium hidden sm:inline" id="table-record-count">Hiển thị 0 bản ghi</span>
+                    </div>
+
+                    <!-- DATA TABLE & PAGINATION UNIFIED CONTAINER -->
+                    <div class="bg-white rounded-[4px] border border-[#D9DEE5] overflow-hidden flex flex-col">
+                        <div class="overflow-x-auto">
+                            <table class="table-his">
+                                <thead>
+                                    <tr>
+                                        <th class="py-3 px-3 w-14 text-center">STT</th>
+                                        <th class="py-3 px-3">Mã NS</th>
+                                        <th class="py-3 px-3">Họ và tên</th>
+                                        <th class="py-3 px-3">Loại nhân sự</th>
+                                        <th class="py-3 px-3">Chuyên khoa</th>
+                                        <th class="py-3 px-3">Bằng cấp / Vị trí</th>
+                                        <th class="py-3 px-3">Cơ sở công tác</th>
+                                        <th class="py-3 px-3 text-center">Số đoàn tham gia</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-body" class="divide-y divide-[#E6EAF0] text-xs">
+                                    <!-- Dynamic rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Pagination Container -->
+                        <div id="pagination-container"></div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../../js/data-store.js"></script>
+    <script src="../../js/main.js"></script>
+    <script>
+        let rawNhanSuData = [];
+        let currentPage = 1;
+        let pageSize = 10;
+
+        function changePageSize(val) {
+            pageSize = parseInt(val) || 20;
+            currentPage = 1;
+            renderTableOnly();
+        }
+
+        function renderPagination(total, start, end) {
+            const container = document.getElementById('pagination-container');
+            if (!container) return;
+
+            if (total === 0) {
+                container.innerHTML = '';
+                return;
+            }
+
+            const totalPages = Math.ceil(total / pageSize);
+
+            let html = `
+                <div class="p-3 border-t border-[#D9DEE5] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs bg-white">
+                    <div class="flex items-center gap-2 text-[#4B5563]">
+                        <span>Hiển thị</span>
+                        <select onchange="changePageSize(this.value)" class="h-8 px-2 bg-white border border-[#D9DEE5] rounded-[4px] text-xs text-[#1F2937] font-medium focus:outline-none focus:border-[#27496D] cursor-pointer">
+                            <option value="10" ${pageSize === 10 ? 'selected' : ''}>10</option>
+                            <option value="20" ${pageSize === 20 ? 'selected' : ''}>20</option>
+                            <option value="50" ${pageSize === 50 ? 'selected' : ''}>50</option>
+                            <option value="100" ${pageSize === 100 ? 'selected' : ''}>100</option>
+                        </select>
+                        <span>bản ghi.</span>
+                        <span class="font-medium text-[#4B5563] ml-2">
+                            ${start}-${end} trong tổng ${total}
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <button type="button" onclick="goToPage(1)" ${currentPage === 1 ? 'disabled' : ''} class="h-8 w-8 flex items-center justify-center text-[#4B5563] hover:text-[#1F2937] hover:bg-[#F3F6FA] rounded-[4px] disabled:opacity-30 cursor-pointer transition-colors" title="Trang đầu">
+                            <i class="fa-solid fa-angles-left text-[11px]"></i>
+                        </button>
+                        <button type="button" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} class="h-8 w-8 flex items-center justify-center text-[#4B5563] hover:text-[#1F2937] hover:bg-[#F3F6FA] rounded-[4px] disabled:opacity-30 cursor-pointer transition-colors" title="Trang trước">
+                            <i class="fa-solid fa-chevron-left text-[11px]"></i>
+                        </button>
+            `;
+
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === currentPage) {
+                    html += `<button type="button" class="h-8 min-w-[32px] px-2.5 bg-white border border-[#27496D] text-[#27496D] font-bold rounded-[4px] cursor-pointer flex items-center justify-center">${i}</button>`;
+                } else if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    html += `<button type="button" onclick="goToPage(${i})" class="h-8 min-w-[32px] px-2.5 text-[#374151] hover:bg-[#F3F6FA] font-medium rounded-[4px] cursor-pointer flex items-center justify-center transition-colors">${i}</button>`;
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    html += `<span class="px-1.5 text-[#9CA3AF]">...</span>`;
+                }
+            }
+
+            html += `
+                        <button type="button" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} class="h-8 w-8 flex items-center justify-center text-[#4B5563] hover:text-[#1F2937] hover:bg-[#F3F6FA] rounded-[4px] disabled:opacity-30 cursor-pointer transition-colors" title="Trang sau">
+                            <i class="fa-solid fa-chevron-right text-[11px]"></i>
+                        </button>
+                        <button type="button" onclick="goToPage(${totalPages})" ${currentPage === totalPages ? 'disabled' : ''} class="h-8 w-8 flex items-center justify-center text-[#4B5563] hover:text-[#1F2937] hover:bg-[#F3F6FA] rounded-[4px] disabled:opacity-30 cursor-pointer transition-colors" title="Trang cuối">
+                            <i class="fa-solid fa-angles-right text-[11px]"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            renderTableOnly();
+        }
+
+        let chartTopStaffInstance = null;
+        let chartStaffStructureInstance = null;
+
+        function populateFacilityFilterDropdown() {
+            const select = document.getElementById('filter-facility');
+            if (!select) return;
+
+            let facilities = [];
+            if (window.MWKDataStore && typeof window.MWKDataStore.getFacilities === 'function') {
+                facilities = window.MWKDataStore.getFacilities().map(f => f.name);
+            }
+            if (facilities.length === 0) {
+                facilities = ['Ba Đình', 'Cầu Giấy', 'Ngoại viện', 'Tại viện', 'Thanh Xuân', 'Tây Hồ', 'Vĩnh Phúc', 'Quảng Bình', 'Bắc Ninh', 'Nghệ An'];
+            }
+            select.innerHTML = '<option value="">Tất cả cơ sở</option>' + facilities.map(f => `<option value="${f}">${f}</option>`).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            populateFacilityFilterDropdown();
+            rawNhanSuData = MWKDataStore.getNhanSuReports();
+            updateDashboardAndTable();
+        });
+
+        function handleStaffTypeChange() {
+            const staffType = document.getElementById('filter-staff-type').value;
+            const containerDegree = document.getElementById('container-filter-degree');
+            const containerPosition = document.getElementById('container-filter-position');
+
+            if (staffType === 'Bác sĩ') {
+                containerDegree.style.display = 'block';
+                containerPosition.style.display = 'none';
+                document.getElementById('filter-position').value = '';
+            } else if (staffType === 'Điều dưỡng') {
+                containerDegree.style.display = 'none';
+                containerPosition.style.display = 'block';
+                document.getElementById('filter-degree').value = '';
+            } else {
+                containerDegree.style.display = 'block';
+                containerPosition.style.display = 'block';
+            }
+
+            handleFilterChange();
+        }
+
+        function getFilteredData() {
+            const fromDate = document.getElementById('filter-from-date') ? document.getElementById('filter-from-date').value : '';
+            const toDate = document.getElementById('filter-to-date') ? document.getElementById('filter-to-date').value : '';
+            const staffType = document.getElementById('filter-staff-type') ? document.getElementById('filter-staff-type').value : '';
+            const specialty = document.getElementById('filter-specialty') ? document.getElementById('filter-specialty').value : '';
+            const degree = document.getElementById('filter-degree') ? document.getElementById('filter-degree').value : '';
+            const position = document.getElementById('filter-position') ? document.getElementById('filter-position').value : '';
+            const facility = document.getElementById('filter-facility') ? document.getElementById('filter-facility').value : '';
+            const searchVal = document.getElementById('search-input') ? document.getElementById('search-input').value.trim().toLowerCase() : '';
+
+            return rawNhanSuData.filter(item => {
+                if (fromDate && item.lastJoinedDate && item.lastJoinedDate < fromDate) return false;
+                if (toDate && item.lastJoinedDate && item.lastJoinedDate > toDate) return false;
+                if (staffType && item.staffType !== staffType) return false;
+                if (specialty && item.specialty !== specialty) return false;
+                if (degree && item.degree !== degree) return false;
+                if (position && item.position !== position) return false;
+                if (facility && item.facility !== facility) return false;
+                if (searchVal && !(
+                    (item.code && item.code.toLowerCase().includes(searchVal)) ||
+                    (item.name && item.name.toLowerCase().includes(searchVal)) ||
+                    (item.specialty && item.specialty.toLowerCase().includes(searchVal)) ||
+                    (item.facility && item.facility.toLowerCase().includes(searchVal))
+                )) return false;
+
+                return true;
+            });
+        }
+
+        function handleFilterChange() {
+            currentPage = 1;
+            updateDashboardAndTable();
+        }
+
+        function handleSearchFilterChange() {
+            currentPage = 1;
+            renderTableOnly();
+        }
+
+        function resetFilters() {
+            if(document.getElementById('filter-from-date')) document.getElementById('filter-from-date').value = '';
+            if(document.getElementById('filter-to-date')) document.getElementById('filter-to-date').value = '';
+            if(document.getElementById('filter-staff-type')) document.getElementById('filter-staff-type').value = '';
+            if(document.getElementById('filter-specialty')) document.getElementById('filter-specialty').value = '';
+            if(document.getElementById('filter-degree')) document.getElementById('filter-degree').value = '';
+            if(document.getElementById('filter-position')) document.getElementById('filter-position').value = '';
+            if(document.getElementById('filter-facility')) document.getElementById('filter-facility').value = '';
+            if(document.getElementById('search-input')) document.getElementById('search-input').value = '';
+
+            handleStaffTypeChange();
+        }
+
+        function updateDashboardAndTable() {
+            const filteredData = getFilteredData();
+
+            updateKPIs(filteredData);
+            updateCharts(filteredData);
+            renderTable(filteredData);
+        }
+
+        function renderTableOnly() {
+            const filteredData = getFilteredData();
+            renderTable(filteredData);
+        }
+
+        function updateKPIs(data) {
+            const totalParticipations = data.reduce((sum, d) => sum + (d.participatedCount || 0), 0);
+            const doctors = data.filter(d => d.staffType === 'Bác sĩ').reduce((sum, d) => sum + (d.participatedCount || 0), 0);
+            const nurses = data.filter(d => d.staffType === 'Điều dưỡng' || d.staffType === 'Kỹ thuật viên').reduce((sum, d) => sum + (d.participatedCount || 0), 0);
+            const avgStaff = data.length > 0 ? (totalParticipations / data.length).toFixed(1) : 0;
+
+            document.getElementById('kpi-total-participations').innerText = totalParticipations;
+            document.getElementById('kpi-doctors').innerText = doctors;
+            document.getElementById('kpi-nurses').innerText = nurses;
+            document.getElementById('kpi-avg-staff').innerText = avgStaff;
+        }
+
+        function updateCharts(data) {
+            // Chart Top Staff
+            const sortedStaff = [...data].sort((a, b) => (b.participatedCount || 0) - (a.participatedCount || 0)).slice(0, 5);
+            const topNames = sortedStaff.map(s => s.name);
+            const topCounts = sortedStaff.map(s => s.participatedCount);
+
+            if (chartTopStaffInstance) chartTopStaffInstance.destroy();
+            const ctxTop = document.getElementById('chart-top-staff').getContext('2d');
+            chartTopStaffInstance = new Chart(ctxTop, {
+                type: 'bar',
+                data: {
+                    labels: topNames,
+                    datasets: [{
+                        label: 'Số đoàn tham gia',
+                        data: topCounts,
+                        backgroundColor: '#27496D',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // Chart Staff Structure
+            const typeMap = {};
+            data.forEach(d => {
+                const type = d.staffType || 'Khác';
+                typeMap[type] = (typeMap[type] || 0) + (d.participatedCount || 1);
+            });
+
+            if (chartStaffStructureInstance) chartStaffStructureInstance.destroy();
+            const ctxStruct = document.getElementById('chart-staff-structure').getContext('2d');
+            chartStaffStructureInstance = new Chart(ctxStruct, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(typeMap),
+                    datasets: [{
+                        data: Object.values(typeMap),
+                        backgroundColor: ['#27496D', '#2E7D32', '#ED6C02', '#D32F2F', '#7E22CE']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+
+            const total = data.length;
+            const recordCountSpan = document.getElementById('table-record-count');
+            if (recordCountSpan) recordCountSpan.innerText = `Hiển thị ${total} bản ghi`;
+
+            if (total === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="py-12 text-center">
+                            <div class="flex flex-col items-center justify-center text-[#9CA3AF]">
+                                <i class="fa-solid fa-user-doctor text-4xl mb-3 text-[#CBD5E1]"></i>
+                                <p class="font-medium text-sm text-[#4B5563]">Không tìm thấy báo cáo nhân sự phù hợp</p>
+                                <p class="text-xs text-[#9CA3AF] mt-1">Vui lòng thay đổi từ khóa hoặc bộ lọc nhân sự</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                renderPagination(0, 0, 0);
+                return;
+            }
+
+            const totalPages = Math.ceil(total / pageSize);
+            if (currentPage > totalPages) currentPage = totalPages;
+            const startIdx = (currentPage - 1) * pageSize;
+            const endIdx = Math.min(startIdx + pageSize, total);
+            const pageItems = data.slice(startIdx, endIdx);
+
+            pageItems.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-[#F7F9FC] border-b border-[#E6EAF0] transition-colors';
+
+                const detailInfo = item.staffType === 'Bác sĩ' ? (item.degree || '-') : (item.position || '-');
+
+                tr.innerHTML = `
+                    <td class="py-2.5 px-3 text-center text-[#6B7280] font-medium">${startIdx + index + 1}</td>
+                    <td class="py-2.5 px-3 font-bold text-[#27496D]">${item.code}</td>
+                    <td class="py-2.5 px-3 font-bold text-[#1F2937]">${item.name}</td>
+                    <td class="py-2.5 px-3 font-medium text-[#374151]">${item.staffType}</td>
+                    <td class="py-2.5 px-3 text-[#374151]">${item.specialty}</td>
+                    <td class="py-2.5 px-3 text-[#374151]">${detailInfo}</td>
+                    <td class="py-2.5 px-3 text-[#374151]">${item.facility}</td>
+                    <td class="py-2.5 px-3 text-center font-bold text-[#2E7D32]">${item.participatedCount || 0}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            renderPagination(total, startIdx + 1, endIdx);
+        }
+
+
+
+        function exportExcel() {
+            if (window.showToast) {
+                window.showToast('Đang khởi tạo tệp báo cáo thống kê nhân sự Excel...', 'info');
+            } else {
+                alert('Xuất Excel thành công!');
+            }
+        }
+    </script>
+</body>
+</html>

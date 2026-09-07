@@ -1,0 +1,47 @@
+<!-- MODAL PLACEHOLDER CHO THÊM LỊCH -->
+<div id="modal-add-schedule-placeholder" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-[4px] max-w-md w-full shadow-lg border border-[#D9DEE5] overflow-hidden space-y-4 p-5">
+        <div class="flex items-center justify-between border-b border-[#D9DEE5] pb-3">
+            <div class="flex items-center gap-2">
+                <div class="w-7 h-7 rounded-[4px] bg-[#E8F1FB] text-[#27496D] flex items-center justify-center font-bold">
+                    <i class="fa-solid fa-calendar-plus text-xs"></i>
+                </div>
+                <h3 id="modal-placeholder-title" class="font-semibold text-[#1F2937] text-sm">Thêm mới lịch</h3>
+            </div>
+            <button type="button" onclick="closeAddScheduleModal()" class="text-[#9CA3AF] hover:text-[#1F2937]">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+        </div>
+
+        <div class="space-y-3 text-xs">
+            <div class="p-3 bg-[#FFF3E0] border border-[#FFCC80] rounded-[4px] text-[#ED6C02] font-medium">
+                <i class="fa-solid fa-circle-info mr-1"></i>
+                <span id="modal-placeholder-msg">Màn thêm chi tiết đợt khám sẽ triển khai sau</span>
+            </div>
+
+            <div>
+                <label class="sys-label">Tên đợt khám / Lịch</label>
+                <input type="text" id="modal-input-name" placeholder="VD: Khám sức khỏe đợt 1" class="sys-input text-xs">
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="sys-label">Số lượng khách</label>
+                    <input type="number" id="modal-input-guests" value="100" class="sys-input text-xs">
+                </div>
+                <div>
+                    <label class="sys-label">Số lượng nhân sự</label>
+                    <input type="number" id="modal-input-staff" value="10" class="sys-input text-xs">
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-[#D9DEE5]">
+            <button type="button" onclick="closeAddScheduleModal()" class="btn-secondary text-xs">
+                Hủy bỏ
+            </button>
+            <button type="button" onclick="confirmMockAddSchedule()" class="btn-primary text-xs">
+                Tạo dữ liệu thử nghiệm
+            </button>
+        </div>
+    </div>
+</div>

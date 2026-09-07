@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dự kiến lịch KSK | MEDworking Điều phối KSK</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: { 
+                        primary: { DEFAULT: '#27496D', hover: '#1F3D5A' }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome v6 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="assets/calendar.css">
+    <link rel="shortcut icon" href="#">
+</head>
+<body data-depth="single" data-active-nav="nav-du-kien-lich-ksk" data-breadcrumb="Dự kiến lịch KSK" class="bg-[#F4F5F7] font-sans text-[#1F2937] antialiased h-screen overflow-hidden flex flex-col">
+
+    <div class="flex h-full w-full overflow-hidden">
+        <!-- SIDEBAR CONTAINER -->
+        <div id="sidebar-container" class="flex flex-shrink-0 h-full"></div>
+
+        <!-- MAIN CONTAINER -->
+        <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-[#F4F5F7]">
+            <!-- HEADER CONTAINER -->
+            <div id="header-container"></div>
+
+            <!-- MAIN CONTENT WRAPPER -->
+            <div class="flex-1 overflow-hidden flex flex-col p-4 space-y-3">
+                
+                <!-- UNIFIED CONTROL BAR (Header + Navigation + View Controls + Compact Filters) -->
+                <div class="bg-white p-3 rounded-[4px] border border-[#D9DEE5] shrink-0 space-y-2.5 shadow-2xs">
+                    
+                    <!-- Row 1: Page Title & Time Navigation & View Mode Switcher -->
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-[#F0F3F7] pb-2.5">
+                        <!-- Title & Subtitle -->
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-[4px] bg-[#27496D] text-white flex items-center justify-center font-bold text-sm shadow-xs">
+                                <i class="fa-solid fa-calendar-days"></i>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <h1 class="text-sm font-bold text-[#1F2937]">Dự kiến lịch KSK</h1>
+                                    
+                                </div>
+                                <p class="text-[11px] text-[#6B7280]">Lập kế hoạch xem trước lịch khám sức khỏe, theo dõi mật độ lịch & phân bổ nguồn lực</p>
+                            </div>
+                        </div>
+
+                        <!-- Center: Time Navigation Controls -->
+                        <div class="flex items-center gap-2">
+                            <button type="button" id="btn-today" class="btn-secondary text-xs px-3 py-1 h-7 font-semibold">
+                                <i class="fa-solid fa-calendar-day text-xs text-[#27496D]"></i>
+                                <span>Hôm nay</span>
+                            </button>
+                            <div class="inline-flex items-center bg-[#F8FAFC] p-0.5 rounded-[4px] border border-[#CBD5E1]">
+                                <button type="button" id="btn-prev" class="w-6 h-6 hover:bg-white rounded-[3px] text-[#4B5563] flex items-center justify-center transition-colors">
+                                    <i class="fa-solid fa-chevron-left text-xs"></i>
+                                </button>
+                                <span id="calendar-title-range" class="px-3 font-bold text-xs text-[#27496D] min-w-[200px] text-center font-mono">--</span>
+                                <button type="button" id="btn-next" class="w-6 h-6 hover:bg-white rounded-[3px] text-[#4B5563] flex items-center justify-center transition-colors">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Right: View Mode Segmented Control -->
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-[#6B7280] uppercase tracking-wide">Hiển thị:</span>
+                            <div class="bg-[#F1F5F9] p-0.5 rounded-[4px] border border-[#CBD5E1] inline-flex items-center gap-1">
+                                <button type="button" id="btn-view-week" class="segmented-btn active px-3 py-0.5 text-xs rounded-[3px] transition-all">
+                                    <i class="fa-solid fa-calendar-week mr-1"></i> Tuần
+                                </button>
+                                <button type="button" id="btn-view-month" class="segmented-btn px-3 py-0.5 text-xs rounded-[3px] text-[#6B7280] hover:text-[#1F2937] transition-all">
+                                    <i class="fa-solid fa-calendar-days mr-1"></i> Tháng
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row 2: Compact Filter Bar (Quick Type Pills & Filter Popover) -->
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2.5">
+                        
+                        <!-- Left: Search Box + Quick Type Filter Pills Group -->
+                        <div class="flex items-center gap-2.5 flex-wrap flex-1">
+                            <!-- Compact Search Box -->
+                            <div class="relative w-48">
+                                <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-[#9CA3AF]"></i>
+                                <input type="text" id="filter-search" placeholder="Tìm tên đơn vị..." class="sys-input text-xs pl-8 h-7.5 text-[#1F2937]">
+                            </div>
+
+                            <div class="h-4 w-px bg-[#D9DEE5] hidden sm:block"></div>
+
+                            <!-- Quick Type Filter Pills Container (Chỉ 3 loại: Tại viện, Ngoại viện, Phường) -->
+                            <div class="inline-flex items-center bg-[#F8FAFC] p-0.5 rounded-[5px] border border-[#CBD5E1] gap-0.5 flex-wrap">
+                                <button type="button" class="filter-type-pill active px-3 py-1 text-xs rounded-[3px] font-semibold text-white bg-[#27496D] transition-all cursor-pointer" data-type="Lịch tại viện">
+                                    <span class="inline-block w-2 h-2 rounded-full bg-white mr-1.5"></span> Lịch tại viện
+                                </button>
+                                <button type="button" class="filter-type-pill px-3 py-1 text-xs rounded-[3px] font-medium text-[#4B5563] hover:bg-[#FFF3E0] hover:text-[#E65100] transition-all cursor-pointer" data-type="Lịch ngoại viện">
+                                    <span class="inline-block w-2 h-2 rounded-full bg-[#ED6C02] mr-1.5"></span> Lịch ngoại viện
+                                </button>
+                                <button type="button" class="filter-type-pill px-3 py-1 text-xs rounded-[3px] font-medium text-[#4B5563] hover:bg-[#F3E8FF] hover:text-[#6B21A8] transition-all cursor-pointer" data-type="Lịch phường">
+                                    <span class="inline-block w-2 h-2 rounded-full bg-[#7E22CE] mr-1.5"></span> Lịch phường
+                                </button>
+                                <button type="button" class="filter-type-pill px-3 py-1 text-xs rounded-[3px] font-medium text-[#4B5563] hover:bg-[#F4F5F7] hover:text-[#1F2937] transition-all cursor-pointer" data-type="">
+                                    Tất cả 3 loại
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Right: Advanced Filter Popover Toggle & Summary Panel Toggle -->
+                        <div class="flex items-center gap-2 relative shrink-0">
+                            
+                            <!-- Advanced Filter Popover Dropdown Container -->
+                            <div class="relative">
+                                <button type="button" id="btn-toggle-filter-popover" class="btn-secondary text-xs h-7.5 px-3 flex items-center gap-1.5 font-semibold">
+                                    <i class="fa-solid fa-sliders text-xs text-[#27496D]"></i>
+                                    <span>Bộ lọc khác</span>
+                                    <span id="filter-popover-badge" class="hidden px-1.5 py-0.2 rounded-full bg-[#27496D] text-white text-[10px] font-bold">0</span>
+                                    <i class="fa-solid fa-chevron-down text-[10px] text-[#6B7280] ml-0.5"></i>
+                                </button>
+
+                                <!-- Floating Filter Popover Panel -->
+                                <div id="filter-popover-panel" class="hidden absolute right-0 top-9 w-72 bg-white rounded-[6px] shadow-lg border border-[#D9DEE5] z-50 p-3.5 space-y-3">
+                                    <div class="flex items-center justify-between border-b border-[#F0F3F7] pb-2">
+                                        <span class="text-xs font-bold text-[#1F2937] flex items-center gap-1.5">
+                                            <i class="fa-solid fa-filter text-[#27496D]"></i> Bộ lọc nâng cao
+                                        </span>
+                                        <button type="button" id="btn-reset-filters" class="text-[11px] text-[#27496D] hover:underline font-semibold">Xóa chọn</button>
+                                    </div>
+
+                                    <!-- Select Cơ sở -->
+                                    <div class="space-y-1">
+                                        <label class="text-[11px] font-semibold text-[#6B7280]">Cơ sở thực hiện:</label>
+                                        <select id="filter-co-so" class="sys-select text-xs h-8 text-[#1F2937] w-full">
+                                            <option value="">Tất cả cơ sở</option>
+                                            <option value="MEDLATEC Ba Đình">MEDLATEC Ba Đình</option>
+                                            <option value="MEDLATEC Tây Hồ">MEDLATEC Tây Hồ</option>
+                                            <option value="MEDLATEC Thanh Xuân">MEDLATEC Thanh Xuân</option>
+                                            <option value="Ngoại viện">Khám Ngoại viện</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Select CB Phụ trách -->
+                                    <div class="space-y-1">
+                                        <label class="text-[11px] font-semibold text-[#6B7280]">Cán bộ phụ trách:</label>
+                                        <select id="filter-cb-phu-trach" class="sys-select text-xs h-8 text-[#1F2937] w-full">
+                                            <option value="">Tất cả cán bộ</option>
+                                            <option value="Nguyễn Văn An">Nguyễn Văn An</option>
+                                            <option value="Lê Hoàng Nam">Lê Hoàng Nam</option>
+                                            <option value="Trần Văn Bình">Trần Văn Bình</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MAIN GRID & RIGHT SUMMARY PANEL CONTENT -->
+                <div class="flex-1 flex gap-3 min-h-0 overflow-hidden">
+                    
+                    <!-- CALENDAR GRID WRAPPER (Left / Center) -->
+                    <div id="calendar-grid-wrapper" class="flex-1 bg-white rounded-[4px] border border-[#D9DEE5] flex flex-col min-w-0 h-full overflow-hidden shadow-2xs">
+                        
+                        <!-- WEEK VIEW CONTAINER -->
+                        <div id="week-view-container" class="flex-1 flex flex-col h-full overflow-y-auto calendar-grid-scroll">
+                            <table class="w-full border-collapse text-xs table-fixed">
+                                <thead>
+                                    <tr class="bg-[#F8FAFC] border-b border-[#D9DEE5] sticky top-0 z-20 shadow-2xs">
+                                        <th class="w-24 p-2 text-center bg-[#F1F5F9] border-r border-[#D9DEE5] text-[#27496D] font-bold text-[11px]">
+                                            CA / NGÀY
+                                        </th>
+                                        <!-- 7 Days headers rendered via JS -->
+                                        <th class="p-2 text-center border-r border-[#D9DEE5] day-col-header" data-day-index="0"></th>
+                                        <th class="p-2 text-center border-r border-[#D9DEE5] day-col-header" data-day-index="1"></th>
+                                        <th class="p-2 text-center border-r border-[#D9DEE5] day-col-header" data-day-index="2"></th>
+                                        <th class="p-2 text-center border-r border-[#D9DEE5] day-col-header" data-day-index="3"></th>
+                                        <th class="p-2 text-center border-r border-[#D9DEE5] day-col-header" data-day-index="4"></th>
+                                        <th class="p-2 text-center border-r border-[#D9DEE5] day-col-header" data-day-index="5"></th>
+                                        <th class="p-2 text-center day-col-header" data-day-index="6"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="week-grid-tbody">
+                                    <!-- 3 fixed rows: Sáng, Chiều, Cả ngày rendered via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- MONTH VIEW CONTAINER (Hidden by default) -->
+                        <div id="month-view-container" class="flex-1 flex flex-col h-full overflow-y-auto calendar-grid-scroll hidden">
+                            <table class="w-full border-collapse text-xs table-fixed h-full">
+                                <thead>
+                                    <tr class="bg-[#27496D] text-white sticky top-0 z-20">
+                                        <th class="p-2 text-center font-bold">Thứ 2</th>
+                                        <th class="p-2 text-center font-bold">Thứ 3</th>
+                                        <th class="p-2 text-center font-bold">Thứ 4</th>
+                                        <th class="p-2 text-center font-bold">Thứ 5</th>
+                                        <th class="p-2 text-center font-bold">Thứ 6</th>
+                                        <th class="p-2 text-center font-bold">Thứ 7</th>
+                                        <th class="p-2 text-center font-bold">Chủ nhật</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="month-grid-tbody">
+                                    <!-- Month day cells rendered via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- FOOTER STATUS BAR -->
+                <div class="bg-[#27496D] text-white px-4 py-2 rounded-[4px] flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs shrink-0 shadow-xs">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-circle-info text-sky-300"></i>
+                        <span id="footer-period-label" class="font-semibold">Tuần 33 / 2026</span>
+                    </div>
+
+                    <div class="flex items-center gap-5 text-xs font-medium">
+                        <div>Tổng Lịch: <strong id="footer-count-schedules" class="text-white font-bold ml-1">0</strong></div>
+                        <div class="w-px h-3 bg-white/20"></div>
+                        <div>Tổng Khách: <strong id="footer-count-guests" class="text-sky-200 font-bold ml-1">0</strong></div>
+                        <div class="w-px h-3 bg-white/20"></div>
+                        <div>Tổng Nhân sự: <strong id="footer-count-staff" class="text-amber-200 font-bold ml-1">0</strong></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MODAL POPUP: XEM TẤT CẢ LỊCH CỦA 1 NGÀY (DÙNG TRONG MONTH VIEW HOẶC DOUBLE CLICK) -->
+    <div id="modal-day-details" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white w-[560px] max-w-full rounded-[6px] shadow-xl border border-[#D9DEE5] flex flex-col max-h-[85vh]">
+            <div class="px-4 py-3 bg-[#27496D] text-white flex items-center justify-between rounded-t-[5px]">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-day"></i>
+                    <h3 id="modal-day-title" class="font-bold text-sm">Danh sách lịch dự kiến</h3>
+                </div>
+                <button type="button" onclick="closeDayDetailsModal()" class="w-7 h-7 rounded-[4px] hover:bg-white/10 text-white flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+
+            <div id="modal-day-content" class="p-4 overflow-y-auto flex-1 space-y-2.5 bg-[#F8FAFC]">
+                <!-- Item list rendered dynamically -->
+            </div>
+
+            <div class="px-4 py-2.5 bg-white border-t border-[#D9DEE5] flex items-center justify-between text-xs text-[#6B7280] rounded-b-[5px]">
+                <span id="modal-day-count-summary" class="font-medium"></span>
+                <button type="button" onclick="closeDayDetailsModal()" class="btn-secondary text-xs">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LIBRARIES & MODULE CONTROLLERS -->
+    <script src="../js/data-store.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="utils/calendar-helper.js"></script>
+    <script src="calendar.js"></script>
+</body>
+</html>

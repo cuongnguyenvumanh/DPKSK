@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cấu hình phụ cấp | MWK Điều phối KSK</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: { 
+                        primary: { DEFAULT: '#27496D', hover: '#1F3D5A' }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome v6 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="shortcut icon" href="#">
+</head>
+<body data-depth="sub" data-active-nav="nav-cau-hinh-phu-cap" data-breadcrumb="Cấu hình phụ cấp" data-custom-pagination="true" class="bg-[#F4F5F7] font-sans text-[#1F2937] antialiased h-screen overflow-hidden flex flex-col">
+
+    <div class="flex h-full w-full overflow-hidden">
+        <!-- SIDEBAR CONTAINER -->
+        <div id="sidebar-container" class="flex flex-shrink-0 h-full"></div>
+
+        <!-- MAIN CONTAINER -->
+        <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-[#F4F5F7]">
+            <!-- HEADER CONTAINER -->
+            <div id="header-container"></div>
+
+            <!-- MAIN CONTENT -->
+            <main class="flex-1 overflow-y-auto p-5 space-y-4">
+                <!-- Top Header Bar Card -->
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-4 rounded-[4px] border border-[#D9DEE5]">
+                    <div>
+                        <h1 class="text-xl font-bold text-[#1F2937]">Cấu hình phụ cấp</h1>
+                        <p class="text-xs text-[#6B7280] mt-0.5">Cấu hình mức phụ cấp cho nhân sự đến sớm hơn hoặc về muộn hơn so với giờ kế hoạch đoàn KSK</p>
+                    </div>
+                    <!-- Create Component Button Container -->
+                    <div id="create-component-container"></div>
+                </div>
+
+                <!-- SEARCH & FILTER TOOLBAR CARD -->
+                <div class="bg-white p-3.5 rounded-[4px] border border-[#D9DEE5] space-y-3">
+                    <!-- Search Input -->
+                    <div class="relative w-full">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] text-xs"></i>
+                        <input type="text" id="search-input" oninput="handleSearchFilterChange()" placeholder="Tìm kiếm theo loại phụ cấp hoặc đối tượng..." class="w-full h-9 pl-9 pr-3 bg-white border border-[#D9DEE5] rounded-[4px] text-xs text-[#1F2937] placeholder-[#9CA3AF] focus:outline-none focus:border-[#27496D] transition-colors">
+                    </div>
+
+                    <!-- Filter Options Row -->
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-2.5 border-t border-[#E6EAF0]">
+                        <div class="flex flex-wrap items-center gap-3">
+                            <div class="flex items-center gap-2">
+                                <label class="sys-label !mb-0 whitespace-nowrap">Loại phụ cấp:</label>
+                                <select id="filter-type" onchange="handleSearchFilterChange()" class="sys-select text-xs min-w-[160px]">
+                                    <option value="">Tất cả loại phụ cấp</option>
+                                    <option value="Đến sớm">Đến sớm</option>
+                                    <option value="Về muộn">Về muộn</option>
+                                </select>
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                <label class="sys-label !mb-0 whitespace-nowrap">Hình thức tính:</label>
+                                <select id="filter-unit" onchange="handleSearchFilterChange()" class="sys-select text-xs min-w-[160px]">
+                                    <option value="">Tất cả hình thức tính</option>
+                                    <option value="Tiền/giờ">Tiền/giờ</option>
+                                    <option value="% lương">% lương</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Reset Button -->
+                        <button type="button" onclick="resetSearchAndFilter()" class="btn-secondary text-xs shrink-0" title="Đặt lại bộ lọc">
+                            <i class="fa-solid fa-rotate-left text-xs"></i>
+                            <span>Đặt lại</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- DATA TABLE & PAGINATION UNIFIED CONTAINER -->
+                <div class="bg-white rounded-[4px] border border-[#D9DEE5] overflow-hidden flex flex-col">
+                    <div class="overflow-x-auto">
+                        <table class="table-his">
+                            <thead>
+                                <tr>
+                                    <th class="py-3 px-3 w-14 text-center">STT</th>
+                                    <th class="py-3 px-3">Loại phụ cấp</th>
+                                    <th class="py-3 px-3">Đối tượng áp dụng</th>
+                                    <th class="py-3 px-3">Đơn vị tính</th>
+                                    <th class="py-3 px-3 text-right">Giá trị</th>
+                                    <th class="py-3 px-3">Ghi chú</th>
+                                    <th class="py-3 px-3 text-center w-32">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body" class="divide-y divide-[#E6EAF0] text-xs">
+                                <!-- Render dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Pagination Container -->
+                    <div id="pagination-container"></div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- MODAL CONTAINERS -->
+    <div id="detail-component-container"></div>
+    <div id="edit-component-container"></div>
+    <div id="delete-component-container"></div>
+
+    <!-- Scripts -->
+    <script src="../../js/data-store.js"></script>
+    <script src="../../js/main.js"></script>
+    <script>
+        let allowanceData = [];
+        let currentPage = 1;
+        let pageSize = 10;
+
+        function changePageSize(val) {
+            pageSize = parseInt(val) || 20;
+            currentPage = 1;
+            renderTable(getFilteredData());
+        }
+
+        function renderPagination(total, start, end) {
+            const container = document.getElementById('pagination-container');
+            if (!container) return;
+
+            if (total === 0) {
+                container.innerHTML = '';
+                return;
+            }
+
+            const totalPages = Math.ceil(total / pageSize);
+
+            let html = `
+                <div class="p-3 border-t border-[#D9DEE5] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs bg-white">
+                    <div class="flex items-center gap-2 text-[#4B5563]">
+                        <span>Hiển thị</span>
+                        <select onchange="changePageSize(this.value)" class="h-8 px-2 bg-white border border-[#D9DEE5] rounded-[4px] text-xs text-[#1F2937] font-medium focus:outline-none focus:border-[#27496D] cursor-pointer">
+                            <option value="10" ${pageSize === 10 ? 'selected' : ''}>10</option>
+                            <option value="20" ${pageSize === 20 ? 'selected' : ''}>20</option>
+                            <option value="50" ${pageSize === 50 ? 'selected' : ''}>50</option>
+                            <option value="100" ${pageSize === 100 ? 'selected' : ''}>100</option>
+                        </select>
+                        <span>bản ghi.</span>
+                        <span class="font-medium text-[#4B5563] ml-2">
+                            ${start}-${end} trong tổng ${total}
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <button type="button" onclick="goToPage(1)" ${currentPage === 1 ? 'disabled' : ''} class="h-8 w-8 flex items-center justify-center text-[#4B5563] hover:text-[#1F2937] hover:bg-[#F3F6FA] rounded-[4px] disabled:opacity-30 cursor-pointer transition-colors" title="Trang đầu">
+                            <i class="fa-solid fa-angles-left text-[11px]"></i>
+                        </button>
+                        <button type="button" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} class="h-8 w-8 flex items-center justify-center text-[#4B5563] hover:text-[#1F2937] hover:bg-[#F3F6FA] rounded-[4px] disabled:opacity-30 cursor-pointer transition-colors" title="Trang trước">
+                            <i class="fa-solid fa-chevron-left text-[11px]"></i>
+                        </button>
+            `;
+
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === currentPage) {
+                    html += `<button type="button" class="h-8 min-w-[32px] px-2.5 bg-white border border-[#27496D] text-[#27496D] font-bold rounded-[4px] cursor-pointer flex items-center justify-center">${i}</button>`;
+                } else if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    html += `<button type="button" onclick="goToPage(${i})" class="h-8 min-w-[32px] px-2.5 text-[#374151] hover:bg-[#F3F6FA] font-medium rounded-[4px] cursor-pointer flex items-center justify-center transition-colors">${i}</button>`;
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    html += `<span class="px-1.5 text-[#9CA3AF]">...</span>`;
+                }
+            }
+
+            html += `
+                        <button type="button" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} class="h-8 w-8 flex items-center justify-center text-[#4B5563] hover:text-[#1F2937] hover:bg-[#F3F6FA] rounded-[4px] disabled:opacity-30 cursor-pointer transition-colors" title="Trang sau">
+                            <i class="fa-solid fa-chevron-right text-[11px]"></i>
+                        </button>
+                        <button type="button" onclick="goToPage(${totalPages})" ${currentPage === totalPages ? 'disabled' : ''} class="h-8 w-8 flex items-center justify-center text-[#4B5563] hover:text-[#1F2937] hover:bg-[#F3F6FA] rounded-[4px] disabled:opacity-30 cursor-pointer transition-colors" title="Trang cuối">
+                            <i class="fa-solid fa-angles-right text-[11px]"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            renderTable(getFilteredData());
+        }
+
+        async function loadModalComponent(containerId, componentPath) {
+            try {
+                const res = await fetch(componentPath);
+                if (res.ok) {
+                    const html = await res.text();
+                    const container = document.getElementById(containerId);
+                    if (container) {
+                        container.innerHTML = html;
+                        container.querySelectorAll('script').forEach(oldScript => {
+                            const newScript = document.createElement('script');
+                            Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                            newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                            oldScript.parentNode.replaceChild(newScript, oldScript);
+                        });
+                    }
+                }
+            } catch (err) {
+                console.error(`Lỗi nạp component ${componentPath}:`, err);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            await Promise.all([
+                loadModalComponent('create-component-container', 'create/create.html'),
+                loadModalComponent('detail-component-container', 'detail/detail.html'),
+                loadModalComponent('edit-component-container', 'edit/edit.html'),
+                loadModalComponent('delete-component-container', 'delete/delete.html')
+            ]);
+
+            allowanceData = MWKDataStore.getAllowances();
+            renderTable(allowanceData);
+
+            window.addEventListener('mwk_allowances_changed', function() {
+                allowanceData = MWKDataStore.getAllowances();
+                handleSearchFilterChange();
+            });
+        });
+
+        function getFilteredData() {
+            const searchVal = document.getElementById('search-input') ? document.getElementById('search-input').value.trim().toLowerCase() : '';
+            const typeVal = document.getElementById('filter-type') ? document.getElementById('filter-type').value : '';
+            const unitVal = document.getElementById('filter-unit') ? document.getElementById('filter-unit').value : '';
+
+            return allowanceData.filter(item => {
+                const matchesSearch = !searchVal || (item.type && item.type.toLowerCase().includes(searchVal)) || (item.targetRole && item.targetRole.toLowerCase().includes(searchVal));
+                const matchesType = !typeVal || item.type === typeVal;
+                const matchesUnit = !unitVal || item.unit === unitVal;
+                return matchesSearch && matchesType && matchesUnit;
+            });
+        }
+
+        function handleSearchFilterChange() {
+            currentPage = 1;
+            const filtered = getFilteredData();
+            renderTable(filtered);
+        }
+
+        function resetSearchAndFilter() {
+            if(document.getElementById('search-input')) document.getElementById('search-input').value = '';
+            if(document.getElementById('filter-type')) document.getElementById('filter-type').value = '';
+            if(document.getElementById('filter-unit')) document.getElementById('filter-unit').value = '';
+            handleSearchFilterChange();
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+
+            const total = data.length;
+
+            if (total === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="py-12 text-center">
+                            <div class="flex flex-col items-center justify-center text-[#9CA3AF]">
+                                <i class="fa-solid fa-[#27496D] fa-coins text-4xl mb-3 text-[#CBD5E1]"></i>
+                                <p class="font-medium text-sm text-[#4B5563]">Không tìm thấy cấu hình phụ cấp phù hợp</p>
+                                <p class="text-xs text-[#9CA3AF] mt-1">Vui lòng thay đổi từ khóa hoặc bộ lọc tìm kiếm</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                renderPagination(0, 0, 0);
+                return;
+            }
+
+            const totalPages = Math.ceil(total / pageSize);
+            if (currentPage > totalPages) currentPage = totalPages;
+            const startIdx = (currentPage - 1) * pageSize;
+            const endIdx = Math.min(startIdx + pageSize, total);
+            const pageItems = data.slice(startIdx, endIdx);
+
+            pageItems.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-[#F7F9FC] border-b border-[#E6EAF0] transition-colors';
+
+                const displayRole = item.targetRole || item.object || item.obj || 'Tất cả nhân sự';
+                let displayVal = item.value || item.val || '-';
+                if (typeof item.rawValue === 'number') {
+                    displayVal = item.unit === '% lương' ? `${item.rawValue}%` : `${item.rawValue.toLocaleString('vi-VN')} đ`;
+                }
+
+                tr.innerHTML = `
+                    <td class="py-2.5 px-3 text-center text-[#6B7280] font-medium">${startIdx + index + 1}</td>
+                    <td class="py-2.5 px-3 font-bold text-[#1F2937]">${item.type}</td>
+                    <td class="py-2.5 px-3 font-medium text-[#374151]">${displayRole}</td>
+                    <td class="py-2.5 px-3 text-[#374151]">${item.unit}</td>
+                    <td class="py-2.5 px-3 text-right font-bold text-[#2E7D32]">${displayVal}</td>
+                    <td class="py-2.5 px-3 text-[#6B7280]">${item.note || '-'}</td>
+                    <td class="py-2.5 px-3 text-center">
+                        <div class="flex items-center justify-center gap-1.5">
+                            <button onclick="openDetailModal(${item.id})" class="btn-icon" title="Xem chi tiết">
+                                <i class="fa-solid fa-eye text-xs text-[#27496D]"></i>
+                            </button>
+                            <button onclick="openEditModal(${item.id})" class="btn-icon" title="Chỉnh sửa">
+                                <i class="fa-solid fa-pen-to-square text-xs text-[#ED6C02]"></i>
+                            </button>
+                            <button onclick="openDeleteModal(${item.id})" class="btn-icon" title="Xóa">
+                                <i class="fa-solid fa-trash-can text-xs text-[#D32F2F]"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            renderPagination(total, startIdx + 1, endIdx);
+        }
+
+
+
+        // --- GLOBAL HELPER FUNCTIONS FOR MODALS & CRUD ---
+        window.getAllowanceById = function(id) {
+            return MWKDataStore.getAllowanceById ? MWKDataStore.getAllowanceById(id) : MWKDataStore.getAllowances().find(a => a.id === id);
+        };
+
+        window.addAllowanceItem = function(item) {
+            const formattedVal = item.unit === '% lương' ? `${item.value}%` : `${(item.value || 0).toLocaleString('vi-VN')} đ`;
+            MWKDataStore.addAllowance({
+                type: item.type,
+                object: item.targetRole || item.object,
+                targetRole: item.targetRole || item.object,
+                unit: item.unit,
+                value: formattedVal,
+                rawValue: item.value,
+                note: item.note
+            });
+        };
+
+        window.updateAllowanceItem = function(id, item) {
+            const formattedVal = item.unit === '% lương' ? `${item.value}%` : `${(item.value || 0).toLocaleString('vi-VN')} đ`;
+            MWKDataStore.updateAllowance(id, {
+                type: item.type,
+                object: item.targetRole || item.object,
+                targetRole: item.targetRole || item.object,
+                unit: item.unit,
+                value: formattedVal,
+                rawValue: item.value,
+                note: item.note
+            });
+        };
+
+        window.deleteAllowanceById = function(id) {
+            MWKDataStore.deleteAllowance(id);
+        };
+    </script>
+</body>
+</html>

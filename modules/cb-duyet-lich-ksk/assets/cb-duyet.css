@@ -1,0 +1,245 @@
+/* ==========================================================================
+   MWK - CB DUYỆT LỊCH KSK MODULE STYLES (ENTERPRISE HIS SPECIFICATION)
+   ========================================================================== */
+
+/* Uniform Control Heights & Spacing */
+.sys-control-h36 {
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+    box-sizing: border-box;
+}
+
+.search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.search-input-icon {
+    position: absolute;
+    left: 12px;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: #6B7280;
+    pointer-events: none;
+}
+
+.search-input-field {
+    padding-left: 34px !important;
+}
+
+/* Master/Child Grouped Table Styling */
+.table-approval-master {
+    background-color: #F8FAFC !important;
+    font-weight: 600;
+    border-top: 1px solid #D9DEE5;
+}
+
+.table-approval-master:hover {
+    background-color: #F1F5F9 !important;
+}
+
+.table-approval-child {
+    background-color: #FFFFFF;
+    transition: background-color 0.15s ease;
+}
+
+.table-approval-child:hover {
+    background-color: #F8FAFC;
+}
+
+.child-indent {
+    padding-left: 24px !important;
+    position: relative;
+}
+
+.child-indent::before {
+    content: '';
+    position: absolute;
+    left: 12px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: #CBD5E1;
+}
+
+/* Approval Step Badges */
+.badge-status-cho-duyet {
+    background-color: #FEF3C7;
+    color: #92400E;
+    border: 1px solid #FCD34D;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.badge-status-buoc1 {
+    background-color: #E0F2FE;
+    color: #0369A1;
+    border: 1px solid #7DD3FC;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.badge-status-buoc2 {
+    background-color: #E0E7FF;
+    color: #4338CA;
+    border: 1px solid #A5B4FC;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.badge-status-qua-han {
+    background-color: #FEE2E2;
+    color: #DC2626;
+    border: 1px solid #FCA5A5;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    animation: pulse-border 2s infinite;
+}
+
+@keyframes pulse-border {
+    0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+    70% { box-shadow: 0 0 0 4px rgba(220, 38, 38, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+}
+
+.badge-status-da-duyet {
+    background-color: #DCFCE7;
+    color: #15803D;
+    border: 1px solid #86EFAC;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.badge-status-tra-lai {
+    background-color: #FEE2E2;
+    color: #991B1B;
+    border: 1px solid #FCA5A5;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Visual 2-Step Approval Timeline Indicator */
+.timeline-stepper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin: 16px 0;
+    position: relative;
+}
+
+.timeline-step {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+}
+
+.timeline-step-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    background-color: #E5E7EB;
+    color: #6B7280;
+    border: 2px solid #D1D5DB;
+    transition: all 0.2s ease;
+}
+
+.timeline-step.active .timeline-step-circle {
+    background-color: #27496D;
+    color: #FFFFFF;
+    border-color: #1F3D5A;
+}
+
+.timeline-step.completed .timeline-step-circle {
+    background-color: #16A34A;
+    color: #FFFFFF;
+    border-color: #15803D;
+}
+
+.timeline-step.overdue .timeline-step-circle {
+    background-color: #DC2626;
+    color: #FFFFFF;
+    border-color: #B91C1C;
+}
+
+.timeline-step-label {
+    margin-top: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #4B5563;
+    text-align: center;
+}
+
+.timeline-step.active .timeline-step-label {
+    color: #27496D;
+}
+
+.timeline-line {
+    position: absolute;
+    top: 16px;
+    left: 25%;
+    right: 25%;
+    height: 2px;
+    background-color: #D1D5DB;
+    z-index: 1;
+}
+
+.timeline-line.active {
+    background-color: #16A34A;
+}
+
+/* Sticky Action Bar */
+.approval-action-bar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background-color: #EFF6FF;
+    border: 1px solid #BFDBFE;
+    border-radius: 4px;
+    padding: 10px 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}

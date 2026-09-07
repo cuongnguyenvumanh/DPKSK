@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MWK - Hiệu chỉnh thông tin chung tiếp nhận lịch KSK</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { DEFAULT: '#27496D', hover: '#1F3D5A' }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome 6.4.0 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Main Style -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="shortcut icon" href="#">
+</head>
+<body class="bg-[#F4F5F7] font-sans text-[#1F2937] antialiased h-screen overflow-hidden flex flex-col" data-depth="sub" data-active-nav="nav-tong-hop-lich-ksk" data-breadcrumb="Hiệu chỉnh thông tin chung tiếp nhận lịch KSK">
+
+    <div class="flex h-full w-full overflow-hidden">
+        <!-- SIDEBAR CONTAINER -->
+        <div id="sidebar-container" class="flex flex-shrink-0 h-full"></div>
+
+        <!-- MAIN WRAPPER -->
+        <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-[#F4F5F7]">
+            <!-- HEADER CONTAINER -->
+            <div id="header-container"></div>
+
+            <!-- MAIN CONTENT AREA -->
+            <main class="flex-1 overflow-y-auto p-5 space-y-4">
+                <!-- PAGE TITLE BAR & ACTIONS -->
+                <div class="flex items-center justify-between bg-white p-4 rounded-[4px] border border-[#D9DEE5]">
+                    <div class="flex items-center gap-3">
+                        <a href="../tong-hop.html" class="w-8 h-8 rounded-[4px] bg-white border border-[#D9DEE5] text-[#4B5563] hover:bg-[#F3F6FA] flex items-center justify-center transition-colors" title="Quay lại">
+                            <i class="fa-solid fa-arrow-left text-xs"></i>
+                        </a>
+                        <div>
+                            <h1 class="text-xl font-bold text-[#1F2937]">Hiệu chỉnh thông tin chung dành cho Cán bộ Tổng hợp</h1>
+                            <p class="text-xs text-[#6B7280] mt-0.5">Cán bộ tổng hợp được phép hiệu chỉnh thông tin chung. Các trường cấu hình danh mục và nhân sự được giữ nguyên ở dạng Read-only.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MAIN FORM CARD -->
+                <div class="bg-white rounded-[4px] border border-[#D9DEE5] p-5 space-y-4">
+                    <form id="edit-receive-general-form" class="space-y-4">
+                        
+                        <!-- SECTION 1: THÔNG TIN CỐ ĐỊNH (READ-ONLY) -->
+                        <div class="border border-[#D9DEE5] rounded-[4px] p-4 space-y-3 bg-[#F4F5F7]">
+                            <div class="flex items-center justify-between border-b border-[#D9DEE5] pb-2">
+                                <div class="flex items-center gap-2 text-[#27496D]">
+                                    <i class="fa-solid fa-lock text-sm"></i>
+                                    <h3 class="text-xs font-bold text-[#1F2937] uppercase tracking-wide">1. Thông tin cố định (Read-only)</h3>
+                                </div>
+                                <span class="badge-success" id="display-code">LK-2026-xxx</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
+                                <div>
+                                    <label class="sys-label">Mã lịch (Cố định)</label>
+                                    <input type="text" id="code" readonly class="sys-input bg-[#E5E7EB] text-[#4B5563] font-mono font-bold cursor-not-allowed">
+                                </div>
+                                <div>
+                                    <label class="sys-label">Nguồn lịch (Cố định)</label>
+                                    <input type="text" id="scheduleForm" readonly class="sys-input bg-[#E5E7EB] text-[#4B5563] font-bold cursor-not-allowed">
+                                </div>
+                                <div>
+                                    <label class="sys-label">Loại lịch (Cố định)</label>
+                                    <input type="text" id="loaiLich" readonly class="sys-input bg-[#E5E7EB] text-[#4B5563] font-bold cursor-not-allowed">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 2: THÔNG TIN CHUNG (CHO PHÉP CHỈNH SỬA) -->
+                        <div class="border border-[#D9DEE5] rounded-[4px] p-4 space-y-3 bg-white">
+                            <div class="flex items-center justify-between border-b border-[#D9DEE5] pb-2">
+                                <div class="flex items-center gap-2 text-[#27496D]">
+                                    <i class="fa-solid fa-pen-to-square text-sm"></i>
+                                    <h3 class="text-xs font-bold text-[#1F2937] uppercase tracking-wide">2. Thông tin chung cho phép hiệu chỉnh</h3>
+                                </div>
+                                <span class="text-[11px] text-[#6B7280] italic">* Yêu cầu nhập đầy đủ các trường bắt buộc</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
+                                <!-- Tên đơn vị / Đoàn khám -->
+                                <div>
+                                    <label class="sys-label">Tên đơn vị / Đoàn khám <span class="text-[#D32F2F]">*</span></label>
+                                    <input type="text" id="customerName" class="sys-input font-bold text-xs">
+                                </div>
+
+                                <!-- Tên khách hàng / Người liên hệ -->
+                                <div>
+                                    <label class="sys-label">Tên khách hàng / Người liên hệ <span class="text-[#D32F2F]">*</span></label>
+                                    <input type="text" id="contactPerson" class="sys-input font-semibold text-xs">
+                                </div>
+
+                                <!-- Loại khách hàng -->
+                                <div>
+                                    <label class="sys-label">Loại khách hàng</label>
+                                    <select id="customerType" class="sys-select text-xs">
+                                        <option value="Doanh nghiệp">Doanh nghiệp</option>
+                                        <option value="Trường học">Trường học</option>
+                                        <option value="Khối ngân hàng">Khối ngân hàng</option>
+                                    </select>
+                                </div>
+
+                                <!-- SĐT liên hệ -->
+                                <div>
+                                    <label class="sys-label">Số điện thoại liên hệ</label>
+                                    <input type="text" id="contactPhone" class="sys-input text-xs font-semibold">
+                                </div>
+
+                                <!-- Email liên hệ -->
+                                <div>
+                                    <label class="sys-label">Email liên hệ</label>
+                                    <input type="text" id="contactEmail" class="sys-input text-xs">
+                                </div>
+
+                                <!-- Số lượng khách -->
+                                <div>
+                                    <label class="sys-label">Số lượng khách dự kiến <span class="text-[#D32F2F]">*</span></label>
+                                    <input type="number" id="estimatedCount" class="sys-input font-bold text-[#2E7D32] text-xs">
+                                </div>
+
+                                <!-- Ngày khám -->
+                                <div>
+                                    <label class="sys-label">Ngày khám <span class="text-[#D32F2F]">*</span></label>
+                                    <input type="date" id="examDate" class="sys-input font-bold text-xs">
+                                </div>
+
+                                <!-- Buổi -->
+                                <div>
+                                    <label class="sys-label">Buổi khám <span class="text-[#D32F2F]">*</span></label>
+                                    <select id="session" class="sys-select font-semibold text-xs">
+                                        <option value="Sáng">Buổi Sáng</option>
+                                        <option value="Chiều">Buổi Chiều</option>
+                                        <option value="Ca ngày">Cả ngày (Sáng + Chiều)</option>
+                                    </select>
+                                </div>
+
+                                <!-- Cơ sở thực hiện -->
+                                <div>
+                                    <label class="sys-label">Cơ sở thực hiện <span class="text-[#D32F2F]">*</span></label>
+                                    <select id="facility" class="sys-select font-semibold text-xs">
+                                        <!-- Dynamically populated -->
+                                    </select>
+                                </div>
+
+                                <!-- Giờ bắt đầu -->
+                                <div>
+                                    <label class="sys-label">Giờ bắt đầu</label>
+                                    <input type="time" id="startTime" class="sys-input text-xs font-semibold">
+                                </div>
+
+                                <!-- Giờ kết thúc -->
+                                <div>
+                                    <label class="sys-label">Giờ kết thúc</label>
+                                    <input type="time" id="endTime" class="sys-input text-xs font-semibold">
+                                </div>
+
+                                <!-- CB phụ trách -->
+                                <div>
+                                    <label class="sys-label">CB phụ trách</label>
+                                    <input type="text" id="personInCharge" class="sys-input text-xs font-semibold">
+                                </div>
+
+                                <!-- Địa điểm khám cụ thể -->
+                                <div class="sm:col-span-2 lg:col-span-3">
+                                    <label class="sys-label">Địa điểm khám cụ thể</label>
+                                    <input type="text" id="examLocation" placeholder="Nhập chi tiết địa chỉ hoặc vị trí triển khai..." class="sys-input text-xs font-medium">
+                                </div>
+
+                                <!-- Ghi chú tư vấn (generalNote) -->
+                                <div class="sm:col-span-2 lg:col-span-3">
+                                    <label class="sys-label">Ghi chú tư vấn (Chung)</label>
+                                    <textarea id="generalNote" rows="2" placeholder="Nhập ghi chú tư vấn thêm..." class="w-full p-2 bg-white border border-[#D9DEE5] rounded-[4px] text-xs text-[#1F2937] focus:outline-none focus:border-[#27496D]"></textarea>
+                                </div>
+
+                                <!-- Lưu ý / Yêu cầu riêng (requestNote) -->
+                                <div class="sm:col-span-2 lg:col-span-3">
+                                    <label class="sys-label">Lưu ý / Yêu cầu riêng</label>
+                                    <textarea id="requestNote" rows="2" placeholder="Nhập lưu ý hoặc yêu cầu đặc biệt..." class="w-full p-2 bg-white border border-[#D9DEE5] rounded-[4px] text-xs text-[#ED6C02] font-medium focus:outline-none focus:border-[#ED6C02]"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 3: CẤU HÌNH CHI TIẾT (READ-ONLY PREVIEW) -->
+                        <div class="border border-[#D9DEE5] rounded-[4px] p-4 space-y-3 bg-[#F4F5F7]/80">
+                            <div class="flex items-center justify-between border-b border-[#D9DEE5] pb-2">
+                                <div class="flex items-center gap-2 text-[#6B7280]">
+                                    <i class="fa-solid fa-list-check text-sm"></i>
+                                    <h3 class="text-xs font-bold uppercase tracking-wide text-[#374151]">3. Danh mục khám & Nhân sự (Read-only)</h3>
+                                </div>
+                                <span class="text-[11px] text-[#6B7280]">Chỉ xem - Không cho phép chỉnh sửa trực tiếp</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                                <div>
+                                    <span class="block text-[#6B7280] font-medium mb-1">Danh mục khám đã chọn:</span>
+                                    <div id="read-only-categories" class="flex flex-wrap gap-1.5 p-2 bg-white rounded-[4px] border border-[#D9DEE5] min-h-[42px]"></div>
+                                </div>
+                                <div>
+                                    <span class="block text-[#6B7280] font-medium mb-1">Cấu hình nhân sự dự kiến:</span>
+                                    <div id="read-only-staff" class="flex flex-wrap gap-1.5 p-2 bg-white rounded-[4px] border border-[#D9DEE5] min-h-[42px]"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FOOTER ACTIONS -->
+                        <div class="flex items-center justify-end gap-3 pt-3 border-t border-[#E6EAF0]">
+                            <a href="../tong-hop.html" class="btn-secondary text-xs">
+                                Hủy bỏ
+                            </a>
+                            <button type="button" id="btn-save-general-edit" class="btn-primary text-xs">
+                                <i class="fa-solid fa-floppy-disk text-xs"></i> Lưu thông tin chung
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- MAIN JAVASCRIPT & DATA-STORE INTEGRATION -->
+    <script src="../../js/data-store.js"></script>
+    <script src="../../js/main.js"></script>
+    <script>
+        let currentId = null;
+        let currentItem = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            populateFacilityOptions();
+
+            const urlParams = new URLSearchParams(window.location.search);
+            currentId = urlParams.get('id') ? parseInt(urlParams.get('id')) : null;
+
+            if (!currentId) {
+                alert('Không tìm thấy thông tin bản ghi tiếp nhận!');
+                window.location.href = '../tong-hop.html';
+                return;
+            }
+
+            currentItem = MWKDataStore.getKskScheduleById(currentId);
+            if (!currentItem) {
+                alert('Bản ghi tiếp nhận không tồn tại!');
+                window.location.href = '../tong-hop.html';
+                return;
+            }
+
+            populateGeneralData(currentItem);
+
+            document.getElementById('btn-save-general-edit').addEventListener('click', function() {
+                saveGeneralEdit();
+            });
+        });
+
+        function populateFacilityOptions() {
+            const select = document.getElementById('facility');
+            if (!select) return;
+            const facilities = MWKDataStore.getActiveFacilities();
+            select.innerHTML = '';
+            facilities.forEach(f => {
+                const opt = document.createElement('option');
+                opt.value = f.name;
+                opt.textContent = f.name;
+                select.appendChild(opt);
+            });
+        }
+
+        function populateGeneralData(item) {
+            const codeStr = item.code || item.maLich || `LK-2026-${item.id}`;
+            document.getElementById('display-code').innerText = codeStr;
+            document.getElementById('code').value = codeStr;
+            document.getElementById('scheduleForm').value = item.scheduleForm || item.nguonLich || 'Lịch tuần';
+            document.getElementById('loaiLich').value = item.loaiLich || 'Lịch tại viện';
+
+            document.getElementById('customerName').value = item.customerName || item.teamName || '';
+            document.getElementById('contactPerson').value = item.contactPerson || '';
+            document.getElementById('customerType').value = item.customerType || 'Doanh nghiệp';
+            document.getElementById('contactPhone').value = item.contactPhone || '';
+            document.getElementById('contactEmail').value = item.contactEmail || '';
+            document.getElementById('estimatedCount').value = item.estimatedCount || item.soLuong || 0;
+
+            document.getElementById('examDate').value = item.examDate || item.ngayKham || new Date().toISOString().split('T')[0];
+            document.getElementById('session').value = item.session || item.buoi || 'Sáng';
+
+            const facSelect = document.getElementById('facility');
+            if (facSelect && item.facility) {
+                facSelect.value = item.facility;
+            }
+
+            document.getElementById('startTime').value = item.startTime || item.gioBatDau || '07:30';
+            document.getElementById('endTime').value = item.endTime || item.gioKetThuc || '11:30';
+            document.getElementById('personInCharge').value = item.personInCharge || item.cbPhuTrach || 'Nguyễn Văn An';
+            document.getElementById('examLocation').value = item.examLocation || item.diaDiemKham || '';
+            document.getElementById('generalNote').value = item.generalNote || item.tuVan || '';
+            document.getElementById('requestNote').value = item.requestNote || item.luuY || '';
+
+            // Render read-only categories & staff
+            const catsContainer = document.getElementById('read-only-categories');
+            const cats = item.categories || item.danhMucKham || ['Khám Nội tổng quát', 'Siêu âm ổ bụng tổng quát'];
+            catsContainer.innerHTML = cats.map(c => {
+                const name = typeof c === 'object' ? (c.name || c.tenDanhMuc) : c;
+                return `<span class="px-2 py-0.5 bg-[#F4F5F7] border border-[#D9DEE5] rounded-[4px] text-xs text-[#374151] font-medium">${name}</span>`;
+            }).join('');
+
+            const staffContainer = document.getElementById('read-only-staff');
+            const staffList = item.staff || item.nhanSu || [{ role: 'Bác sĩ', count: 2 }, { role: 'Điều dưỡng', count: 3 }];
+            staffContainer.innerHTML = staffList.map(s => {
+                const role = typeof s === 'object' ? (s.role || s.name || s.chucDanh) : s;
+                const count = typeof s === 'object' ? (s.count || s.soLuong || 1) : 1;
+                return `<span class="px-2 py-0.5 bg-[#FFF3E0] border border-[#FFCC80] rounded-[4px] text-xs text-[#ED6C02] font-semibold">${role} (${count})</span>`;
+            }).join('');
+        }
+
+        function saveGeneralEdit() {
+            const customerName = document.getElementById('customerName').value.trim();
+            const contactPerson = document.getElementById('contactPerson').value.trim();
+            const customerType = document.getElementById('customerType').value;
+            const contactPhone = document.getElementById('contactPhone').value.trim();
+            const contactEmail = document.getElementById('contactEmail').value.trim();
+            const estimatedCount = parseInt(document.getElementById('estimatedCount').value) || 0;
+
+            const examDate = document.getElementById('examDate').value;
+            const session = document.getElementById('session').value;
+            const facility = document.getElementById('facility').value;
+            const startTime = document.getElementById('startTime').value;
+            const endTime = document.getElementById('endTime').value;
+            const personInCharge = document.getElementById('personInCharge').value.trim();
+            const examLocation = document.getElementById('examLocation').value.trim();
+            const generalNote = document.getElementById('generalNote').value.trim();
+            const requestNote = document.getElementById('requestNote').value.trim();
+
+            if (!customerName || !contactPerson || !examDate || !facility) {
+                if (window.showToast) {
+                    window.showToast('Vui lòng nhập đầy đủ các trường bắt buộc (*)!', 'error');
+                } else {
+                    alert('Vui lòng nhập đầy đủ các trường bắt buộc (*)!');
+                }
+                return;
+            }
+
+            // Save updated general info to MWKDataStore
+            MWKDataStore.updateKskSchedule(currentId, {
+                customerName,
+                teamName: customerName || contactPerson,
+                contactPerson,
+                customerType,
+                contactPhone,
+                contactEmail,
+                estimatedCount,
+                soLuong: estimatedCount,
+                examDate,
+                ngayKham: examDate,
+                session,
+                buoi: session,
+                facility,
+                coSoThucHien: facility,
+                startTime,
+                endTime,
+                personInCharge,
+                cbPhuTrach: personInCharge,
+                examLocation,
+                diaDiemKham: examLocation,
+                generalNote,
+                tuVan: generalNote,
+                requestNote,
+                luuY: requestNote,
+                // Keeps current status as CHO_TONG_HOP
+                status: currentItem.status || 'Chờ tổng hợp',
+                trangThai: currentItem.trangThai || 'CHO_TONG_HOP',
+                daGuiTongHop: true,
+                updatedAt: new Date().toISOString()
+            }, 'Trần Thị Mai (Cán bộ Tổng hợp)');
+
+            if (window.showToast) {
+                window.showToast('Hiệu chỉnh thông tin chung thành công!', 'success');
+            }
+
+            setTimeout(() => {
+                window.location.href = `receive-detail.html?id=${currentId}`;
+            }, 500);
+        }
+    </script>
+</body>
+</html>

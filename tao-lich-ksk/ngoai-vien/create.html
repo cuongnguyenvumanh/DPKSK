@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thêm lịch ngoại viện | MWK Điều phối KSK</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: { primary: { DEFAULT: '#27496D', hover: '#1F3D5A' } }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome v6 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="shortcut icon" href="#">
+</head>
+<body data-depth="sub" data-active-nav="nav-tao-lich-ksk" data-breadcrumb="Thêm lịch ngoại viện" class="bg-[#F4F5F7] font-sans text-[#1F2937] antialiased h-screen overflow-hidden flex flex-col">
+
+    <div class="flex h-full w-full overflow-hidden">
+        <!-- SIDEBAR CONTAINER -->
+        <div id="sidebar-container" class="flex flex-shrink-0 h-full"></div>
+
+        <!-- MAIN CONTAINER -->
+        <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-[#F4F5F7] relative">
+            <!-- HEADER CONTAINER -->
+            <div id="header-container"></div>
+
+            <!-- MAIN SCROLLABLE CONTENT AREA -->
+            <div class="flex-1 overflow-y-auto p-5 space-y-4">
+                <div class="max-w-7xl mx-auto space-y-4">
+
+                    <!-- KHU VỰC 1: HEADER THÔNG TIN (READ-ONLY) -->
+                    <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] flex flex-col space-y-3 shadow-2xs">
+                        <div class="flex items-center justify-between gap-4 flex-wrap">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 rounded-[4px] bg-[#FFF3E0] text-[#ED6C02] flex items-center justify-center font-bold text-base shrink-0">
+                                    <i class="fa-solid fa-truck-medical"></i>
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <h1 class="text-[18px] font-bold text-[#1F2937]">Thêm lịch ngoại viện</h1>
+                                        <span class="badge-warning text-xs font-semibold px-2.5 py-0.5"><i class="fa-solid fa-truck-medical text-[10px]"></i> Lịch ngoại viện</span>
+                                    </div>
+                                    <p class="text-xs text-[#6B7280] mt-0.5">Khởi tạo bộ thông tin nghiệp vụ chi tiết cho ca khám ngoại viện tại trụ sở khách hàng</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Read-only Info Line from Step 1 -->
+                        <div class="flex items-center gap-4 text-xs text-[#4B5563] flex-wrap font-medium pt-2.5 border-t border-[#E6EAF0] bg-[#F8FAFC] -mx-4 -mb-4 p-3 rounded-b-[4px]">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-building text-[#ED6C02] text-xs"></i>
+                                <span class="text-[#6B7280]">Đơn vị:</span>
+                                <strong id="header-display-customer" class="text-[#1F2937] font-bold">CÔNG TY CP TẬP ĐOÀN FPT</strong>
+                            </div>
+                            <div class="w-px h-3.5 bg-[#D9DEE5]"></div>
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-barcode text-[#ED6C02] text-xs"></i>
+                                <span class="text-[#6B7280]">Mã đối tượng:</span>
+                                <strong id="header-display-code" class="text-[#27496D] font-mono font-bold">KAD019962025</strong>
+                            </div>
+                            <div class="w-px h-3.5 bg-[#D9DEE5]"></div>
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-users text-[#ED6C02] text-xs"></i>
+                                <span class="text-[#6B7280]">Số lượng khách ban đầu:</span>
+                                <strong id="header-display-guests" class="text-[#1F2937] font-bold">180</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- KHU VỰC 2: 11 SECTIONS NGHIỆP VỤ + STICKY NAV -->
+                    <div class="flex gap-4 items-start relative">
+                        
+                        <!-- LEFT CONTENT (11 SECTIONS) -->
+                        <div class="flex-1 min-w-0 space-y-4">
+                            
+                            <!-- 1. THÔNG TIN LỊCH & KINH DOANH -->
+                            <div id="sec-1" class="bg-white rounded-[4px] border border-[#D9DEE5] p-5 space-y-4 shadow-2xs">
+                                <div class="flex items-center gap-2.5 border-b border-[#E6EAF0] pb-3">
+                                    <div class="w-7 h-7 rounded-[4px] bg-[#FFF3E0] text-[#ED6C02] flex items-center justify-center font-bold text-xs">
+                                        <i class="fa-solid fa-file-invoice"></i>
+                                    </div>
+                                    <h2 class="text-sm font-bold text-[#1F2937]">1. Thông tin lịch & Kinh doanh</h2>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+                                    <div>
+                                        <label class="sys-label">Ngày điền lịch <span class="text-[#D32F2F]">*</span></label>
+                                        <input type="date" id="ngayDienLich" class="sys-input text-xs h-9 font-medium">
+                                        <span id="err-ngayDienLich" class="text-[11px] text-[#D32F2F] hidden mt-1"></span>
+                                    </div>
+                                    <div>
+                                        <label class="sys-label">Phòng Kinh doanh - TTKD toàn quốc <span class="text-[#D32F2F]">*</span></label>
+                                        <select id="phongKinhDoanh" class="sys-select text-xs h-9">
+                                            <option value="TTKD Hà Nội" selected>TTKD Hà Nội</option>
+                                            <option value="TTKD Miền Bắc">TTKD Miền Bắc</option>
+                                            <option value="TTKD Miền Nam">TTKD Miền Nam</option>
+                                            <option value="Phòng KSK Doanh Nghiệp 1">Phòng KSK Doanh Nghiệp 1</option>
+                                        </select>
+                                        <span id="err-phongKinhDoanh" class="text-[11px] text-[#D32F2F] hidden mt-1"></span>
+                                    </div>
+                                    <div>
+                                        <label class="sys-label">Cán bộ kinh doanh phụ trách HĐ <span class="text-[#D32F2F]">*</span></label>
+                                        <select id="canBoKinhDoanhPhuTrach" class="sys-select text-xs h-9">
+                                            <option value="BS. Nguyễn Văn An (NV0042)" selected>BS. Nguyễn Văn An (NV0042)</option>
+                                            <option value="Lê Hoàng Nam (NV0105)">Lê Hoàng Nam (NV0105)</option>
+                                            <option value="Trần Văn Bình (NV0088)">Trần Văn Bình (NV0088)</option>
+                                        </select>
+                                        <span id="err-canBoKinhDoanhPhuTrach" class="text-[11px] text-[#D32F2F] hidden mt-1"></span>
+                                    </div>
+                                    <div>
+                                        <label class="sys-label">Tình trạng hợp đồng / PAKD <span class="text-[#D32F2F]">*</span></label>
+                                        <select id="tinhTrangHopDongPAKD" class="sys-select text-xs h-9">
+                                            <option value="Đã ký hợp đồng + PAKD đã duyệt" selected>Đã ký hợp đồng + PAKD đã duyệt</option>
+                                            <option value="Đã ký hợp đồng + PAKD chưa duyệt">Đã ký hợp đồng + PAKD chưa duyệt</option>
+                                            <option value="Chưa ký hợp đồng">Chưa ký hợp đồng</option>
+                                            <option value="PAKD đang trình ký">PAKD đang trình ký</option>
+                                        </select>
+                                        <span id="err-tinhTrangHopDongPAKD" class="text-[11px] text-[#D32F2F] hidden mt-1"></span>
+                                    </div>
+                                    <div>
+                                        <label class="sys-label">Duyệt của BGĐ</label>
+                                        <select id="duyetBGD" class="sys-select text-xs h-9">
+                                            <option value="Chưa duyệt">Chưa duyệt</option>
+                                            <option value="Đã duyệt" selected>Đã duyệt</option>
+                                            <option value="Không yêu cầu">Không yêu cầu</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 2. THỜI GIAN TRIỂN KHAI & KHUNG GIỜ -->
+                            <div id="sec-2" class="bg-white rounded-[4px] border border-[#D9DEE5] p-5 space-y-4 shadow-2xs">
+                                <div class="flex items-center gap-2.5 border-b border-[#E6EAF0] pb-3">
+                                    <div class="w-7 h-7 rounded-[4px] bg-[#FFF3E0] text-[#ED6C02] flex items-center justify-center font-bold text-xs">
+                                        <i class="fa-regular fa-clock"></i>
+                                    </div>
+                                    <h2 class="text-sm font-bold text-[#1F2937]">2. Thời gian triển khai & Khung giờ</h2>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+                                    <div>
+                                        <label class="sys-label">Ngày triển khai khám <span class="text-[#D32F2F]">*</span></label>
+                                        <input type="date" id="examDate" class="sys-input text-xs h-9 font-medium">
+                                        <span id="err-examDate" class="text-[11px] text-[#D32F2F] hidden mt-1"></span>
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <label class="sys-label">Ca làm việc & khung giờ <span class="text-[#D32F2F]">*</span></label>
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                                            <div class="bg-[#F8FAFC] border border-[#D9DEE5] rounded-[4px] p-2 flex items-center justify-between gap-2">
+                                                <label class="flex items-center gap-1.5 cursor-pointer font-semibold select-none shrink-0">
+                                                    <input type="checkbox" id="check-shift-sang" checked class="w-4 h-4 text-[#ED6C02] rounded-[2px]">
+                                                    <span>Ca Sáng</span>
+                                                </label>
+                                                <div class="flex items-center gap-1">
+                                                    <input type="time" id="time-sang-start" value="07:30" class="sys-input text-xs h-7 text-center font-bold w-20">
+                                                    <span>-</span>
+                                                    <input type="time" id="time-sang-end" value="11:00" class="sys-input text-xs h-7 text-center font-bold w-20">
+                                                </div>
+                                            </div>
+                                            <div class="bg-[#F8FAFC] border border-[#D9DEE5] rounded-[4px] p-2 flex items-center justify-between gap-2">
+                                                <label class="flex items-center gap-1.5 cursor-pointer font-semibold select-none shrink-0">
+                                                    <input type="checkbox" id="check-shift-chieu" checked class="w-4 h-4 text-[#ED6C02] rounded-[2px]">
+                                                    <span>Ca Chiều</span>
+                                                </label>
+                                                <div class="flex items-center gap-1">
+                                                    <input type="time" id="time-chieu-start" value="13:30" class="sys-input text-xs h-7 text-center font-bold w-20">
+                                                    <span>-</span>
+                                                    <input type="time" id="time-chieu-end" value="17:30" class="sys-input text-xs h-7 text-center font-bold w-20">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <span id="err-shift" class="text-[11px] text-[#D32F2F] hidden mt-1"></span>
+                                    </div>
+                                    <div>
+                                        <label class="sys-label">Thời gian xe xuất phát</label>
+                                        <input type="time" id="gioXeXuatPhat" value="06:30" class="sys-input text-xs h-9">
+                                    </div>
+                                    <div>
+                                        <label class="sys-label">Thời gian có mặt tại đơn vị</label>
+                                        <input type="time" id="gioCoMat" value="07:00" class="sys-input text-xs h-9">
+                                    </div>
+                                    <div>
+                                        <label class="sys-label">Ghi chú thời gian triển khai</label>
+                                        <input type="text" id="ghiChuThoiGian" placeholder="VD: Đã hẹn tập trung xe 6h15..." class="sys-input text-xs h-9">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 3. LOẠI HÌNH CÔNG VIỆC & HÌNH THỨC TƯ VẤN -->
+                            <div id="sec-3" class="bg-white rounded-[4px] border border-[#D9DEE5] p-5 space-y-4 shadow-2xs">
+                                <div class="flex items-center gap-2.5 border-b border-[#E6EAF0] pb-3">
+                                    <div class="w-7 h-7 rounded-[4px] bg-[#FFF3E0] text-[#ED6C02] flex items-center justify-center font-bold text-xs">
+                                        <i class="fa-solid fa-briefcase"></i>
+                                    </div>
+                                    <h2 class="text-sm font-bold text-[#1F2937]">3. Loại hình công việc & Hình thức tư vấn</h2>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                                    <div class="space-y-2">
+                                        <label class="sys-label">Loại hình công việc <span class="text-[#D32F2F]">*</span></label>
+                                        
+                                        <!-- Quick Suggestions (Gợi ý nhanh) -->
+                                        <div class="flex items-center gap-1.5 flex-wrap" id="work-type-suggestions">
+                                            <span class="text-[11px] text-[#6B7280] font-medium">Gợi ý:</span>
+                                            <button type="button" onclick="WorkTypeTagInput.addTag('Khám sức khỏe')" class="px-2 py-0.5 rounded-[4px] bg-[#F8FAFC] border border-[#D9DEE5] text-[#4B5563] hover:bg-[#FFF3E0] hover:text-[#ED6C02] hover:border-[#FFCC80] text-[11px] font-medium transition-colors">
+                                                + Khám sức khỏe
+                                            </button>
+                                            <button type="button" onclick="WorkTypeTagInput.addTag('Lấy mẫu xét nghiệm')" class="px-2 py-0.5 rounded-[4px] bg-[#F8FAFC] border border-[#D9DEE5] text-[#4B5563] hover:bg-[#FFF3E0] hover:text-[#ED6C02] hover:border-[#FFCC80] text-[11px] font-medium transition-colors">
+                                                + Lấy mẫu xét nghiệm
+                                            </button>
+                                            <button type="button" onclick="WorkTypeTagInput.addTag('Chuẩn bị đồ & vật tư')" class="px-2 py-0.5 rounded-[4px] bg-[#F8FAFC] border border-[#D9DEE5] text-[#4B5563] hover:bg-[#FFF3E0] hover:text-[#ED6C02] hover:border-[#FFCC80] text-[11px] font-medium transition-colors">
+                                                + Chuẩn bị đồ & vật tư
+                                            </button>
+                                            <button type="button" onclick="WorkTypeTagInput.addTag('Tư vấn SK')" class="px-2 py-0.5 rounded-[4px] bg-[#F8FAFC] border border-[#D9DEE5] text-[#4B5563] hover:bg-[#FFF3E0] hover:text-[#ED6C02] hover:border-[#FFCC80] text-[11px] font-medium transition-colors">
+                                                + Tư vấn SK
+                                            </button>
+                                        </div>
+
+                                        <!-- Multi-Value Tag / Chip Container Box -->
+                                        <div id="work-type-tag-container" onclick="document.getElementById('work-type-text-input')?.focus()" class="min-h-[42px] w-full bg-white border border-[#D9DEE5] focus-within:border-[#ED6C02] focus-within:ring-1 focus-within:ring-[#ED6C02] rounded-[4px] p-2 flex items-center flex-wrap gap-1.5 cursor-text transition-all">
+                                            <div id="work-type-tags-wrapper" class="flex items-center flex-wrap gap-1.5"></div>
+                                            <input type="text" id="work-type-text-input" placeholder="Nhập loại hình công việc mới... (Nhấn Enter để thêm)" class="flex-1 min-w-[180px] border-none bg-transparent text-xs p-0.5 focus:outline-none text-[#1F2937]">
+                                        </div>
+                                        <span id="err-workType" class="text-[11px] text-[#D32F2F] hidden mt-1">Vui lòng chọn hoặc nhập ít nhất 1 loại hình công việc.</span>
+                                    </div>
+                                    <div>
+                                        <label class="sys-label">Hình thức tư vấn dự kiến</label>
+                                        <div class="flex items-center gap-6 pt-2">
+                                            <label class="flex items-center gap-2 cursor-pointer font-medium">
+                                                <input type="radio" name="hinhThucTuVan" value="TRUC_TIEP" checked class="w-4 h-4 text-[#ED6C02]">
+                                                <span>Trực tiếp tại đoàn</span>
+                                            </label>
+                                            <label class="flex items-center gap-2 cursor-pointer font-medium">
+                                                <input type="radio" name="hinhThucTuVan" value="ONLINE" class="w-4 h-4 text-[#ED6C02]">
+                                                <span>Online (Từ xa)</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 4. THÔNG TIN ĐƠN VỊ & ĐỊA ĐIỂM TỔ CHỨC KSK -->
+                            <div id="sec-4" class="bg-white rounded-[4px] border border-[#D9DEE5] p-5 space-y-4 shadow-2xs">
+                                <div class="flex items-center gap-2.5 border-b border-[#E6EAF0] pb-3">
+                                    <div class="w-7 h-7 rounded-[4px] bg-[#FFF3E0] text-[#ED6C02] flex items-center justify-center font-bold text-xs">
+                                        <i class="fa-solid fa-building"></i>
+                                    </div>
+                                    <h2 class="text-sm font-bold text-[#1F2937]">4. Thông tin đơn vị & Địa điểm tổ chức KSK</h2>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                                    <div>
+                                        <label class="sys-label">Tên đơn vị KSK <span class="text-[#D32F2F]">*</span></label>
+                                        <input type="text" id="tenDonVi" placeholder="Tên đơn vị KSK..." oninput="this.value = this.value.toUpperCase();" class="sys-input text-xs h-9 font-bold">
+                                        <span id="err-tenDonVi" class="text-[11px] text-[#D32F2F] hidden mt-1"></span>
+                                    </div>
+                                    <div>
+                                        <label class="sys-label">Tỉnh / Thành phố</label>
+                                        <select id="province" class="sys-select text-xs h-9">
+                                            <option value="Hà Nội" selected>Hà Nội</option>
+                                            <option value="Vĩnh Phúc">Vĩnh Phúc</option>
+                                            <option value="Bắc Ninh">Bắc Ninh</option>
+                                            <option value="Quảng Ninh">Quảng Ninh</option>
+                                        </select>
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <label class="sys-label">Địa điểm khám chính (Trụ sở ngoại viện) <span class="text-[#D32F2F]">*</span></label>
+                                        <input type="text" id="facility" value="Số 10 Phạm Văn Bạch, Cầu Giấy, Hà Nội" class="sys-input text-xs h-9 font-medium">
+                                    </div>
+                                </div>
+
+                                <!-- Dynamic Locations Table -->
+                                <div class="space-y-2 pt-2 border-t border-[#E6EAF0]">
+                                    <div class="flex items-center justify-between">
+                                        <h3 class="font-bold text-xs text-[#1F2937]">Danh sách các điểm tổ chức KSK (Nhiều điểm)</h3>
+                                        <button type="button" onclick="SubScheduleController.addLocationRow()" class="btn-secondary text-xs">
+                                            <i class="fa-solid fa-plus text-xs"></i> Thêm điểm tổ chức
+                                        </button>
+                                    </div>
+                                    <div class="border border-[#D9DEE5] rounded-[4px] overflow-x-auto bg-white">
+                                        <table class="table-his">
+                                            <thead>
+                                                <tr>
+                                                    <th class="py-2 px-3 w-12 text-center">STT</th>
+                                                    <th class="py-2 px-3">Tên điểm</th>
+                                                    <th class="py-2 px-3">Địa chỉ</th>
+                                                    <th class="py-2 px-3 text-center w-24">Giờ có mặt</th>
+                                                    <th class="py-2 px-3 text-center w-24">Giờ kết thúc</th>
+                                                    <th class="py-2 px-3 text-center w-14">Xóa</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="table-locations-body" class="divide-y divide-[#E6EAF0] text-xs"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 5. SỐ LƯỢNG KHÁM DỰ KIẾN -->
+                            <div id="sec-5" class="bg-white rounded-[4px] border border-[#D9DEE5] p-5 space-y-4 shadow-2xs">
+                                <div class="flex items-center gap-2.5 border-b border-[#E6EAF0] pb-3">
+                                    <div class="w-7 h-7 rounded-[4px] bg-[#FFF3E0] text-[#ED6C02] flex items-center justify-center font-bold text-xs">
+                                        <i class="fa-solid fa-users"></i>
+                                    </div>
+                                    <h2 class="text-sm font-bold text-[#1F2937]">5. Số lượng khám dự kiến</h2>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                                    <div>
+                                        <label class="sys-label">Tổng số lượng dự kiến <span class="text-[#D32F2F]">*</span></label>
+                                        <input type="number" id="guestCount" min="1" value="180" class="sys-input text-xs h-9 font-bold text-[#ED6C02]">
+                                        <span id="err-guestCount" class="text-[11px] text-[#D32F2F] hidden mt-1"></span>
+                                    </div>
+                                    <div>
+                                        <label class="sys-label">Số lượng Nam</label>
+                                        <input type="number" id="soLuongNam" min="0" value="100" class="sys-input text-xs h-9">
+                                    </div>
+                                    <div>
+                                        <label class="sys-label">Số lượng Nữ</label>
+                                        <input type="number" id="soLuongNu" min="0" value="80" class="sys-input text-xs h-9">
+                                    </div>
+                                </div>
+                                <span id="err-soLuongGender" class="text-[11px] text-[#D32F2F] hidden mt-1 block"></span>
+                            </div>
+
+                            <!-- 6. DANH MỤC THỰC HIỆN -->
+                            <div id="sec-6" class="bg-white rounded-[4px] border border-[#D9DEE5] p-5 space-y-4 shadow-2xs">
+                                <div class="flex items-center justify-between border-b border-[#E6EAF0] pb-3">
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="w-7 h-7 rounded-[4px] bg-[#FFF3E0] text-[#ED6C02] flex items-center justify-center font-bold text-xs">
+                                            <i class="fa-solid fa-list-check"></i>
+                                        </div>
+                                        <h2 class="text-sm font-bold text-[#1F2937]">6. Danh mục thực hiện</h2>
+                                    </div>
+                                    <button type="button" onclick="SubScheduleController.addCategoryRow()" class="btn-secondary text-xs">
+                                        <i class="fa-solid fa-plus text-xs"></i> Thêm danh mục
+                                    </button>
+                                </div>
+                                <div class="border border-[#D9DEE5] rounded-[4px] overflow-x-auto bg-white">
+                                    <table class="table-his">
+                                        <thead>
+                                            <tr>
+                                                <th class="py-2 px-3 w-12 text-center">STT</th>
+                                                <th class="py-2 px-3">Danh mục / dịch vụ</th>
+                                                <th class="py-2 px-3 text-center w-28">SL dự kiến</th>
+                                                <th class="py-2 px-3">Ghi chú</th>
+                                                <th class="py-2 px-3 text-center w-14">Xóa</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="table-category-body" class="divide-y divide-[#E6EAF0] text-xs"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- 7. DỰ KIẾN NHÂN LỰC -->
+                            <div id="sec-7" class="bg-white rounded-[4px] border border-[#D9DEE5] p-5 space-y-4 shadow-2xs">
+                                <div class="flex items-center justify-between border-b border-[#E6EAF0] pb-3">
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="w-7 h-7 rounded-[4px] bg-[#FFF3E0] text-[#ED6C02] flex items-center justify-center font-bold text-xs">
+                                            <i class="fa-solid fa-user-doctor"></i>
+                                        </div>
+                                        <h2 class="text-sm font-bold text-[#1F2937]">7. Dự kiến nhân lực</h2>
+                                    </div>
+                                    <button type="button" onclick="SubScheduleController.addStaffRow()" class="btn-secondary text-xs">
+                                        <i class="fa-solid fa-plus text-xs"></i> Thêm nhân lực
+                                    </button>
+                                </div>
+                                <div class="border border-[#D9DEE5] rounded-[4px] overflow-x-auto bg-white">
+                                    <table class="table-his">
+                                        <thead>
+                                            <tr>
+                                                <th class="py-2 px-3 w-12 text-center">STT</th>
+                                                <th class="py-2 px-3">Vị trí / Chức danh</th>
+                                                <th class="py-2 px-3 text-center w-24">Số lượng</th>
+                                                <th class="py-2 px-3 text-center w-28">Ca làm việc</th>
+                                                <th class="py-2 px-3">Ghi chú</th>
+                                                <th class="py-2 px-3 text-center w-14">Xóa</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="table-staff-body" class="divide-y divide-[#E6EAF0] text-xs"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- 8. DỰ KIẾN TRANG THIẾT BỊ VÀ MÁY MÓC -->
+                            <div id="sec-8" class="bg-white rounded-[4px] border border-[#D9DEE5] p-5 space-y-4 shadow-2xs">
+                                <div class="flex items-center justify-between border-b border-[#E6EAF0] pb-3">
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="w-7 h-7 rounded-[4px] bg-[#FFF3E0] text-[#ED6C02] flex items-center justify-center font-bold text-xs">
+                                            <i class="fa-solid fa-sliders"></i>
+                                        </div>
+                                        <h2 class="text-sm font-bold text-[#1F2937]">8. Dự kiến trang thiết bị và máy móc</h2>
+                                    </div>
+                                    <button type="button" onclick="SubScheduleController.addEquipmentRow()" class="btn-secondary text-xs">
+                                        <i class="fa-solid fa-plus text-xs"></i> Thêm thiết bị
+                                    </button>
+                                </div>
+                                <div class="border border-[#D9DEE5] rounded-[4px] overflow-x-auto bg-white">
+                                    <table class="table-his">
+                                        <thead>
+                                            <tr>
+                                                <th class="py-2 px-3 w-12 text-center">STT</th>
+                                                <th class="py-2 px-3">Thiết bị / Máy móc</th>
+                                                <th class="py-2 px-3 text-center w-24">Số lượng</th>
+                                                <th class="py-2 px-3">Ghi chú</th>
+                                                <th class="py-2 px-3 text-center w-14">Xóa</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="table-equipment-body" class="divide-y divide-[#E6EAF0] text-xs"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- 9. ĐỀ XUẤT XE & VẬN CHUYỂN -->
+                            <div id="sec-9" class="bg-white rounded-[4px] border border-[#D9DEE5] p-5 space-y-4 shadow-2xs">
+                                <div class="flex items-center justify-between border-b border-[#E6EAF0] pb-3">
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="w-7 h-7 rounded-[4px] bg-[#FFF3E0] text-[#ED6C02] flex items-center justify-center font-bold text-xs">
+                                            <i class="fa-solid fa-bus"></i>
+                                        </div>
+                                        <h2 class="text-sm font-bold text-[#1F2937]">9. Đề xuất xe & Vận chuyển</h2>
+                                    </div>
+                                    <label class="flex items-center gap-2 cursor-pointer font-bold text-xs text-[#ED6C02]">
+                                        <input type="checkbox" id="toggle-co-xe" checked onchange="document.getElementById('xe-detail-panel').classList.toggle('hidden', !this.checked)" class="w-4 h-4 text-[#ED6C02] rounded-[2px]">
+                                        <span>Có đề xuất xe</span>
+                                    </label>
+                                </div>
+                                <div id="xe-detail-panel" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs pt-1">
+                                    <div>
+                                        <label class="sys-label">Loại xe</label>
+                                        <select id="xe-loai-xe" class="sys-select text-xs h-9">
+                                            <option value="Xe 16 chỗ" selected>Xe 16 chỗ</option>
+                                            <option value="Xe 29 chỗ">Xe 29 chỗ</option>
+                                            <option value="Xe X-quang lưu động">Xe X-quang lưu động</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="sys-label">Số lượng xe</label>
+                                        <input type="number" id="xe-so-luong" min="1" value="1" class="sys-input text-xs h-9">
+                                    </div>
+                                    <div>
+                                        <label class="sys-label">Điểm đón</label>
+                                        <input type="text" id="xe-diem-don" value="Bệnh viện MEDLATEC Ba Đình" class="sys-input text-xs h-9">
+                                    </div>
+                                    <div>
+                                        <label class="sys-label">Điểm đưa</label>
+                                        <input type="text" id="xe-diem-dua" value="Số 10 Phạm Văn Bạch, Cầu Giấy, Hà Nội" class="sys-input text-xs h-9">
+                                    </div>
+                                    <div>
+                                        <label class="sys-label">Giờ xe xuất phát</label>
+                                        <input type="time" id="xe-gio-xuat-phat" value="06:30" class="sys-input text-xs h-9">
+                                    </div>
+                                    <div>
+                                        <label class="sys-label">Giờ có mặt tại điểm</label>
+                                        <input type="time" id="xe-gio-co-mat" value="07:00" class="sys-input text-xs h-9">
+                                    </div>
+                                    <div>
+                                        <label class="sys-label">Giờ kết thúc</label>
+                                        <input type="time" id="xe-gio-ket-thuc" value="17:30" class="sys-input text-xs h-9">
+                                    </div>
+                                    <div>
+                                        <label class="sys-label">Ghi chú đề xuất xe</label>
+                                        <input type="text" id="xe-ghi-chu" placeholder="Ghi chú thêm..." class="sys-input text-xs h-9">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 10. GIỜ CHUYỂN MẪU, DỰ TRÙ BÁNH SỮA & LƯU Ý -->
+                            <div id="sec-10" class="bg-white rounded-[4px] border border-[#D9DEE5] p-5 space-y-4 shadow-2xs">
+                                <div class="flex items-center gap-2.5 border-b border-[#E6EAF0] pb-3">
+                                    <div class="w-7 h-7 rounded-[4px] bg-[#FFF3E0] text-[#ED6C02] flex items-center justify-center font-bold text-xs">
+                                        <i class="fa-solid fa-cookie-bite"></i>
+                                    </div>
+                                    <h2 class="text-sm font-bold text-[#1F2937]">10. Chuyển mẫu, Dự trù bánh sữa & Lưu ý</h2>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                                    <div>
+                                        <label class="sys-label">Giờ chuyển mẫu về</label>
+                                        <input type="time" id="gioChuyenMau" value="14:30" class="sys-input text-xs h-9">
+                                    </div>
+                                    <div>
+                                        <label class="sys-label">Dự trù bánh sữa (Số xuất)</label>
+                                        <input type="number" id="duTruBanhSua" min="0" value="180" class="sys-input text-xs h-9 font-bold text-[#ED6C02]">
+                                    </div>
+                                    <div class="md:col-span-3">
+                                        <label class="sys-label">Lưu ý & Hướng dẫn triển khai (SĐT CB phụ trách, vị trí cắm điện...)</label>
+                                        <textarea id="notes" rows="3" placeholder="Nhập SĐT CB phụ trách, vị trí cắm điện, sảnh tiếp đón hoặc lưu ý riêng..." class="sys-input text-xs h-24 p-2.5 leading-relaxed"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 11. TRUYỀN THÔNG -->
+                            <div id="sec-11" class="bg-white rounded-[4px] border border-[#D9DEE5] p-5 space-y-3 shadow-2xs">
+                                <div class="flex items-center gap-2.5 border-b border-[#E6EAF0] pb-2.5">
+                                    <div class="w-7 h-7 rounded-[4px] bg-[#FFF3E0] text-[#ED6C02] flex items-center justify-center font-bold text-xs">
+                                        <i class="fa-solid fa-bullhorn"></i>
+                                    </div>
+                                    <h2 class="text-sm font-bold text-[#1F2937]">11. Thông tin truyền thông</h2>
+                                </div>
+                                <div class="pt-1">
+                                    <label class="flex items-center gap-2 cursor-pointer font-bold text-xs text-[#1F2937]">
+                                        <input type="checkbox" id="truyenThong" class="w-4 h-4 text-[#ED6C02] rounded-[2px]">
+                                        <span>Đơn vị có thể sử dụng hình ảnh truyền thông</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- RIGHT STICKY ANCHOR NAVIGATION -->
+                        <div class="w-[180px] flex-shrink-0 hidden lg:block sticky top-4">
+                            <div class="bg-white rounded-[4px] border border-[#D9DEE5] p-3 space-y-2 text-xs shadow-2xs">
+                                <div class="font-bold text-[#6B7280] uppercase tracking-wider text-[10px] pb-1.5 border-b border-[#E6EAF0] flex items-center gap-1">
+                                    <i class="fa-solid fa-list-ul text-[#ED6C02]"></i> Mục lục nội dung
+                                </div>
+                                <nav class="space-y-1">
+                                    <a href="#sec-1" class="block py-1 px-2 rounded hover:bg-[#FFF3E0] text-[#4B5563] hover:text-[#ED6C02]">1. Thông tin lịch</a>
+                                    <a href="#sec-2" class="block py-1 px-2 rounded hover:bg-[#FFF3E0] text-[#4B5563] hover:text-[#ED6C02]">2. Thời gian triển khai</a>
+                                    <a href="#sec-3" class="block py-1 px-2 rounded hover:bg-[#FFF3E0] text-[#4B5563] hover:text-[#ED6C02]">3. Loại hình công việc</a>
+                                    <a href="#sec-4" class="block py-1 px-2 rounded hover:bg-[#FFF3E0] text-[#4B5563] hover:text-[#ED6C02]">4. Thông tin đơn vị</a>
+                                    <a href="#sec-5" class="block py-1 px-2 rounded hover:bg-[#FFF3E0] text-[#4B5563] hover:text-[#ED6C02]">5. Số lượng khám</a>
+                                    <a href="#sec-6" class="block py-1 px-2 rounded hover:bg-[#FFF3E0] text-[#4B5563] hover:text-[#ED6C02]">6. Danh mục thực hiện</a>
+                                    <a href="#sec-7" class="block py-1 px-2 rounded hover:bg-[#FFF3E0] text-[#4B5563] hover:text-[#ED6C02]">7. Dự kiến nhân lực</a>
+                                    <a href="#sec-8" class="block py-1 px-2 rounded hover:bg-[#FFF3E0] text-[#4B5563] hover:text-[#ED6C02]">8. Dự kiến thiết bị</a>
+                                    <a href="#sec-9" class="block py-1 px-2 rounded hover:bg-[#FFF3E0] text-[#4B5563] hover:text-[#ED6C02]">9. Đề xuất xe</a>
+                                    <a href="#sec-10" class="block py-1 px-2 rounded hover:bg-[#FFF3E0] text-[#4B5563] hover:text-[#ED6C02]">10. Chuyển mẫu & Lưu ý</a>
+                                    <a href="#sec-11" class="block py-1 px-2 rounded hover:bg-[#FFF3E0] text-[#4B5563] hover:text-[#ED6C02]">11. Truyền thông</a>
+                                </nav>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ACTION BAR CỐ ĐỊNH PHÍA DƯỚI -->
+            <div id="sticky-ngoai-vien-action-bar" class="h-[56px] flex-shrink-0 bg-[#FFF9F0] border-t border-[#FFE4C4] z-30 px-5 flex items-center justify-between text-xs shadow-md">
+                <div class="flex items-center gap-4 text-[#4B5563] font-medium flex-wrap">
+                    <div>Ngày khám: <strong id="bar-summary-date" class="text-[#1F2937] font-bold ml-1">---</strong></div>
+                    <div class="w-px h-3.5 bg-[#CBD5E1]"></div>
+                    <div>Tổng khách: <strong id="bar-summary-guests" class="text-[#1F2937] font-bold ml-1">180</strong></div>
+                    <div class="w-px h-3.5 bg-[#CBD5E1]"></div>
+                    <div>Danh mục: <strong id="bar-summary-categories" class="text-[#ED6C02] font-bold ml-1">3</strong></div>
+                    <div class="w-px h-3.5 bg-[#CBD5E1]"></div>
+                    <div>Nhân sự: <strong id="bar-summary-staff" class="text-[#1F2937] font-bold ml-1">7</strong></div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="SubScheduleController.saveAndExit()" class="btn-primary text-xs !bg-[#ED6C02] hover:!bg-[#E65100]">
+                        <i class="fa-solid fa-floppy-disk text-xs"></i>
+                        <span>Lưu lịch khám</span>
+                    </button>
+                    <button type="button" onclick="history.back()" class="btn-secondary text-xs">
+                        <i class="fa-solid fa-xmark text-xs"></i>
+                        <span>Thoát</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MAIN JAVASCRIPT INTEGRATION -->
+    <script src="../../js/data-store.js"></script>
+    <script src="../../js/work-type-tag-input.js"></script>
+    <script src="../../js/schedule-form-config.js"></script>
+    <script src="../../js/sub-schedule-form-helper.js"></script>
+    <script src="../../js/sub-schedule-form-controller.js"></script>
+    <script src="../../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            SubScheduleController.init('NGOAI_VIEN', 'create');
+        });
+    </script>
+</body>
+</html>

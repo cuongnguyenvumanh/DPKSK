@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết lịch tại viện | MWK Điều phối KSK</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: { primary: { DEFAULT: '#27496D', hover: '#1F3D5A' } }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome v6 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="shortcut icon" href="#">
+</head>
+<body data-depth="sub" data-active-nav="nav-tao-lich-ksk" data-breadcrumb="Chi tiết lịch tại viện" class="bg-[#F4F5F7] font-sans text-[#1F2937] antialiased h-screen overflow-hidden flex flex-col">
+
+    <div class="flex h-full w-full overflow-hidden">
+        <!-- SIDEBAR CONTAINER -->
+        <div id="sidebar-container" class="flex flex-shrink-0 h-full"></div>
+
+        <!-- MAIN CONTAINER -->
+        <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-[#F4F5F7] relative">
+            <!-- HEADER CONTAINER -->
+            <div id="header-container"></div>
+
+            <!-- MAIN SCROLLABLE CONTENT AREA -->
+            <div class="flex-1 overflow-y-auto p-5 space-y-4">
+                <div class="max-w-7xl mx-auto space-y-4">
+
+                    <!-- HEADER CARD -->
+                    <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] flex items-center justify-between gap-4 flex-wrap shadow-2xs">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-[4px] bg-[#E8F1FB] text-[#27496D] flex items-center justify-center font-bold text-base shrink-0">
+                                <i class="fa-solid fa-hospital"></i>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <h1 class="text-[18px] font-bold text-[#1F2937]">Chi tiết lịch tại viện</h1>
+                                    <span class="badge-info text-xs font-semibold px-2.5 py-0.5"><i class="fa-solid fa-hospital text-[10px]"></i> Lịch tại viện</span>
+                                </div>
+                                <p class="text-xs text-[#6B7280] mt-0.5">Hiển thị đầy đủ bộ dữ liệu nghiệp vụ chi tiết của ca khám tại viện</p>
+                            </div>
+                        </div>
+                        <button type="button" onclick="history.back()" class="btn-secondary text-xs">
+                            <i class="fa-solid fa-arrow-left text-xs"></i> Quay lại
+                        </button>
+                    </div>
+
+                    <!-- DETAIL CONTAINER -->
+                    <div id="sub-schedule-detail-container"></div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN JAVASCRIPT INTEGRATION -->
+    <script src="../../js/data-store.js"></script>
+    <script src="../../js/schedule-form-config.js"></script>
+    <script src="../../js/sub-schedule-detail-helper.js"></script>
+    <script src="../../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const params = new URLSearchParams(window.location.search);
+            const subId = params.get('subId');
+            const editId = params.get('editId') || params.get('id');
+            const subIndex = params.get('subIndex');
+
+            let itemData = null;
+            const draftJson = (editId ? sessionStorage.getItem(`mwk_edit_schedule_draft_${editId}`) : null) || sessionStorage.getItem('mwk_create_schedule_draft');
+            if (draftJson) {
+                try {
+                    const draft = JSON.parse(draftJson);
+                    if (draft.step2Data && draft.step2Data.taiVien) {
+                        const list = draft.step2Data.taiVien;
+                        if (subId) {
+                            itemData = list.find(s => String(s.id) === String(subId) || String(s.scheduleId) === String(subId));
+                        }
+                        if (!itemData && subIndex !== null && subIndex !== undefined && list[subIndex]) {
+                            itemData = list[subIndex];
+                        }
+                        if (!itemData && list.length > 0) itemData = list[0];
+                    }
+                } catch(e) {}
+            }
+
+            if (!itemData && editId && window.MWKDataStore) {
+                const schedules = MWKDataStore.getKskSchedules();
+                const master = schedules.find(s => String(s.id) === String(editId) || String(s.code) === String(editId));
+                if (master && master.step2Data && master.step2Data.taiVien) {
+                    const list = master.step2Data.taiVien;
+                    if (subId) itemData = list.find(s => String(s.id) === String(subId) || String(s.scheduleId) === String(subId));
+                    if (!itemData && subIndex !== null && list[subIndex]) itemData = list[subIndex];
+                    if (!itemData && list.length > 0) itemData = list[0];
+                }
+            }
+
+            if (!itemData && window.ScheduleFormConfig) {
+                itemData = window.ScheduleFormConfig.createEmptySubScheduleObject('TAI_VIEN');
+            }
+
+            SubScheduleDetailHelper.renderDetailView('sub-schedule-detail-container', itemData);
+        });
+    </script>
+</body>
+</html>

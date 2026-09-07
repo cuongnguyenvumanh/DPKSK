@@ -1,0 +1,30 @@
+/* SUB-TAB 5: NHÂN SỰ ĐIỀU PHỐI BKH - ENTERPRISE MATRIX STYLES */
+.bkh-matrix-table {
+    border-radius: 0 !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+}
+
+.bkh-matrix-table td, .bkh-matrix-table th {
+    border-right: 1px solid #D9DEE7 !important;
+    border-bottom: 1px solid #D9DEE7 !important;
+}
+
+.bkh-matrix-table tbody tr:hover {
+    background-color: #F7F9FC !important;
+}
+
+/* STICKY COLUMNS LAYER HIERARCHY */
+
+/* Level 50: Top Left Corner Headers TH (Col 1..2) */
+.bkh-sticky-corner-1 { position: sticky !important; top: 0 !important; left: 0px !important; z-index: 50 !important; background-color: #32475B !important; color: #FFFFFF !important; }
+.bkh-sticky-corner-2-doc { position: sticky !important; top: 0 !important; left: 50px !important; z-index: 50 !important; background-color: #32475B !important; color: #FFFFFF !important; box-shadow: 2px 0 6px rgba(0, 0, 0, 0.12) !important; }
+.bkh-sticky-corner-2-nur { position: sticky !important; top: 0 !important; left: 50px !important; z-index: 50 !important; background-color: #32475B !important; color: #FFFFFF !important; box-shadow: 2px 0 6px rgba(0, 0, 0, 0.12) !important; }
+
+/* Level 30: Scrolling Headers TH */
+.bkh-sticky-header { position: sticky !important; top: 0 !important; z-index: 30 !important; background-color: #32475B !important; color: #FFFFFF !important; }
+
+/* Level 20: Body Sticky Columns TD */
+.bkh-sticky-col-1 { position: sticky !important; left: 0px !important; z-index: 20 !important; width: 50px !important; min-width: 50px !important; max-width: 50px !important; background-color: #F8FAFC !important; vertical-align: middle !important; text-align: center !important; }
+.bkh-sticky-col-2-doc { position: sticky !important; left: 50px !important; z-index: 20 !important; width: 220px !important; min-width: 220px !important; max-width: 220px !important; background-color: #F8FAFC !important; vertical-align: middle !important; box-shadow: 2px 0 6px rgba(0, 0, 0, 0.08) !important; }
+.bkh-sticky-col-2-nur { position: sticky !important; left: 50px !important; z-index: 20 !important; width: 260px !important; min-width: 260px !important; max-width: 260px !important; background-color: #F8FAFC !important; vertical-align: middle !important; box-shadow: 2px 0 6px rgba(0, 0, 0, 0.08) !important; }

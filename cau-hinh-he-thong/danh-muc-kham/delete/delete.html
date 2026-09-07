@@ -1,0 +1,51 @@
+<!-- MODAL XÁC NHẬN XÓA DANH MỤC KHÁM -->
+<div id="delete-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center hidden select-none p-4">
+    <div class="bg-white rounded-[4px] border border-[#D9DEE5] shadow-lg w-full max-w-md overflow-hidden p-5 text-center">
+        <!-- Warning Icon -->
+        <div class="w-10 h-10 bg-[#FDECEC] text-[#D32F2F] rounded-full flex items-center justify-center mx-auto mb-3 text-lg border border-[#F5B5B5]">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+
+        <!-- Modal Title -->
+        <h2 class="text-sm font-bold text-[#1F2937] mb-2">Xóa danh mục khám</h2>
+
+        <!-- Modal Description -->
+        <p class="text-xs text-[#4B5563] mb-5 leading-relaxed">
+            Bạn đang thực hiện Xóa danh mục <strong id="delete-category-name" class="text-[#1F2937] font-bold">""</strong>. Bạn có chắc chắn thực hiện hành động này?
+        </p>
+
+        <!-- Action Buttons -->
+        <div class="flex items-center justify-center gap-2">
+            <button type="button" onclick="closeDeleteModal()" class="btn-secondary text-xs w-28">Thoát</button>
+            <button type="button" onclick="handleConfirmDelete()" class="btn-danger text-xs w-28">Xóa</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let activeDeleteCategoryId = null;
+
+    function openDeleteModal(id) {
+        activeDeleteCategoryId = id;
+        if (typeof window.getCategoryById === 'function') {
+            const item = window.getCategoryById(id);
+            if (item) {
+                document.getElementById('delete-category-name').innerText = `"${item.name}"`;
+                document.getElementById('delete-modal').classList.remove('hidden');
+            }
+        }
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('delete-modal').classList.add('hidden');
+        activeDeleteCategoryId = null;
+    }
+
+    function handleConfirmDelete() {
+        if (activeDeleteCategoryId && typeof window.deleteCategoryById === 'function') {
+            window.deleteCategoryById(activeDeleteCategoryId);
+            if (typeof window.showToast === 'function') window.showToast("Xóa thành công.", "success");
+        }
+        closeDeleteModal();
+    }
+</script>

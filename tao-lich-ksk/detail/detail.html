@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết lịch khám đơn vị | MWK Điều phối KSK</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: { 
+                        primary: { DEFAULT: '#27496D', hover: '#1F3D5A' }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome v6 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="shortcut icon" href="#">
+</head>
+<body data-depth="sub" data-active-nav="nav-tao-lich-ksk" data-breadcrumb="Chi tiết lịch khám đơn vị" class="bg-[#F4F5F7] font-sans text-[#1F2937] antialiased h-screen overflow-hidden flex flex-col">
+
+    <div class="flex h-full w-full overflow-hidden">
+        <!-- SIDEBAR CONTAINER -->
+        <div id="sidebar-container" class="flex flex-shrink-0 h-full"></div>
+
+        <!-- MAIN CONTAINER -->
+        <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-[#F4F5F7]">
+            <!-- HEADER CONTAINER -->
+            <div id="header-container"></div>
+
+            <!-- MAIN CONTENT AREA -->
+            <main class="flex-1 overflow-y-auto p-5 space-y-4">
+                <!-- Top Navigation & Header Card -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 rounded-[4px] border border-[#D9DEE5]">
+                    <div class="flex items-center gap-3">
+                        <a href="../index.html" class="w-8 h-8 rounded-[4px] bg-white border border-[#D9DEE5] hover:bg-[#F3F6FA] text-[#4B5563] flex items-center justify-center transition-colors">
+                            <i class="fa-solid fa-arrow-left text-xs"></i>
+                        </a>
+                        <div>
+                            <h1 id="detail-code" class="text-xl font-bold text-[#1F2937]">LK-2026-xxx</h1>
+                            <h2 id="detail-team-name" class="text-xs font-semibold text-[#4B5563] mt-0.5">Tên đoàn khám</h2>
+                        </div>
+                    </div>
+
+                    <!-- Header Action Buttons -->
+                    <div id="action-buttons-container" class="flex items-center gap-2 text-xs">
+                        <button type="button" onclick="openHistoryDrawer()" class="btn-secondary text-xs" title="Xem lịch sử thay đổi">
+                            <i class="fa-solid fa-clock-rotate-left text-[#27496D] text-xs"></i>
+                            <span>Lịch sử thay đổi</span>
+                        </button>
+                        <a href="../index.html" class="btn-secondary text-xs">
+                            <i class="fa-solid fa-arrow-left text-xs"></i> Danh sách
+                        </a>
+                        <div id="editable-actions" class="flex items-center gap-2">
+                            <!-- Dynamic Edit and Send buttons -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 1: THÔNG TIN KHÁCH HÀNG & PAKD (MATCHING CREATE/EDIT STEP 1) -->
+                <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] space-y-3">
+                    <div class="flex items-center justify-between border-b border-[#D9DEE5] pb-2 text-[#27496D]">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-building text-sm"></i>
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-[#1F2937]">1. Thông tin khách hàng & Phương án kinh doanh</h3>
+                        </div>
+                        <span id="detail-pakd-badge" class="badge-warning text-xs font-semibold">
+                            <i class="fa-solid fa-circle-info text-[10px]"></i> Không có PAKD
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+                        <div>
+                            <span class="block text-[#6B7280] font-medium mb-0.5">Tên khách hàng:</span>
+                            <span id="detail-contact-person" class="font-bold text-[#1F2937] text-sm"></span>
+                        </div>
+                        <div>
+                            <span class="block text-[#6B7280] font-medium mb-0.5">Tên đơn vị:</span>
+                            <span id="detail-customer-name" class="font-bold text-[#1F2937] text-sm"></span>
+                        </div>
+                        <div>
+                            <span class="block text-[#6B7280] font-medium mb-0.5">Mã đối tượng:</span>
+                            <span id="detail-customer-code" class="font-mono font-bold text-[#27496D] text-sm"></span>
+                        </div>
+                        <div>
+                            <span class="block text-[#6B7280] font-medium mb-0.5">Số lượng khách dự kiến:</span>
+                            <span id="detail-estimated-count" class="font-bold text-[#2E7D32] text-sm"></span>
+                        </div>
+                        <div>
+                            <span class="block text-[#6B7280] font-medium mb-0.5">Loại khách hàng:</span>
+                            <span id="detail-customer-type" class="inline-block px-2 py-0.5 rounded-[4px] bg-[#F4F5F7] text-[#374151] font-semibold border border-[#D9DEE5]"></span>
+                        </div>
+                        <div>
+                            <span class="block text-[#6B7280] font-medium mb-0.5">Số điện thoại:</span>
+                            <span id="detail-contact-phone" class="font-semibold text-[#27496D]"></span>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <span class="block text-[#6B7280] font-medium mb-0.5">Email liên hệ:</span>
+                            <span id="detail-contact-email" class="font-medium text-[#374151]"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 2: DANH SÁCH LỊCH KSK THEO LOẠI LỊCH (MATCHING CREATE/EDIT STEP 2 3-BOX LAYOUT) -->
+                <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] space-y-4">
+                    <div class="flex items-center justify-between border-b border-[#D9DEE5] pb-3 flex-wrap gap-2">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-week text-[#27496D] text-sm"></i>
+                            <h3 class="text-xs font-bold text-[#1F2937] uppercase tracking-wide">2. Chi tiết danh sách Lịch khám KSK</h3>
+                        </div>
+                        <div class="flex items-center gap-3 text-xs font-medium text-[#4B5563] flex-wrap">
+                            <div>Tổng số lịch: <strong id="detail-summary-tong-so-lich" class="text-[#27496D] font-bold">--</strong></div>
+                            <div>Tổng khách: <strong id="detail-summary-total-guests" class="text-[#1F2937] font-bold">0</strong></div>
+                            <div>Tổng nhân sự: <strong id="detail-summary-total-staff" class="text-[#27496D] font-bold">0</strong></div>
+                            <div id="detail-status-summary-pills" class="flex items-center gap-1.5 ml-2"></div>
+                        </div>
+                    </div>
+
+                    <!-- 3-BOX GRID CONTAINER -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        
+                        <!-- BOX 1: LỊCH NGOẠI VIỆN -->
+                        <div id="detail-box-ngoai-vien" class="bg-[#F8FAFC] border border-[#D9DEE5] rounded-[4px] p-4 space-y-3">
+                            <div class="flex items-center justify-between border-b border-[#E6EAF0] pb-2.5">
+                                <h4 class="text-xs font-bold text-[#1F2937]">Lịch ngoại viện: <span id="detail-count-ngoai-vien" class="text-[#27496D]">0</span></h4>
+                            </div>
+                            <div class="flex items-center justify-around py-2.5 bg-white rounded-[4px] border border-[#D9DEE5] text-xs">
+                                <div class="text-center flex-1">
+                                    <div class="text-[11px] font-medium text-[#6B7280]">Khách</div>
+                                    <div class="font-bold text-[#1F2937]" id="detail-guest-ngoai-vien">0</div>
+                                </div>
+                                <div class="w-px h-6 bg-[#D9DEE5]"></div>
+                                <div class="text-center flex-1">
+                                    <div class="text-[11px] font-medium text-[#6B7280]">Nhân sự</div>
+                                    <div class="font-bold text-[#27496D]" id="detail-staff-ngoai-vien">0</div>
+                                </div>
+                            </div>
+                            <div id="detail-cards-ngoai-vien" class="space-y-3"></div>
+                        </div>
+
+                        <!-- BOX 2: LỊCH TẠI VIỆN -->
+                        <div id="detail-box-tai-vien" class="bg-[#F8FAFC] border border-[#D9DEE5] rounded-[4px] p-4 space-y-3">
+                            <div class="flex items-center justify-between border-b border-[#E6EAF0] pb-2.5">
+                                <h4 class="text-xs font-bold text-[#1F2937]">Lịch tại viện: <span id="detail-count-tai-vien" class="text-[#27496D]">0</span></h4>
+                            </div>
+                            <div class="flex items-center justify-around py-2.5 bg-white rounded-[4px] border border-[#D9DEE5] text-xs">
+                                <div class="text-center flex-1">
+                                    <div class="text-[11px] font-medium text-[#6B7280]">Khách</div>
+                                    <div class="font-bold text-[#1F2937]" id="detail-guest-tai-vien">0</div>
+                                </div>
+                                <div class="w-px h-6 bg-[#D9DEE5]"></div>
+                                <div class="text-center flex-1">
+                                    <div class="text-[11px] font-medium text-[#6B7280]">Nhân sự</div>
+                                    <div class="font-bold text-[#27496D]" id="detail-staff-tai-vien">0</div>
+                                </div>
+                            </div>
+                            <div id="detail-cards-tai-vien" class="space-y-3"></div>
+                        </div>
+
+                        <!-- BOX 3: LỊCH PHƯỜNG -->
+                        <div id="detail-box-lich-phuong" class="bg-[#F8FAFC] border border-[#D9DEE5] rounded-[4px] p-4 space-y-3">
+                            <div class="flex items-center justify-between border-b border-[#E6EAF0] pb-2.5">
+                                <h4 class="text-xs font-bold text-[#1F2937]">Lịch phường: <span id="detail-count-lich-phuong" class="text-[#7E22CE]">0</span></h4>
+                            </div>
+                            <div class="flex items-center justify-around py-2.5 bg-white rounded-[4px] border border-[#D9DEE5] text-xs">
+                                <div class="text-center flex-1">
+                                    <div class="text-[11px] font-medium text-[#6B7280]">Khách</div>
+                                    <div class="font-bold text-[#1F2937]" id="detail-guest-lich-phuong">0</div>
+                                </div>
+                                <div class="w-px h-6 bg-[#D9DEE5]"></div>
+                                <div class="text-center flex-1">
+                                    <div class="text-[11px] font-medium text-[#6B7280]">Nhân sự</div>
+                                    <div class="font-bold text-[#27496D]" id="detail-staff-lich-phuong">0</div>
+                                </div>
+                            </div>
+                            <div id="detail-cards-lich-phuong" class="space-y-3"></div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- DRAWER LỊCH SỬ THAY ĐỔI -->
+    <div id="history-drawer-backdrop" onclick="closeHistoryDrawer()" class="fixed inset-0 bg-slate-900/30 backdrop-blur-xs z-50 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
+    <div id="history-drawer" class="fixed top-0 right-0 bottom-0 w-[460px] max-w-full bg-white shadow-lg z-50 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col font-sans select-none border-l border-[#D9DEE5]">
+        <!-- Header -->
+        <div class="px-5 h-[52px] bg-[#27496D] text-white flex items-center justify-between shadow-xs">
+            <div class="flex items-center gap-2.5">
+                <div class="w-7 h-7 rounded-[4px] bg-white/10 text-white flex items-center justify-center text-sm">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-sm text-white leading-tight">Lịch sử thay đổi</h3>
+                    <p id="drawer-schedule-code" class="text-[11px] text-slate-300 font-mono"></p>
+                </div>
+            </div>
+            <button type="button" onclick="closeHistoryDrawer()" class="w-8 h-8 rounded-[4px] hover:bg-white/10 text-white flex items-center justify-center transition-colors cursor-pointer" title="Đóng">
+                <i class="fa-solid fa-xmark text-base"></i>
+            </button>
+        </div>
+
+        <!-- Timeline Body -->
+        <div id="history-timeline-container" class="flex-1 overflow-y-auto p-5 space-y-4 bg-[#F4F5F7]">
+            <!-- Timeline items rendered dynamically -->
+        </div>
+
+        <!-- Footer -->
+        <div class="px-5 py-3 bg-white border-t border-[#D9DEE5] flex items-center justify-between text-xs text-[#6B7280]">
+            <span id="history-item-count" class="font-medium text-[#4B5563]"></span>
+            <button type="button" onclick="closeHistoryDrawer()" class="btn-secondary text-xs">
+                Đóng
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN JAVASCRIPT & DATA-STORE INTEGRATION -->
+    <script src="../../js/data-store.js"></script>
+    <script src="../../js/main.js"></script>
+    <script>
+        let currentId = null;
+        let currentItem = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            currentId = urlParams.get('id') ? parseInt(urlParams.get('id')) : null;
+
+            if (!currentId) {
+                alert('Không tìm thấy thông tin lịch KSK!');
+                window.location.href = '../index.html';
+                return;
+            }
+
+            currentItem = MWKDataStore.getKskScheduleById(currentId);
+            if (!currentItem) {
+                alert('Bản ghi lịch KSK không tồn tại!');
+                window.location.href = '../index.html';
+                return;
+            }
+
+            renderDetailView();
+        });
+
+        function renderDetailView() {
+            // Master Header Card: Shows unit code and name only. NEVER render status badge at master level.
+            document.getElementById('detail-code').innerText = currentItem.code || currentItem.maDoiTuong || `LK-2026-${currentItem.id}`;
+            document.getElementById('detail-team-name').innerText = currentItem.customerName || currentItem.teamName || currentItem.tenDonVi;
+
+            const editableActions = document.getElementById('editable-actions');
+            if (editableActions) {
+                if (MWKDataStore.canEditSchedule(currentItem)) {
+                    editableActions.innerHTML = `
+                        <a href="../edit/edit.html?id=${currentItem.id}" class="btn-secondary text-xs">
+                            <i class="fa-regular fa-pen-to-square text-xs"></i> Chỉnh sửa
+                        </a>
+                    `;
+                } else {
+                    editableActions.innerHTML = '';
+                }
+            }
+
+            // Populate Section 1 Fields
+            document.getElementById('detail-contact-person').innerText = currentItem.contactPerson || currentItem.customerName || '-';
+            document.getElementById('detail-customer-name').innerText = currentItem.customerName || currentItem.teamName || '-';
+            document.getElementById('detail-customer-code').innerText = currentItem.customerCode || currentItem.code || currentItem.maDoiTuong || '-';
+            document.getElementById('detail-customer-type').innerText = currentItem.customerType || 'Doanh nghiệp';
+            document.getElementById('detail-contact-phone').innerText = currentItem.contactPhone || 'Chưa cập nhật';
+            document.getElementById('detail-contact-email').innerText = currentItem.contactEmail || 'Chưa cập nhật';
+            document.getElementById('detail-estimated-count').innerText = `${currentItem.estimatedCount || currentItem.soLuong || 0} khách`;
+
+            const pakdBadgeContainer = document.getElementById('detail-pakd-badge');
+            const isPakd = currentItem.suDungPAKD === true || currentItem.pakdStatus === 'Có PAKD' || currentItem.pakdStatus === 'Đã có PAKD' || currentItem.phuongAnKinhDoanh === 'Có PAKD';
+            if (isPakd) {
+                pakdBadgeContainer.className = 'badge-success text-xs font-semibold';
+                pakdBadgeContainer.innerHTML = `<i class="fa-solid fa-circle-check text-[10px]"></i> Có sử dụng PAKD`;
+            } else {
+                pakdBadgeContainer.className = 'badge-warning text-xs font-semibold';
+                pakdBadgeContainer.innerHTML = `<i class="fa-solid fa-circle-info text-[10px]"></i> Không sử dụng PAKD`;
+            }
+
+            // SECTION 2: Retrieve child schedules directly from MWKDataStore single source of truth
+            const childSchedules = MWKDataStore.getUnitChildSchedules(currentItem);
+
+            // Mandatory Console Debugging
+            childSchedules.forEach(schedule => {
+                console.log("CHILD SCHEDULE:", schedule);
+                console.log("CHILD STATUS:", schedule.trangThai);
+            });
+
+            // Categorize into 3 boxes
+            const taiVienList = childSchedules.filter(s => s.scheduleType === 'TAI_VIEN');
+            const ngoaiVienList = childSchedules.filter(s => s.scheduleType === 'NGOAI_VIEN');
+            const lichPhuongList = childSchedules.filter(s => s.scheduleType === 'LICH_PHUONG');
+
+            // Summary Totals
+            const countTV = taiVienList.length;
+            const countNV = ngoaiVienList.length;
+            const countLP = lichPhuongList.length;
+            const totalSchedules = childSchedules.length;
+
+            let parts = [];
+            if (countTV > 0) parts.push(`${countTV} Tại viện`);
+            if (countNV > 0) parts.push(`${countNV} Ngoại viện`);
+            if (countLP > 0) parts.push(`${countLP} Phường`);
+
+            const summaryTongSoLich = `${totalSchedules}` + (parts.length > 0 ? ` (${parts.join('; ')})` : '');
+            document.getElementById('detail-summary-tong-so-lich').innerText = summaryTongSoLich;
+
+            const guestTV = taiVienList.reduce((s, i) => s + (i.soLuongKhach || i.guests || 0), 0);
+            const guestNV = ngoaiVienList.reduce((s, i) => s + (i.soLuongKhach || i.guests || 0), 0);
+            const guestLP = lichPhuongList.reduce((s, i) => s + (i.soLuongKhach || i.guests || 0), 0);
+
+            const staffTV = taiVienList.reduce((s, i) => s + (i.tongNhanSu || i.staff || 0), 0);
+            const staffNV = ngoaiVienList.reduce((s, i) => s + (i.tongNhanSu || i.staff || 0), 0);
+            const staffLP = lichPhuongList.reduce((s, i) => s + (i.tongNhanSu || i.staff || 0), 0);
+
+            const totalGuests = (guestTV + guestNV + guestLP) || currentItem.estimatedCount || currentItem.soLuong || 0;
+            const totalStaff = staffTV + staffNV + staffLP || currentItem.tongNhanSu || 0;
+
+            document.getElementById('detail-summary-total-guests').innerText = totalGuests;
+            document.getElementById('detail-summary-total-staff').innerText = totalStaff;
+
+            // Render Dynamic Section 2 Status Summary Pills
+            const statusCounts = {};
+            childSchedules.forEach(s => {
+                const key = normalizeScheduleStatusKey(s.trangThai || s.status);
+                statusCounts[key] = (statusCounts[key] || 0) + 1;
+            });
+
+            let summaryPillsHtml = '';
+            for (let key in statusCounts) {
+                const cfg = SCHEDULE_STATUS_CONFIG[key];
+                if (cfg) {
+                    summaryPillsHtml += `<span class="schedule-status ${cfg.className} mr-1.5">${statusCounts[key]} ${cfg.label}</span>`;
+                }
+            }
+
+            const summaryPillsElem = document.getElementById('detail-status-summary-pills');
+            if (summaryPillsElem) summaryPillsElem.innerHTML = summaryPillsHtml;
+
+            // Box Headers & Counts
+            document.getElementById('detail-count-tai-vien').innerText = countTV;
+            document.getElementById('detail-guest-tai-vien').innerText = guestTV;
+            document.getElementById('detail-staff-tai-vien').innerText = staffTV;
+
+            document.getElementById('detail-count-ngoai-vien').innerText = countNV;
+            document.getElementById('detail-guest-ngoai-vien').innerText = guestNV;
+            document.getElementById('detail-staff-ngoai-vien').innerText = staffNV;
+
+            document.getElementById('detail-count-lich-phuong').innerText = countLP;
+            document.getElementById('detail-guest-lich-phuong').innerText = guestLP;
+            document.getElementById('detail-staff-lich-phuong').innerText = staffLP;
+
+            // Box Visibility
+            document.getElementById('detail-box-tai-vien').classList.toggle('hidden', countTV === 0);
+            document.getElementById('detail-box-ngoai-vien').classList.toggle('hidden', countNV === 0);
+            document.getElementById('detail-box-lich-phuong').classList.toggle('hidden', countLP === 0);
+
+            // Red Warning Banner if any child schedule is returned
+            const hasReturned = childSchedules.some(s => s.trangThai === 'TRA_LAI');
+            if (hasReturned && !document.getElementById('returned-banner-alert')) {
+                const mainContainer = document.querySelector('main');
+                if (mainContainer) {
+                    const alertBanner = document.createElement('div');
+                    alertBanner.id = 'returned-banner-alert';
+                    alertBanner.className = 'bg-red-50 border-l-4 border-red-500 p-4 rounded-[4px] shadow-2xs flex items-center justify-between';
+                    alertBanner.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center flex-shrink-0 text-sm">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-red-800 uppercase tracking-wide">Cảnh báo: Có lịch con bị trả lại cần xử lý</h4>
+                                <p class="text-xs text-red-700 mt-0.5">Cán bộ duyệt đã trả lại lịch con. Vui lòng xem lý do bên dưới và nhấn <strong>Chỉnh sửa</strong> để cập nhật lại.</p>
+                            </div>
+                        </div>
+                        <a href="../edit/edit.html?id=${currentItem.id}" class="btn-primary bg-red-600 hover:bg-red-700 text-white text-xs border-none flex-shrink-0">
+                            <i class="fa-regular fa-pen-to-square text-xs"></i> Chỉnh sửa ngay
+                        </a>
+                    `;
+                    mainContainer.insertBefore(alertBanner, mainContainer.children[1] || mainContainer.firstChild);
+                }
+            }
+
+            // Render Child Schedule Cards in each Box
+            function renderChildScheduleCard(schedule, container) {
+                const guests = schedule.soLuongKhach || schedule.guests || 0;
+                const staff = schedule.tongNhanSu || schedule.staff || 0;
+                const facility = schedule.diaDiemKham || schedule.facility || 'Med Ba Đình';
+                const dateFormatted = schedule.ngayKhamFormatted || (schedule.ngayKham ? schedule.ngayKham.split('-').reverse().join('/') : 'Chưa xếp ngày');
+                const maLich = schedule.scheduleId || schedule.id || schedule.maLich || 'SCH-01';
+
+                const statusBadgeHtml = renderScheduleStatus(schedule);
+
+                let subTypeFolder = 'tai-vien';
+                if (schedule.scheduleType === 'NGOAI_VIEN') subTypeFolder = 'ngoai-vien';
+                else if (schedule.scheduleType === 'LICH_PHUONG') subTypeFolder = 'lich-phuong';
+
+                let reasonBoxHtml = '';
+                if (schedule.trangThai === 'TRA_LAI') {
+                    const reason = schedule.lyDoTra || schedule.reason || 'Cần điều chỉnh lại nhân sự và thời gian khám phù hợp.';
+                    reasonBoxHtml = `
+                        <div class="mt-2.5 p-2.5 bg-red-50 border border-red-200 rounded-[4px] text-xs text-red-800 space-y-1">
+                            <div class="flex items-center gap-1.5 font-bold text-red-700">
+                                <i class="fa-solid fa-circle-exclamation text-xs"></i>
+                                <span>Lý do trả lại từ CB Duyệt:</span>
+                            </div>
+                            <p class="text-red-700 text-xs pl-5 font-medium">${reason}</p>
+                        </div>
+                    `;
+                }
+
+                let timeText = '<span>07:30 - 11:30</span>';
+                if (schedule.caSang && schedule.caChieu) {
+                    const sangStr = schedule.gioSang ? `${schedule.gioSang.batDau} - ${schedule.gioSang.ketThuc}` : '07:30 - 11:00';
+                    const chieuStr = schedule.gioChieu ? `${schedule.gioChieu.batDau} - ${schedule.gioChieu.ketThuc}` : '13:30 - 17:30';
+                    timeText = `<span>${sangStr}</span><span class="ml-4">${chieuStr}</span>`;
+                } else if (schedule.caSang || schedule.gioSang || schedule.session === 'Sáng') {
+                    const sangStr = schedule.gioSang ? `${schedule.gioSang.batDau} - ${schedule.gioSang.ketThuc}` : '07:30 - 11:30';
+                    timeText = `<span>${sangStr}</span>`;
+                } else if (schedule.caChieu || schedule.gioChieu || schedule.session === 'Chiều') {
+                    const chieuStr = schedule.gioChieu ? `${schedule.gioChieu.batDau} - ${schedule.gioChieu.ketThuc}` : '13:30 - 17:30';
+                    timeText = `<span>${chieuStr}</span>`;
+                }
+
+                const cardHtml = `
+                    <div class="bg-white border ${schedule.trangThai === 'TRA_LAI' ? 'border-red-300 ring-1 ring-red-200' : 'border-[#D9DEE5]'} rounded-[4px] p-4 space-y-2.5 shadow-2xs text-xs">
+                        <div class="flex items-center justify-between">
+                            <strong class="font-bold text-[#1F2937] text-xs font-mono">${maLich}</strong>
+                            ${statusBadgeHtml}
+                        </div>
+
+                        <div class="flex items-center gap-2 text-[#4B5563] flex-wrap font-medium">
+                            <div class="flex items-center gap-1">
+                                <i class="fa-regular fa-calendar text-[#27496D] text-xs"></i>
+                                <span class="text-[#1F2937] font-semibold">${dateFormatted}</span>
+                            </div>
+                            <div class="flex items-center gap-1.5 ml-2">
+                                <i class="fa-regular fa-clock text-[#27496D] text-xs"></i>
+                                <span class="text-[#27496D] font-bold inline-flex items-center">${timeText}</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-1.5 text-[#374151] font-medium">
+                            <i class="fa-solid fa-location-dot text-[#27496D] text-xs"></i>
+                            <span>${facility}</span>
+                        </div>
+
+                        <div class="flex items-center justify-between gap-4 text-xs font-medium pt-2 border-t border-[#F0F3F7]">
+                            <div class="flex items-center gap-3">
+                                <div>Khách <strong class="text-[#1F2937] font-bold ml-1">${guests}</strong></div>
+                                <div>Nhân sự <strong class="text-[#27496D] font-bold ml-1">${staff}</strong></div>
+                            </div>
+                            <a href="../${subTypeFolder}/detail.html?subId=${schedule.scheduleId || schedule.id}&editId=${currentItem.id}" class="text-[#27496D] hover:underline font-semibold flex items-center gap-1 text-xs" title="Xem chi tiết lịch con">
+                                <i class="fa-regular fa-eye text-xs"></i> Xem chi tiết
+                            </a>
+                        </div>
+                        ${reasonBoxHtml}
+                    </div>
+                `;
+                container.innerHTML += cardHtml;
+            }
+
+            if (totalSchedules === 0) {
+                const boxContainer = document.getElementById('detail-box-ngoai-vien') ? document.getElementById('detail-box-ngoai-vien').parentElement : null;
+                if (boxContainer) {
+                    boxContainer.innerHTML = `
+                        <div class="col-span-3 bg-[#F8FAFC] border border-[#D9DEE5] rounded-[4px] p-8 text-center space-y-2">
+                            <div class="w-12 h-12 rounded-full bg-white border border-[#D9DEE5] flex items-center justify-center text-[#9CA3AF] text-xl mx-auto">
+                                <i class="fa-regular fa-calendar-xmark"></i>
+                            </div>
+                            <p class="font-bold text-sm text-[#374151]">Chưa có lịch khám KSK được tạo.</p>
+                            <p class="text-xs text-[#6B7280]">Đơn vị này hiện mới lưu thông tin Master và chưa bổ sung lịch con nào.</p>
+                        </div>
+                    `;
+                }
+            } else {
+                // Render Cards to Box Containers
+                const tvContainer = document.getElementById('detail-cards-tai-vien');
+                if (tvContainer) {
+                    tvContainer.innerHTML = '';
+                    taiVienList.forEach(s => renderChildScheduleCard(s, tvContainer));
+                }
+
+                const nvContainer = document.getElementById('detail-cards-ngoai-vien');
+                if (nvContainer) {
+                    nvContainer.innerHTML = '';
+                    ngoaiVienList.forEach(s => renderChildScheduleCard(s, nvContainer));
+                }
+
+                const lpContainer = document.getElementById('detail-cards-lich-phuong');
+                if (lpContainer) {
+                    lpContainer.innerHTML = '';
+                    lichPhuongList.forEach(s => renderChildScheduleCard(s, lpContainer));
+                }
+            }
+        }
+
+        function sendToTongHop() {
+            if (confirm('Bạn có chắc chắn muốn gửi lịch KSK này sang Bộ phận Hành chính Tổng hợp?')) {
+                const item = MWKDataStore.getKskScheduleById(currentId);
+                if (item && item.step2Data) {
+                    ['taiVien', 'ngoaiVien', 'lichPhuong'].forEach(key => {
+                        if (Array.isArray(item.step2Data[key])) {
+                            item.step2Data[key].forEach(child => {
+                                const keySt = MWKDataStore.normalizeScheduleStatusKey(child.trangThai || child.status);
+                                if (keySt === 'TAO_MOI' || keySt === 'TRA_LAI') {
+                                    child.trangThai = 'CHO_TONG_HOP';
+                                    child.status = 'Chờ tổng hợp';
+                                    child.ngayGuiTongHop = new Date().toISOString();
+                                }
+                            });
+                        }
+                    });
+                }
+
+                MWKDataStore.updateKskSchedule(currentId, {
+                    status: 'Chờ tổng hợp',
+                    trangThai: 'CHO_TONG_HOP',
+                    daGuiTongHop: true,
+                    ngayGuiTongHop: new Date().toISOString(),
+                    step2Data: item ? item.step2Data : undefined
+                });
+
+                if (window.showToast) {
+                    window.showToast('Đã gửi tổng hợp lịch khám thành công!', 'success');
+                }
+
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
+            }
+        }
+
+        function openHistoryDrawer() {
+            const drawer = document.getElementById('history-drawer');
+            const backdrop = document.getElementById('history-drawer-backdrop');
+            const container = document.getElementById('history-timeline-container');
+            const codeElem = document.getElementById('drawer-schedule-code');
+
+            if (codeElem) codeElem.innerText = currentItem ? (currentItem.code || `LK-2026-${currentItem.id}`) : '';
+            if (container) container.innerHTML = '';
+
+            const historyList = MWKDataStore.getKskScheduleHistory(currentId);
+            const countElem = document.getElementById('history-item-count');
+            if (countElem) countElem.innerText = `Tổng số ${historyList.length} lượt tác động / cập nhật`;
+
+            if (historyList.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-10 text-[#9CA3AF]">
+                        <i class="fa-solid fa-clock-rotate-left text-3xl mb-2 text-[#CBD5E1]"></i>
+                        <p class="text-xs">Chưa có lịch sử thay đổi nào được ghi nhận</p>
+                    </div>
+                `;
+            } else {
+                historyList.forEach((h, index) => {
+                    const isFirst = index === 0;
+                    let displayTime = h.timestamp || '';
+                    
+                    let changesHtml = '';
+                    if (Array.isArray(h.changes) && h.changes.length > 0) {
+                        changesHtml = `
+                            <div class="mt-2 pt-2 border-t border-[#F0F3F7] space-y-1 text-[11px]">
+                                ${h.changes.map(c => `
+                                    <div class="flex items-center gap-1.5 text-[#4B5563]">
+                                        <span class="font-semibold text-[#1F2937]">${c.field}:</span>
+                                        <span class="line-through text-[#9CA3AF]">${c.oldVal}</span>
+                                        <i class="fa-solid fa-arrow-right text-[9px] text-[#27496D]"></i>
+                                        <span class="font-bold text-[#27496D]">${c.newVal}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                    }
+
+                    const itemHtml = `
+                        <div class="relative pl-6 pb-4 border-l-2 ${isFirst ? 'border-[#27496D]' : 'border-[#D9DEE5]'} last:border-l-0 last:pb-0">
+                            <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full ${isFirst ? 'bg-[#27496D] ring-4 ring-[#E8F1FB]' : 'bg-[#9CA3AF]'} flex items-center justify-center text-white text-[8px]">
+                                <i class="fa-solid ${isFirst ? 'fa-check' : 'fa-circle'}"></i>
+                            </div>
+                            <div class="bg-white p-3.5 rounded-[4px] border border-[#D9DEE5] space-y-1.5 shadow-2xs">
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="font-bold text-[#1F2937]">${h.action || 'Tác động hệ thống'}</span>
+                                    <span class="text-[11px] text-[#6B7280] font-mono">${displayTime}</span>
+                                </div>
+                                <p class="text-xs text-[#374151] font-medium">${h.details || 'Thay đổi thông tin lịch KSK'}</p>
+                                ${changesHtml}
+                                <div class="text-[11px] text-[#6B7280] pt-1.5 flex items-center gap-1">
+                                    <i class="fa-solid fa-user-gear text-[10px] text-[#27496D]"></i>
+                                    <span>Thực hiện bởi: <strong class="text-[#1F2937] font-semibold">${h.actor || h.user || 'Nguyễn Văn An (Cán bộ lập lịch)'}</strong></span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += itemHtml;
+                });
+            }
+
+            if (backdrop) {
+                backdrop.classList.remove('pointer-events-none', 'opacity-0');
+                backdrop.classList.add('opacity-100');
+            }
+            if (drawer) {
+                drawer.classList.remove('translate-x-full');
+            }
+        }
+
+        function closeHistoryDrawer() {
+            const drawer = document.getElementById('history-drawer');
+            const backdrop = document.getElementById('history-drawer-backdrop');
+
+            if (backdrop) {
+                backdrop.classList.remove('opacity-100');
+                backdrop.classList.add('opacity-0', 'pointer-events-none');
+            }
+            if (drawer) {
+                drawer.classList.add('translate-x-full');
+            }
+        }
+    </script>
+</body>
+</html>

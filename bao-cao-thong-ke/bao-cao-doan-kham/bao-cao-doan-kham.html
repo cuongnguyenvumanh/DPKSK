@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo cáo thống kê đoàn khám | MWK Điều phối KSK</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: { 
+                        primary: { DEFAULT: '#27496D', hover: '#1F3D5A' }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome v6 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="shortcut icon" href="#">
+</head>
+<body data-depth="sub" data-active-nav="nav-report-doan-kham" data-breadcrumb="Báo cáo thống kê đoàn khám" data-custom-pagination="true" class="bg-[#F4F5F7] font-sans text-[#1F2937] antialiased h-screen overflow-hidden flex flex-col">
+
+    <div class="flex h-full w-full overflow-hidden">
+        <!-- SIDEBAR CONTAINER -->
+        <div id="sidebar-container" class="flex flex-shrink-0 h-full"></div>
+
+        <!-- MAIN CONTAINER -->
+        <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-[#F4F5F7]">
+            <!-- HEADER CONTAINER -->
+            <div id="header-container"></div>
+
+            <!-- MAIN CONTENT -->
+            <main class="flex-1 overflow-y-auto p-5 space-y-4">
+                <!-- Page Title Card -->
+                <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5]">
+                    <h1 class="text-xl font-bold text-[#1F2937]">Báo cáo thống kê đoàn khám</h1>
+                    <p class="text-xs text-[#6B7280] mt-0.5">Thống kê số lượng đoàn khám sức khỏe theo thời gian, cơ sở thực hiện và loại hình khách hàng</p>
+                </div>
+
+                <!-- 1. BỘ LỌC CARD -->
+                <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] space-y-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                        <!-- Từ ngày -->
+                        <div>
+                            <label class="sys-label">Từ ngày</label>
+                            <input type="date" id="filter-from-date" onchange="handleFilterChange()" class="sys-input text-xs">
+                        </div>
+                        <!-- Đến ngày -->
+                        <div>
+                            <label class="sys-label">Đến ngày</label>
+                            <input type="date" id="filter-to-date" onchange="handleFilterChange()" class="sys-input text-xs">
+                        </div>
+                        <!-- Loại lịch -->
+                        <div>
+                            <label class="sys-label">Loại lịch</label>
+                            <select id="filter-schedule-type" onchange="handleFilterChange()" class="sys-select text-xs">
+                                <option value="">Tất cả loại lịch</option>
+                                <option value="Lịch tuần">Lịch tuần</option>
+                                <option value="Lịch phát sinh">Lịch phát sinh</option>
+                            </select>
+                        </div>
+                        <!-- Cơ sở thực hiện -->
+                        <div>
+                            <label class="sys-label">Cơ sở thực hiện</label>
+                            <select id="filter-facility" onchange="handleFilterChange()" class="sys-select text-xs">
+                                <!-- Dynamic -->
+                            </select>
+                        </div>
+                        <!-- Loại hình khách hàng -->
+                        <div>
+                            <label class="sys-label">Loại hình KH</label>
+                            <select id="filter-customer-type" onchange="handleFilterChange()" class="sys-select text-xs">
+                                <option value="">Tất cả loại hình</option>
+                                <option value="Doanh nghiệp">Doanh nghiệp</option>
+                                <option value="Trường học">Trường học</option>
+                                <option value="Cơ quan nhà nước">Cơ quan nhà nước</option>
+                                <option value="Cá nhân / Khác">Cá nhân / Khác</option>
+                            </select>
+                        </div>
+                        <!-- Trạng thái đoàn khám -->
+                        <div>
+                            <label class="sys-label">Trạng thái</label>
+                            <select id="filter-status" onchange="handleFilterChange()" class="sys-select text-xs">
+                                <option value="">Tất cả trạng thái</option>
+                                <option value="Đang thực hiện">Đang thực hiện</option>
+                                <option value="Hoàn thành">Hoàn thành</option>
+                                <option value="Đã hủy">Đã hủy</option>
+                                <option value="Chờ xác nhận">Chờ xác nhận</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex items-center justify-end gap-2 pt-2 border-t border-[#E6EAF0]">
+                        <button type="button" onclick="handleFilterChange()" class="btn-primary text-xs">
+                            <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                            <span>Tra cứu</span>
+                        </button>
+                        <button type="button" onclick="resetFilters()" class="btn-secondary text-xs">
+                            <i class="fa-solid fa-rotate-left text-xs"></i>
+                            <span>Đặt lại</span>
+                        </button>
+                        <button type="button" onclick="exportExcel()" class="btn-secondary text-xs">
+                            <i class="fa-solid fa-file-excel text-xs text-[#2E7D32]"></i>
+                            <span>Xuất Excel</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2. DASHBOARD KPI (4 Cards on 1 Row) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- KPI 1: Tổng số đoàn khám -->
+                    <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-[4px] bg-[#E8F1FB] text-[#27496D] flex items-center justify-center text-lg flex-shrink-0 border border-[#B3CDE6]">
+                            <i class="fa-solid fa-hospital-user"></i>
+                        </div>
+                        <div>
+                            <span class="text-2xl font-bold text-[#1F2937] font-mono tracking-tight" id="kpi-total-doan">0</span>
+                            <h4 class="text-xs font-medium text-[#6B7280]">Tổng số đoàn khám</h4>
+                        </div>
+                    </div>
+
+                    <!-- KPI 2: Đoàn khám theo lịch tuần -->
+                    <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-[4px] bg-[#E6F4EA] text-[#2E7D32] flex items-center justify-center text-lg flex-shrink-0 border border-[#A5D6A7]">
+                            <i class="fa-solid fa-calendar-week"></i>
+                        </div>
+                        <div>
+                            <span class="text-2xl font-bold text-[#1F2937] font-mono tracking-tight" id="kpi-lich-tuan">0</span>
+                            <h4 class="text-xs font-medium text-[#6B7280]">Đoàn khám theo lịch tuần</h4>
+                        </div>
+                    </div>
+
+                    <!-- KPI 3: Đoàn khám phát sinh -->
+                    <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-[4px] bg-[#FFF3E0] text-[#ED6C02] flex items-center justify-center text-lg flex-shrink-0 border border-[#FFCC80]">
+                            <i class="fa-solid fa-bolt"></i>
+                        </div>
+                        <div>
+                            <span class="text-2xl font-bold text-[#1F2937] font-mono tracking-tight" id="kpi-lich-phat-sinh">0</span>
+                            <h4 class="text-xs font-medium text-[#6B7280]">Đoàn khám phát sinh</h4>
+                        </div>
+                    </div>
+
+                    <!-- KPI 4: Đoàn khám bị hủy -->
+                    <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-[4px] bg-[#FDECEC] text-[#D32F2F] flex items-center justify-center text-lg flex-shrink-0 border border-[#F5B5B5]">
+                            <i class="fa-solid fa-calendar-xmark"></i>
+                        </div>
+                        <div>
+                            <span class="text-2xl font-bold text-[#1F2937] font-mono tracking-tight" id="kpi-bi-huy">0</span>
+                            <h4 class="text-xs font-medium text-[#6B7280]">Đoàn khám bị hủy</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. BIỂU ĐỒ (CHARTS SECTION) -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    <!-- Biểu đồ cột -->
+                    <div class="lg:col-span-1 bg-white p-4 rounded-[4px] border border-[#D9DEE5] flex flex-col justify-between">
+                        <div class="flex items-center justify-between mb-3 border-b border-[#E6EAF0] pb-2">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-[#1F2937] flex items-center gap-2">
+                                <i class="fa-solid fa-chart-column text-[#27496D]"></i> Thống kê đoàn khám theo thời gian
+                            </h3>
+                        </div>
+                        <div class="relative h-56">
+                            <canvas id="chart-timeline"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Biểu đồ tròn cơ sở -->
+                    <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] flex flex-col justify-between">
+                        <div class="flex items-center justify-between mb-3 border-b border-[#E6EAF0] pb-2">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-[#1F2937] flex items-center gap-2">
+                                <i class="fa-solid fa-chart-pie text-[#2E7D32]"></i> Thống kê theo Cơ sở thực hiện
+                            </h3>
+                        </div>
+                        <div class="relative h-56">
+                            <canvas id="chart-facility"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Biểu đồ tròn loại hình KH -->
+                    <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] flex flex-col justify-between">
+                        <div class="flex items-center justify-between mb-3 border-b border-[#E6EAF0] pb-2">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-[#1F2937] flex items-center gap-2">
+                                <i class="fa-solid fa-chart-pie text-[#ED6C02]"></i> Thống kê theo Loại hình khách hàng
+                            </h3>
+                        </div>
+                        <div class="relative h-56">
+                            <canvas id="chart-customer-type"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. BẢNG DỮ LIỆU CONTAINER -->
+                <div class="space-y-3">
+                    <div class="bg-white p-3 rounded-[4px] border border-[#D9DEE5] flex items-center justify-between">
+                        <div class="relative w-full max-w-md">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] text-xs"></i>
+                            <input type="text" id="search-input" oninput="handleSearchFilterChange()" placeholder="Tìm kiếm theo Mã đoàn khám, Tên đoàn khám..." class="w-full h-9 pl-9 pr-3 bg-white border border-[#D9DEE5] rounded-[4px] text-xs text-[#1F2937] focus:outline-none focus:border-[#27496D]">
+                        </div>
+                        <span class="text-xs text-[#6B7280] font-medium hidden sm:inline" id="table-record-count">Hiển thị 0 bản ghi</span>
+                    </div>
+
+                    <!-- DATA TABLE & PAGINATION UNIFIED CONTAINER -->
+                    <div class="bg-white rounded-[4px] border border-[#D9DEE5] overflow-hidden flex flex-col">
+                        <div class="overflow-x-auto">
+                            <table class="table-his">
+                                <thead>
+                                    <tr>
+                                        <th class="py-3 px-3 w-14 text-center">STT</th>
+                                        <th class="py-3 px-3">Mã đoàn</th>
+                                        <th class="py-3 px-3">Tên đoàn khám</th>
+                                        <th class="py-3 px-3">Ngày khám</th>
+                                        <th class="py-3 px-3">Cơ sở thực hiện</th>
+                                        <th class="py-3 px-3">Loại hình KH</th>
+                                        <th class="py-3 px-3">Loại lịch</th>
+                                        <th class="py-3 px-3 text-center">Trạng thái</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-body" class="divide-y divide-[#E6EAF0] text-xs">
+                                    <!-- Dynamic rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Pagination Container -->
+                        <div id="pagination-container"></div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../../js/data-store.js"></script>
+    <script src="../../js/main.js"></script>
+    <script>
+        let rawDoanKhamData = [];
+        let currentPage = 1;
+        let pageSize = 10;
+
+        function changePageSize(val) {
+            pageSize = parseInt(val) || 20;
+            currentPage = 1;
+            renderTableOnly();
+        }
+
+        function renderPagination(total, start, end) {
+            const container = document.getElementById('pagination-container');
+            if (!container) return;
+
+            if (total === 0) {
+                container.innerHTML = '';
+                return;
+            }
+
+            const totalPages = Math.ceil(total / pageSize);
+
+            let html = `
+                <div class="p-3 border-t border-[#D9DEE5] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs bg-white">
+                    <div class="flex items-center gap-2 text-[#4B5563]">
+                        <span>Hiển thị</span>
+                        <select onchange="changePageSize(this.value)" class="h-8 px-2 bg-white border border-[#D9DEE5] rounded-[4px] text-xs text-[#1F2937] font-medium focus:outline-none focus:border-[#27496D] cursor-pointer">
+                            <option value="10" ${pageSize === 10 ? 'selected' : ''}>10</option>
+                            <option value="20" ${pageSize === 20 ? 'selected' : ''}>20</option>
+                            <option value="50" ${pageSize === 50 ? 'selected' : ''}>50</option>
+                            <option value="100" ${pageSize === 100 ? 'selected' : ''}>100</option>
+                        </select>
+                        <span>bản ghi.</span>
+                        <span class="font-medium text-[#4B5563] ml-2">
+                            ${start}-${end} trong tổng ${total}
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <button type="button" onclick="goToPage(1)" ${currentPage === 1 ? 'disabled' : ''} class="h-8 w-8 flex items-center justify-center text-[#4B5563] hover:text-[#1F2937] hover:bg-[#F3F6FA] rounded-[4px] disabled:opacity-30 cursor-pointer transition-colors" title="Trang đầu">
+                            <i class="fa-solid fa-angles-left text-[11px]"></i>
+                        </button>
+                        <button type="button" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} class="h-8 w-8 flex items-center justify-center text-[#4B5563] hover:text-[#1F2937] hover:bg-[#F3F6FA] rounded-[4px] disabled:opacity-30 cursor-pointer transition-colors" title="Trang trước">
+                            <i class="fa-solid fa-chevron-left text-[11px]"></i>
+                        </button>
+            `;
+
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === currentPage) {
+                    html += `<button type="button" class="h-8 min-w-[32px] px-2.5 bg-white border border-[#27496D] text-[#27496D] font-bold rounded-[4px] cursor-pointer flex items-center justify-center">${i}</button>`;
+                } else if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    html += `<button type="button" onclick="goToPage(${i})" class="h-8 min-w-[32px] px-2.5 text-[#374151] hover:bg-[#F3F6FA] font-medium rounded-[4px] cursor-pointer flex items-center justify-center transition-colors">${i}</button>`;
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    html += `<span class="px-1.5 text-[#9CA3AF]">...</span>`;
+                }
+            }
+
+            html += `
+                        <button type="button" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} class="h-8 w-8 flex items-center justify-center text-[#4B5563] hover:text-[#1F2937] hover:bg-[#F3F6FA] rounded-[4px] disabled:opacity-30 cursor-pointer transition-colors" title="Trang sau">
+                            <i class="fa-solid fa-chevron-right text-[11px]"></i>
+                        </button>
+                        <button type="button" onclick="goToPage(${totalPages})" ${currentPage === totalPages ? 'disabled' : ''} class="h-8 w-8 flex items-center justify-center text-[#4B5563] hover:text-[#1F2937] hover:bg-[#F3F6FA] rounded-[4px] disabled:opacity-30 cursor-pointer transition-colors" title="Trang cuối">
+                            <i class="fa-solid fa-angles-right text-[11px]"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            renderTableOnly();
+        }
+
+        let chartTimelineInstance = null;
+        let chartFacilityInstance = null;
+        let chartCustomerTypeInstance = null;
+
+        function populateFacilityFilterDropdown() {
+            const select = document.getElementById('filter-facility');
+            if (!select) return;
+
+            let facilities = [];
+            if (window.MWKDataStore && typeof window.MWKDataStore.getFacilities === 'function') {
+                facilities = window.MWKDataStore.getFacilities().map(f => f.name);
+            }
+            if (facilities.length === 0) {
+                facilities = ['Ba Đình', 'Cầu Giấy', 'Ngoại viện', 'Tại viện', 'Thanh Xuân', 'Tây Hồ', 'Vĩnh Phúc', 'Quảng Bình', 'Bắc Ninh', 'Nghệ An'];
+            }
+            select.innerHTML = '<option value="">Tất cả cơ sở</option>' + facilities.map(f => `<option value="${f}">${f}</option>`).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            populateFacilityFilterDropdown();
+            rawDoanKhamData = MWKDataStore.getDoanKhamReports();
+            updateDashboardAndTable();
+        });
+
+        function getFilteredData() {
+            const fromDate = document.getElementById('filter-from-date') ? document.getElementById('filter-from-date').value : '';
+            const toDate = document.getElementById('filter-to-date') ? document.getElementById('filter-to-date').value : '';
+            const scheduleType = document.getElementById('filter-schedule-type') ? document.getElementById('filter-schedule-type').value : '';
+            const facility = document.getElementById('filter-facility') ? document.getElementById('filter-facility').value : '';
+            const customerType = document.getElementById('filter-customer-type') ? document.getElementById('filter-customer-type').value : '';
+            const status = document.getElementById('filter-status') ? document.getElementById('filter-status').value : '';
+            const searchVal = document.getElementById('search-input') ? document.getElementById('search-input').value.trim().toLowerCase() : '';
+
+            return rawDoanKhamData.filter(item => {
+                if (fromDate && item.date < fromDate) return false;
+                if (toDate && item.date > toDate) return false;
+                if (scheduleType && item.scheduleType !== scheduleType) return false;
+                if (facility && item.location !== facility) return false;
+                if (customerType && item.customerType !== customerType) return false;
+                if (status && item.status !== status) return false;
+                if (searchVal && !(
+                    (item.code && item.code.toLowerCase().includes(searchVal)) ||
+                    (item.name && item.name.toLowerCase().includes(searchVal)) ||
+                    (item.location && item.location.toLowerCase().includes(searchVal))
+                )) return false;
+
+                return true;
+            });
+        }
+
+        function handleFilterChange() {
+            currentPage = 1;
+            updateDashboardAndTable();
+        }
+
+        function handleSearchFilterChange() {
+            currentPage = 1;
+            renderTableOnly();
+        }
+
+        function resetFilters() {
+            if(document.getElementById('filter-from-date')) document.getElementById('filter-from-date').value = '';
+            if(document.getElementById('filter-to-date')) document.getElementById('filter-to-date').value = '';
+            if(document.getElementById('filter-schedule-type')) document.getElementById('filter-schedule-type').value = '';
+            if(document.getElementById('filter-facility')) document.getElementById('filter-facility').value = '';
+            if(document.getElementById('filter-customer-type')) document.getElementById('filter-customer-type').value = '';
+            if(document.getElementById('filter-status')) document.getElementById('filter-status').value = '';
+            if(document.getElementById('search-input')) document.getElementById('search-input').value = '';
+
+            handleFilterChange();
+        }
+
+        function updateDashboardAndTable() {
+            const filteredData = getFilteredData();
+
+            updateKPIs(filteredData);
+            updateCharts(filteredData);
+            renderTable(filteredData);
+        }
+
+        function renderTableOnly() {
+            const filteredData = getFilteredData();
+            renderTable(filteredData);
+        }
+
+        function updateKPIs(data) {
+            const total = data.length;
+            const lichTuan = data.filter(d => d.scheduleType === 'Lịch tuần').length;
+            const lichPhatSinh = data.filter(d => d.scheduleType === 'Lịch phát sinh').length;
+            const biHuy = data.filter(d => d.status === 'Đã hủy').length;
+
+            document.getElementById('kpi-total-doan').innerText = total;
+            document.getElementById('kpi-lich-tuan').innerText = lichTuan;
+            document.getElementById('kpi-lich-phat-sinh').innerText = lichPhatSinh;
+            document.getElementById('kpi-bi-huy').innerText = biHuy;
+        }
+
+        function updateCharts(data) {
+            // Chart Timeline
+            const timelineMap = {};
+            data.forEach(d => {
+                const month = d.date ? d.date.substring(0, 7) : 'Khác';
+                timelineMap[month] = (timelineMap[month] || 0) + 1;
+            });
+            const months = Object.keys(timelineMap).sort();
+            const timelineCounts = months.map(m => timelineMap[m]);
+
+            if (chartTimelineInstance) chartTimelineInstance.destroy();
+            const ctxTimeline = document.getElementById('chart-timeline').getContext('2d');
+            chartTimelineInstance = new Chart(ctxTimeline, {
+                type: 'bar',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'Số lượng đoàn',
+                        data: timelineCounts,
+                        backgroundColor: '#27496D',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // Chart Facility
+            const facilityMap = {};
+            data.forEach(d => {
+                const fac = d.location || 'Khác';
+                facilityMap[fac] = (facilityMap[fac] || 0) + 1;
+            });
+
+            if (chartFacilityInstance) chartFacilityInstance.destroy();
+            const ctxFacility = document.getElementById('chart-facility').getContext('2d');
+            chartFacilityInstance = new Chart(ctxFacility, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(facilityMap),
+                    datasets: [{
+                        data: Object.values(facilityMap),
+                        backgroundColor: ['#27496D', '#2E7D32', '#ED6C02', '#D32F2F', '#7E22CE', '#0284C7']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            // Chart Customer Type
+            const custTypeMap = {};
+            data.forEach(d => {
+                const cType = d.customerType || 'Khác';
+                custTypeMap[cType] = (custTypeMap[cType] || 0) + 1;
+            });
+
+            if (chartCustomerTypeInstance) chartCustomerTypeInstance.destroy();
+            const ctxCustType = document.getElementById('chart-customer-type').getContext('2d');
+            chartCustomerTypeInstance = new Chart(ctxCustType, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(custTypeMap),
+                    datasets: [{
+                        data: Object.values(custTypeMap),
+                        backgroundColor: ['#27496D', '#2E7D32', '#ED6C02', '#D32F2F']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+
+            const total = data.length;
+            const recordCountSpan = document.getElementById('table-record-count');
+            if (recordCountSpan) recordCountSpan.innerText = `Hiển thị ${total} bản ghi`;
+
+            if (total === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="py-12 text-center">
+                            <div class="flex flex-col items-center justify-center text-[#9CA3AF]">
+                                <i class="fa-solid fa-chart-pie text-4xl mb-3 text-[#CBD5E1]"></i>
+                                <p class="font-medium text-sm text-[#4B5563]">Không tìm thấy báo cáo đoàn khám phù hợp</p>
+                                <p class="text-xs text-[#9CA3AF] mt-1">Vui lòng thay đổi khoảng thời gian hoặc bộ lọc tra cứu</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                renderPagination(0, 0, 0);
+                return;
+            }
+
+            const totalPages = Math.ceil(total / pageSize);
+            if (currentPage > totalPages) currentPage = totalPages;
+            const startIdx = (currentPage - 1) * pageSize;
+            const endIdx = Math.min(startIdx + pageSize, total);
+            const pageItems = data.slice(startIdx, endIdx);
+
+            pageItems.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-[#F7F9FC] border-b border-[#E6EAF0] transition-colors';
+
+                let statusBadge = '';
+                switch(item.status) {
+                    case 'Hoàn thành':
+                        statusBadge = `<span class="badge-success">Hoàn thành</span>`;
+                        break;
+                    case 'Đang thực hiện':
+                        statusBadge = `<span class="badge-warning">Đang thực hiện</span>`;
+                        break;
+                    case 'Đã hủy':
+                        statusBadge = `<span class="badge-danger">Đã hủy</span>`;
+                        break;
+                    default:
+                        statusBadge = `<span class="badge-warning">${item.status}</span>`;
+                }
+
+                let formattedDate = item.date || '-';
+                if (formattedDate.includes('-')) {
+                    const parts = formattedDate.split('-');
+                    if (parts.length === 3) formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+                }
+
+                tr.innerHTML = `
+                    <td class="py-2.5 px-3 text-center text-[#6B7280] font-medium">${startIdx + index + 1}</td>
+                    <td class="py-2.5 px-3 font-bold text-[#27496D]">${item.code}</td>
+                    <td class="py-2.5 px-3 font-bold text-[#1F2937]">${item.name}</td>
+                    <td class="py-2.5 px-3 font-medium text-[#374151]">${formattedDate}</td>
+                    <td class="py-2.5 px-3 font-medium text-[#374151]">${item.location}</td>
+                    <td class="py-2.5 px-3 text-[#374151]">${item.customerType}</td>
+                    <td class="py-2.5 px-3 text-[#374151]">${item.scheduleType}</td>
+                    <td class="py-2.5 px-3 text-center">${statusBadge}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            renderPagination(total, startIdx + 1, endIdx);
+        }
+
+
+
+        function exportExcel() {
+            if (window.showToast) {
+                window.showToast('Đang khởi tạo tệp báo cáo thống kê đoàn khám Excel...', 'info');
+            } else {
+                alert('Xuất Excel thành công!');
+            }
+        }
+    </script>
+</body>
+</html>

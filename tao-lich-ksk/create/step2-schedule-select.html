@@ -1,0 +1,171 @@
+<!-- ================= MÀN 2: TẠO LỊCH (DỮ LIỆU THẬT MAPPED THỜI GIAN THỰC) ================= -->
+<div id="step-2-panel" class="space-y-4 hidden">
+    
+    <!-- 1. THẺ THÔNG TIN KHÁCH HÀNG (MAPPING DỮ LIỆU THẬT TỪ THÔNG TIN CHUNG) -->
+    <div class="bg-white rounded-[4px] border border-[#D9DEE5] p-4 space-y-2">
+        <div class="flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3 flex-wrap">
+                <span id="step2-display-pakd-badge" class="badge-warning">
+                    <i class="fa-solid fa-circle-info text-[10px]"></i>Không có PAKD
+                </span>
+                <h2 id="step2-display-customer-name" class="text-sm font-bold text-[#1F2937] uppercase flex items-center gap-2">
+                    CHƯA NHẬP TÊN KHÁCH HÀNG
+                    <i class="fa-solid fa-circle-info text-[#9CA3AF] text-xs hover:text-[#27496D] cursor-pointer" title="Thông tin hợp đồng & Phương án kinh doanh"></i>
+                </h2>
+            </div>
+        </div>
+
+        <div class="text-xs text-[#4B5563] pt-0.5">
+            <span class="text-[#6B7280]">Số lượng khách:</span>
+            <strong id="step2-display-guest-count" class="text-[#1F2937] font-bold ml-1">0</strong>
+        </div>
+    </div>
+
+    <!-- 2. KHU VỰC LỰA CHỌN LOẠI LỊCH (TOGGLE SWITCHES) -->
+    <div class="bg-[#F4F5F7] rounded-[4px] border border-[#D9DEE5] p-3 flex items-center gap-4 flex-wrap">
+        <span class="text-xs font-bold text-[#1F2937] uppercase tracking-wide shrink-0">Lịch bao gồm:</span>
+        
+        <div class="flex items-center gap-6 flex-wrap">
+            <!-- Toggle 1: Ngoại viện -->
+            <label class="inline-flex items-center cursor-pointer select-none gap-2">
+                <div class="relative">
+                    <input type="checkbox" id="toggle-ngoai-vien" checked onchange="handleStep2ToggleChange()" class="sr-only peer">
+                    <div class="w-9 h-5 bg-[#CBD5E1] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#27496D]"></div>
+                </div>
+                <span class="text-xs font-semibold text-[#1F2937]">Ngoại viện</span>
+            </label>
+
+            <!-- Toggle 2: Tại viện -->
+            <label class="inline-flex items-center cursor-pointer select-none gap-2">
+                <div class="relative">
+                    <input type="checkbox" id="toggle-tai-vien" checked onchange="handleStep2ToggleChange()" class="sr-only peer">
+                    <div class="w-9 h-5 bg-[#CBD5E1] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#27496D]"></div>
+                </div>
+                <span class="text-xs font-semibold text-[#1F2937]">Tại viện</span>
+            </label>
+
+            <!-- Toggle 3: Lịch phường -->
+            <label class="inline-flex items-center cursor-pointer select-none gap-2">
+                <div class="relative">
+                    <input type="checkbox" id="toggle-lich-phuong" checked onchange="handleStep2ToggleChange()" class="sr-only peer">
+                    <div class="w-9 h-5 bg-[#CBD5E1] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#27496D]"></div>
+                </div>
+                <span class="text-xs font-semibold text-[#1F2937]">Lịch phường</span>
+            </label>
+        </div>
+    </div>
+
+    <!-- 3. KHU VỰC CÁC BOX LỊCH (SIDE-BY-SIDE 3 CỘT) -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        
+        <!-- BOX 1: LỊCH NGOẠI VIỆN -->
+        <div id="box-ngoai-vien" class="bg-white border border-[#D9DEE5] rounded-[4px] p-4 space-y-3">
+            <div class="flex items-center justify-between border-b border-[#E6EAF0] pb-2.5">
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" id="check-box-ngoai-vien" onchange="updateSummaryStats()" class="w-4 h-4 text-[#27496D] rounded-[2px] border-[#D9DEE5]">
+                    <h3 class="text-xs font-bold text-[#1F2937]">Lịch ngoại viện: <span id="count-ngoai-vien" class="text-[#27496D]">0</span></h3>
+                </div>
+                <a href="javascript:void(0)" onclick="handleXemDinhMuc('Ngoại viện')" class="text-xs font-semibold text-[#27496D] hover:underline">Xem định mức</a>
+            </div>
+
+            <div class="flex items-center justify-around py-3 bg-[#F4F5F7] rounded-[4px] border border-[#D9DEE5]">
+                <div class="text-center flex-1">
+                    <div class="text-[11px] font-medium text-[#6B7280] mb-0.5">Tổng khách</div>
+                    <div class="text-lg font-bold text-[#1F2937]" id="guest-ngoai-vien">0</div>
+                </div>
+                <div class="w-px h-7 bg-[#D9DEE5]"></div>
+                <div class="text-center flex-1">
+                    <div class="text-[11px] font-medium text-[#6B7280] mb-0.5">Tổng nhân sự</div>
+                    <div class="text-lg font-bold text-[#1F2937]" id="staff-ngoai-vien">0</div>
+                </div>
+            </div>
+
+            <div id="container-card-list-ngoai-vien" class="space-y-3">
+                <!-- Dynamic Card List -->
+            </div>
+
+            <div>
+                <button type="button" onclick="handleAddSchedule('Ngoại viện')" class="btn-primary w-full text-xs">
+                    <i class="fa-solid fa-plus text-xs"></i>
+                    <span>Thêm lịch</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- BOX 2: LỊCH TẠI VIỆN -->
+        <div id="box-tai-vien" class="bg-white border border-[#D9DEE5] rounded-[4px] p-4 space-y-3">
+            <!-- Header Box -->
+            <div class="flex items-center justify-between border-b border-[#E6EAF0] pb-2.5">
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" id="check-box-tai-vien" onchange="updateSummaryStats()" class="w-4 h-4 text-[#27496D] rounded-[2px] border-[#D9DEE5]">
+                    <h3 class="text-xs font-bold text-[#1F2937]">Lịch tại viện: <span id="count-tai-vien" class="text-[#27496D]">0</span></h3>
+                </div>
+                <a href="javascript:void(0)" onclick="handleXemDinhMuc('Tại viện')" class="text-xs font-semibold text-[#27496D] hover:underline flex items-center gap-1">
+                    <i class="fa-solid fa-sliders text-xs"></i> Xem định mức
+                </a>
+            </div>
+
+            <!-- Phần thống kê tổng (2 cột với đường phân cách dọc) -->
+            <div class="flex items-center justify-around py-3 bg-[#F4F5F7] rounded-[4px] border border-[#D9DEE5]">
+                <div class="text-center flex-1">
+                    <div class="text-[11px] font-medium text-[#6B7280] mb-0.5">Tổng khách</div>
+                    <div class="text-lg font-bold text-[#1F2937]" id="guest-tai-vien">0</div>
+                </div>
+                <div class="w-px h-7 bg-[#D9DEE5]"></div>
+                <div class="text-center flex-1">
+                    <div class="text-[11px] font-medium text-[#6B7280] mb-0.5">Tổng nhân sự</div>
+                    <div class="text-lg font-bold text-[#27496D]" id="staff-tai-vien">0</div>
+                </div>
+            </div>
+
+            <!-- Danh sách Card lịch tại viện đã tạo -->
+            <div id="container-card-list-tai-vien" class="space-y-3">
+                <!-- Dynamic Card List rendered via renderTaiVienScheduleCards() -->
+            </div>
+
+            <!-- Button Thêm lịch (Luôn nằm bên dưới danh sách card) -->
+            <div>
+                <button type="button" onclick="handleAddSchedule('Tại viện')" class="btn-primary w-full text-xs">
+                    <i class="fa-solid fa-plus text-xs"></i>
+                    <span>Thêm lịch</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- BOX 3: LỊCH PHƯỜNG -->
+        <div id="box-lich-phuong" class="bg-white border border-[#D9DEE5] rounded-[4px] p-4 space-y-3">
+            <div class="flex items-center justify-between border-b border-[#E6EAF0] pb-2.5">
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" id="check-box-lich-phuong" onchange="updateSummaryStats()" class="w-4 h-4 text-[#27496D] rounded-[2px] border-[#D9DEE5]">
+                    <h3 class="text-xs font-bold text-[#1F2937]">Lịch phường: <span id="count-lich-phuong" class="text-[#7E22CE]">0</span></h3>
+                </div>
+                <a href="javascript:void(0)" onclick="handleXemDinhMuc('Lịch phường')" class="text-xs font-semibold text-[#27496D] hover:underline">Xem định mức</a>
+            </div>
+
+            <div class="flex items-center justify-around py-3 bg-[#F4F5F7] rounded-[4px] border border-[#D9DEE5]">
+                <div class="text-center flex-1">
+                    <div class="text-[11px] font-medium text-[#6B7280] mb-0.5">Tổng khách</div>
+                    <div class="text-lg font-bold text-[#1F2937]" id="guest-lich-phuong">0</div>
+                </div>
+                <div class="w-px h-7 bg-[#D9DEE5]"></div>
+                <div class="text-center flex-1">
+                    <div class="text-[11px] font-medium text-[#6B7280] mb-0.5">Tổng nhân sự</div>
+                    <div class="text-lg font-bold text-[#1F2937]" id="staff-lich-phuong">0</div>
+                </div>
+            </div>
+
+            <div id="container-card-list-lich-phuong" class="space-y-3">
+                <!-- Dynamic Card List -->
+            </div>
+
+            <div>
+                <button type="button" onclick="handleAddSchedule('Lịch phường')" class="btn-primary w-full text-xs">
+                    <i class="fa-solid fa-plus text-xs"></i>
+                    <span>Thêm lịch</span>
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+</div>

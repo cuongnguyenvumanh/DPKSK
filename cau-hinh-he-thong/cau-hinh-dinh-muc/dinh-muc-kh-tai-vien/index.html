@@ -1,0 +1,58 @@
+<!-- SUB-TAB 1: ĐỊNH MỨC KH TẠI VIỆN VIEW TEMPLATE (CLEAN RECTANGULAR MATRIX) -->
+<div class="flex-1 flex flex-col min-h-0 overflow-hidden relative bg-[#F5F7FA]">
+    <!-- RECTANGULAR MATRIX WRAPPER (NO CARD HEADER, DIRECT TABLE GRID) -->
+    <div class="border border-[#D9DEE7] bg-white shadow-none rounded-none flex-1 flex flex-col min-h-0 relative">
+        <div class="overflow-auto max-h-full custom-scrollbar flex-1">
+            <table class="w-full text-left text-xs border-collapse select-none matrix-table font-sans">
+                <thead class="uppercase font-semibold text-[11px]">
+                    <tr id="matrix-header-tier-1">
+                        <!-- Dynamic Facility Tier 1 Headers -->
+                    </tr>
+                    <tr id="matrix-header-tier-2">
+                        <!-- Dynamic Shift Tier 2 Sub-Headers (Sáng / Chiều) -->
+                    </tr>
+                </thead>
+                <tbody id="matrix-body-container" class="divide-y divide-[#E5E7EB] text-[#1F2937]">
+                    <!-- Dynamic Matrix Rows rendered in-place by Matrix Engine -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- LIGHTWEIGHT FACILITY POPOVER PICKER (ENTERPRISE MODAL STYLE) -->
+        <div id="facility-picker-popover" class="hidden absolute top-12 right-6 bg-white border border-[#D9DEE7] rounded-lg shadow-xl z-50 w-64 p-3 space-y-3">
+            <div class="flex items-center justify-between border-b border-[#E5E7EB] pb-2">
+                <span class="text-xs font-bold text-[#1F2937]">Thêm cơ sở khám mới</span>
+                <button type="button" onclick="hideFacilityPickerPopover()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-xs"></i>
+                </button>
+            </div>
+            <select id="popover-facility-select" class="w-full text-xs h-[36px] px-3 border border-[#D1D5DB] rounded-[6px] bg-white focus:outline-none focus:border-[#0F6CBD] font-medium text-[#1F2937]">
+                <!-- Unadded facilities options -->
+            </select>
+            <button type="button" onclick="confirmAddFacilityColumn()" class="w-full h-[36px] bg-[#0F6CBD] hover:bg-[#1E7FE5] text-white font-semibold text-xs rounded-[6px] shadow-xs transition-colors">
+                Thêm cột cơ sở
+            </button>
+        </div>
+
+        <!-- DELETE CONFIRMATION MODAL (DARK SLATE HEADER & RECTANGULAR/MODERN STYLE) -->
+        <div id="delete-row-confirm-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+            <div class="bg-white rounded-lg shadow-2xl max-w-sm w-full space-y-4 border border-[#D9DEE7] text-center overflow-hidden">
+                <div class="bg-[#2F3E4E] text-white py-3.5 px-4 font-bold text-sm flex items-center justify-between">
+                    <span>Xác nhận xóa dòng dữ liệu</span>
+                    <i class="fa-solid fa-triangle-exclamation text-amber-400"></i>
+                </div>
+                <div class="px-6 py-2">
+                    <p class="text-xs text-[#1F2937]">Bạn có chắc chắn muốn xóa dòng dữ liệu này khỏi hệ thống không?</p>
+                </div>
+                <div class="flex items-center justify-center gap-3 pb-5 px-6">
+                    <button type="button" onclick="hideDeleteRowModal()" class="px-4 h-[36px] bg-[#E5E7EB] hover:bg-[#D1D5DB] text-[#374151] rounded-[6px] text-xs font-semibold transition-colors cursor-pointer">
+                        Hủy
+                    </button>
+                    <button type="button" onclick="confirmDeleteMatrixRow()" class="px-4 h-[36px] bg-rose-600 hover:bg-rose-700 text-white rounded-[6px] text-xs font-bold shadow-xs transition-colors cursor-pointer">
+                        Xác nhận xóa
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

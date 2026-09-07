@@ -1,0 +1,69 @@
+<!-- MODAL XEM CHI TIẾT CẤU HÌNH DANH MỤC -->
+<div id="detail-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-[4px] shadow-lg border border-[#D9DEE5] w-full max-w-lg overflow-hidden flex flex-col">
+        <!-- Header -->
+        <div class="px-5 h-[52px] bg-[#27496D] text-white flex items-center justify-between">
+            <h3 class="font-semibold text-sm text-white flex items-center gap-2">
+                <i class="fa-solid fa-circle-info text-xs"></i> Chi tiết Cấu hình danh mục
+            </h3>
+            <button type="button" onclick="closeDetailModal()" class="w-8 h-8 rounded-[4px] hover:bg-white/10 text-white flex items-center justify-center cursor-pointer"><i class="fa-solid fa-xmark text-sm"></i></button>
+        </div>
+
+        <!-- Body -->
+        <div class="p-5 space-y-4 text-xs">
+            <div class="grid grid-cols-2 gap-4 border-b border-[#E6EAF0] pb-3">
+                <div>
+                    <span class="text-[#6B7280] uppercase font-semibold">Mã danh mục (ID)</span>
+                    <div id="detail-modal-stt" class="font-mono font-bold text-[#27496D] text-sm mt-0.5"></div>
+                </div>
+                <div>
+                    <span class="text-[#6B7280] uppercase font-semibold">Trạng thái</span>
+                    <div id="detail-modal-status" class="mt-0.5"></div>
+                </div>
+            </div>
+
+            <div>
+                <span class="text-[#6B7280] uppercase font-semibold">Tên danh mục khám</span>
+                <div id="detail-modal-name" class="font-bold text-[#1F2937] text-sm mt-0.5"></div>
+            </div>
+
+            <div>
+                <span class="text-[#6B7280] uppercase font-semibold">Vị trí thực hiện</span>
+                <div id="detail-modal-locations" class="text-[#1F2937] font-medium bg-[#E8F1FB] p-3 rounded-[4px] border border-[#B3CDE6] mt-1 leading-relaxed"></div>
+            </div>
+
+            <div>
+                <span class="text-[#6B7280] uppercase font-semibold">Ghi chú</span>
+                <div id="detail-modal-notes" class="text-[#4B5563] bg-[#F4F5F7] p-3 rounded-[4px] border border-[#D9DEE5] mt-1 leading-relaxed"></div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="px-5 py-3 bg-[#F4F5F7] border-t border-[#D9DEE5] flex justify-end">
+            <button type="button" onclick="closeDetailModal()" class="btn-secondary text-xs">Đóng</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openDetailModal(id) {
+        if (typeof window.getCategoryById === 'function') {
+            const item = window.getCategoryById(id);
+            if (item) {
+                document.getElementById('detail-modal-stt').innerText = `#${item.id}`;
+                document.getElementById('detail-modal-name').innerText = item.name;
+                document.getElementById('detail-modal-locations').innerText = item.locations ? item.locations.join(', ') : 'Chưa có';
+                document.getElementById('detail-modal-notes').innerText = item.notes || '-';
+                document.getElementById('detail-modal-status').innerHTML = item.status 
+                    ? `<span class="badge-success">ON (Đang sử dụng)</span>`
+                    : `<span class="badge-danger">OFF (Ngừng sử dụng)</span>`;
+                
+                document.getElementById('detail-modal').classList.remove('hidden');
+            }
+        }
+    }
+
+    function closeDetailModal() {
+        document.getElementById('detail-modal').classList.add('hidden');
+    }
+</script>

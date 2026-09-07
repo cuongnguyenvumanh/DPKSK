@@ -1,0 +1,201 @@
+<!-- BUTTON THÊM CẤU HÌNH DANH MỤC -->
+<button id="btn-add-config" onclick="openCreateModal()" class="btn-primary text-xs">
+    <i class="fa-solid fa-plus text-xs"></i>
+    <span>Thêm cấu hình danh mục</span>
+</button>
+
+<!-- MODAL THÊM MỚI CẤU HÌNH DANH MỤC -->
+<div id="create-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-[4px] shadow-lg border border-[#D9DEE5] w-full max-w-xl overflow-hidden flex flex-col">
+        <!-- Modal Header -->
+        <div class="px-5 h-[52px] bg-[#27496D] text-white flex items-center justify-between">
+            <h3 class="font-semibold text-sm text-white flex items-center gap-2">
+                <i class="fa-solid fa-sliders text-xs"></i> Thêm mới cấu hình danh mục
+            </h3>
+            <button type="button" onclick="closeCreateModal()" class="w-8 h-8 rounded-[4px] hover:bg-white/10 text-white flex items-center justify-center cursor-pointer"><i class="fa-solid fa-xmark text-sm"></i></button>
+        </div>
+
+        <!-- Form Body -->
+        <form id="create-form" onsubmit="handleSaveCreate(event)" class="p-5 space-y-4 text-xs" novalidate>
+            <!-- Tên danh mục -->
+            <div>
+                <label class="sys-label">Tên danh mục khám <span class="text-[#D32F2F]">*</span></label>
+                <input type="text" id="create-input-name" placeholder="Nhập tên danh mục khám (Ví dụ: Siêu âm, Khám Nội...)" class="sys-input text-xs">
+            </div>
+
+            <!-- Vị trí thực hiện -->
+            <div>
+                <div class="flex items-center justify-between mb-1.5">
+                    <div>
+                        <label class="sys-label">Vị trí thực hiện <span class="text-[#D32F2F]">*</span></label>
+                    </div>
+                    <div class="space-x-2">
+                        <button type="button" onclick="selectAllCreateLocations(true)" class="text-[11px] text-[#27496D] hover:underline cursor-pointer">Chọn tất cả</button>
+                        <span class="text-[#D9DEE5] text-xs">|</span>
+                        <button type="button" onclick="selectAllCreateLocations(false)" class="text-[11px] text-[#6B7280] hover:underline cursor-pointer">Bỏ chọn</button>
+                    </div>
+                </div>
+                
+                <div id="create-locations-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 p-3 bg-[#F4F5F7] rounded-[4px] border border-[#D9DEE5] max-h-48 overflow-y-auto">
+                    <!-- Render dynamic location checkboxes -->
+                </div>
+            </div>
+
+            <!-- Ghi chú -->
+            <div>
+                <label class="sys-label">Ghi chú</label>
+                <textarea id="create-input-notes" rows="2" placeholder="Nhập ghi chú hoặc yêu cầu đặc biệt..." class="w-full p-2.5 bg-white border border-[#D9DEE5] rounded-[4px] text-xs text-[#1F2937] focus:outline-none focus:border-[#27496D]"></textarea>
+            </div>
+
+            <!-- Trạng thái -->
+            <div class="flex items-center justify-between pt-2 border-t border-[#E6EAF0]">
+                <span class="sys-label">Trạng thái hoạt động</span>
+                <label class="relative inline-flex items-center cursor-pointer select-none">
+                    <input type="checkbox" id="create-input-status" checked class="sr-only peer">
+                    <div class="w-8 h-4 bg-[#D9DEE5] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-[#D9DEE5] after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-[#27496D]"></div>
+                    <span class="ml-2 text-xs font-bold text-[#2E7D32]" id="create-status-label">ON (Đang sử dụng)</span>
+                </label>
+            </div>
+
+            <!-- Footer Buttons -->
+            <div class="pt-3 flex items-center justify-end gap-2 border-t border-[#E6EAF0]">
+                <button type="button" onclick="closeCreateModal()" class="btn-secondary text-xs">Hủy bỏ</button>
+                <button type="submit" class="btn-primary text-xs">Lưu cấu hình</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL THOÁT TRANG CẢNH BÁO KHÔNG LƯU DỮ LIỆU KHI TẠO -->
+<div id="create-exit-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center hidden select-none p-4">
+    <div class="bg-white rounded-[4px] shadow-lg border border-[#D9DEE5] w-full max-w-md overflow-hidden">
+        <div class="p-5 text-center">
+            <div class="w-10 h-10 bg-[#FFF3E0] text-[#ED6C02] rounded-full flex items-center justify-center mx-auto mb-3 text-lg border border-[#FFCC80]">
+                <i class="fa-solid fa-circle-question"></i>
+            </div>
+            <h3 class="text-sm font-bold text-[#1F2937] mb-2">Thoát trang</h3>
+            <p class="text-xs text-[#4B5563] mb-5 leading-relaxed">Khi Thoát trang, các thông tin đang nhập sẽ không được lưu. Bạn có chắc muốn thoát?</p>
+            <div class="flex items-center justify-center gap-2">
+                <button type="button" onclick="cancelCreateExit()" class="btn-secondary text-xs w-28">Hủy</button>
+                <button type="button" onclick="confirmCreateExit()" class="btn-primary text-xs w-28">Thoát</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let initialCreateSnapshot = '';
+
+    function renderMasterLocationCheckboxes() {
+        const grid = document.getElementById('create-locations-grid');
+        if (!grid) return;
+
+        let activeFacilities = [];
+        if (window.MWKDataStore && typeof window.MWKDataStore.getActiveFacilities === 'function') {
+            activeFacilities = window.MWKDataStore.getActiveFacilities().map(f => f.name);
+        }
+
+        if (activeFacilities.length === 0) {
+            activeFacilities = ['Ba Đình', 'Cầu Giấy', 'Tại viện', 'Ngoại viện', 'Thanh Xuân', 'Tây Hồ', 'Vĩnh Phúc', 'Quảng Bình', 'Bắc Ninh', 'Nghệ An'];
+        }
+
+        grid.innerHTML = activeFacilities.map(loc => `
+            <label class="flex items-center gap-2 text-xs font-medium text-[#1F2937] cursor-pointer select-none">
+                <input type="checkbox" name="create_location_cb" value="${loc}" class="w-4 h-4 rounded-[2px] border-[#D9DEE5] text-[#27496D]"> ${loc}
+            </label>
+        `).join('');
+    }
+
+    function getCreateSnapshot() {
+        const name = document.getElementById('create-input-name') ? document.getElementById('create-input-name').value.trim() : '';
+        const notes = document.getElementById('create-input-notes') ? document.getElementById('create-input-notes').value.trim() : '';
+        const status = document.getElementById('create-input-status') ? document.getElementById('create-input-status').checked : true;
+        const checkboxes = Array.from(document.querySelectorAll('input[name="create_location_cb"]:checked')).map(cb => cb.value).sort().join(',');
+        return `${name}|${notes}|${status}|${checkboxes}`;
+    }
+
+    function selectAllCreateLocations(state) {
+        document.querySelectorAll('input[name="create_location_cb"]').forEach(cb => cb.checked = state);
+    }
+
+    function openCreateModal() {
+        if (window.MWKValidation) window.MWKValidation.clearFormErrors(document.getElementById('create-form'));
+
+        renderMasterLocationCheckboxes();
+        document.getElementById('create-input-name').value = '';
+        document.getElementById('create-input-notes').value = '';
+        document.getElementById('create-input-status').checked = true;
+        document.getElementById('create-status-label').innerText = 'ON (Đang sử dụng)';
+        document.getElementById('create-status-label').className = 'ml-2 text-xs font-bold text-[#2E7D32]';
+        selectAllCreateLocations(false);
+
+        document.getElementById('create-modal').classList.remove('hidden');
+        initialCreateSnapshot = getCreateSnapshot();
+    }
+
+    function closeCreateModal() {
+        if (getCreateSnapshot() !== initialCreateSnapshot) {
+            document.getElementById('create-exit-modal').classList.remove('hidden');
+        } else {
+            document.getElementById('create-modal').classList.add('hidden');
+        }
+    }
+
+    function cancelCreateExit() {
+        document.getElementById('create-exit-modal').classList.add('hidden');
+    }
+
+    function confirmCreateExit() {
+        document.getElementById('create-exit-modal').classList.add('hidden');
+        document.getElementById('create-modal').classList.add('hidden');
+    }
+
+    document.getElementById('create-input-status').addEventListener('change', function(e) {
+        const label = document.getElementById('create-status-label');
+        if (e.target.checked) {
+            label.innerText = 'ON (Đang sử dụng)';
+            label.className = 'ml-2 text-xs font-bold text-[#2E7D32]';
+        } else {
+            label.innerText = 'OFF (Ngừng sử dụng)';
+            label.className = 'ml-2 text-xs font-bold text-[#D32F2F]';
+        }
+    });
+
+    function handleSaveCreate(e) {
+        e.preventDefault();
+        const form = document.getElementById('create-form');
+        const nameInput = document.getElementById('create-input-name');
+        const notesInput = document.getElementById('create-input-notes');
+        const statusInput = document.getElementById('create-input-status');
+
+        if (window.MWKValidation) window.MWKValidation.clearFormErrors(form);
+
+        let isValid = true;
+        isValid = MWKValidation.validateRequired(nameInput, 'Tên danh mục không được để trống.') && isValid;
+
+        const selectedLocations = Array.from(document.querySelectorAll('input[name="create_location_cb"]:checked')).map(cb => cb.value);
+        if (selectedLocations.length === 0) {
+            const locationsGrid = document.getElementById('create-locations-grid');
+            if (locationsGrid && window.MWKValidation) {
+                MWKValidation.showFieldError(locationsGrid, 'Vui lòng chọn ít nhất một vị trí thực hiện.');
+            }
+            isValid = false;
+        }
+
+        if (!isValid) return;
+
+        const newCategory = {
+            name: nameInput.value.trim(),
+            locations: selectedLocations.map(locName => ({ facility: locName, locationName: 'Phòng khám KSK' })),
+            note: notesInput.value.trim(),
+            status: statusInput.checked ? 'ON' : 'OFF'
+        };
+
+        MWKDataStore.addExamCategory(newCategory);
+        document.getElementById('create-modal').classList.add('hidden');
+
+        if (window.showToast) {
+            window.showToast('Thêm mới cấu hình danh mục thành công!', 'success');
+        }
+    }
+</script>

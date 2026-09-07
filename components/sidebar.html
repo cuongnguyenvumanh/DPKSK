@@ -1,0 +1,112 @@
+<!-- ================= UNIFIED HIS SIDEBAR COMPONENT ================= -->
+<aside id="sidebar" class="sidebar-expanded w-[204px] bg-white text-[#1F2937] border-r border-[#D9DEE5] flex flex-col flex-shrink-0 z-30 select-none transition-all duration-200">
+    <!-- Logo Header (Height 56px) -->
+    <div class="h-[56px] flex items-center px-4 border-b border-[#D9DEE5] justify-between flex-shrink-0">
+        <a href="#" id="sidebar-logo-link" class="flex items-center gap-2.5 overflow-hidden">
+            <div class="w-8 h-8 rounded-[6px] bg-[#27496D] flex items-center justify-center font-bold text-white text-sm shadow-xs flex-shrink-0">
+                <span>MW</span>
+            </div>
+            <div class="logo-text flex flex-col truncate">
+                <span class="font-bold text-[#1F2937] tracking-wide text-xs leading-tight uppercase">MEDLATEC</span>
+                <span class="text-[10px] text-[#27496D] font-semibold tracking-wider uppercase">Điều phối KSK</span>
+            </div>
+        </a>
+    </div>
+
+    <!-- Navigation Links -->
+    <div class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-3">
+        <!-- Group 1: BÁO CÁO THỐNG KÊ -->
+        <div>
+            <button id="report-stat-toggle" class="w-full flex items-center justify-between px-3 py-1.5 rounded-[6px] text-[#6B7280] hover:text-[#1F2937] hover:bg-[#F3F6FA] transition-colors cursor-pointer">
+                <span class="section-header text-[11px] font-bold uppercase tracking-wider text-[#6B7280]">BÁO CÁO THỐNG KÊ</span>
+                <i id="report-stat-arrow" class="collapse-arrow fa-solid fa-chevron-down text-[10px] transition-transform duration-200 text-[#6B7280]"></i>
+            </button>
+
+            <ul id="report-stat-submenu" class="submenu mt-1 space-y-1">
+                <li>
+                    <a href="#" id="nav-report-doan-kham" data-tooltip="Báo cáo thống kê đoàn khám" title="Báo cáo thống kê đoàn khám" class="nav-item flex items-center gap-2.5 px-4 h-10 rounded-[8px] text-[#4B5563] hover:bg-[#F3F6FA] hover:text-[#1F2937] transition-colors text-xs font-medium">
+                        <i class="fa-solid fa-chart-column text-sm text-[#6B7280] w-4 text-center"></i>
+                        <span class="nav-text truncate">Báo cáo đoàn khám</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" id="nav-report-nhan-su" data-tooltip="Báo cáo thống kê nhân sự" title="Báo cáo thống kê nhân sự" class="nav-item flex items-center gap-2.5 px-4 h-10 rounded-[8px] text-[#4B5563] hover:bg-[#F3F6FA] hover:text-[#1F2937] transition-colors text-xs font-medium">
+                        <i class="fa-solid fa-user-doctor text-sm text-[#6B7280] w-4 text-center"></i>
+                        <span class="nav-text truncate">Báo cáo nhân sự</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Group 2: CẤU HÌNH HỆ THỐNG -->
+        <div>
+            <button id="system-config-toggle" class="w-full flex items-center justify-between px-3 py-1.5 rounded-[6px] text-[#6B7280] hover:text-[#1F2937] hover:bg-[#F3F6FA] transition-colors cursor-pointer">
+                <span class="section-header text-[11px] font-bold uppercase tracking-wider text-[#6B7280]">CẤU HÌNH HỆ THỐNG</span>
+                <i id="system-config-arrow" class="collapse-arrow fa-solid fa-chevron-down text-[10px] transition-transform duration-200 text-[#6B7280]"></i>
+            </button>
+
+            <ul id="system-config-submenu" class="submenu mt-1 space-y-1">
+                <li>
+                    <a href="#" id="nav-danh-muc-kham" data-tooltip="Cấu hình danh mục sơ đồ khám" title="Cấu hình danh mục sơ đồ khám" class="nav-item flex items-center gap-2.5 px-4 h-10 rounded-[8px] text-[#4B5563] hover:bg-[#F3F6FA] hover:text-[#1F2937] transition-colors text-xs font-medium">
+                        <i class="fa-solid fa-list-check text-sm text-[#6B7280] w-4 text-center"></i>
+                        <span class="nav-text truncate">Danh mục sơ đồ khám</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" id="nav-dinh-muc-nhan-su" data-tooltip="Cấu hình định mức" title="Cấu hình định mức" class="nav-item flex items-center gap-2.5 px-4 h-10 rounded-[8px] text-[#4B5563] hover:bg-[#F3F6FA] hover:text-[#1F2937] transition-colors text-xs font-medium">
+                        <i class="fa-solid fa-users-gear text-sm text-[#6B7280] w-4 text-center"></i>
+                        <span class="nav-text truncate">Cấu hình định mức</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" id="nav-co-so-kham" data-tooltip="Cơ sở khám" title="Cơ sở khám" class="nav-item flex items-center gap-2.5 px-4 h-10 rounded-[8px] text-[#4B5563] hover:bg-[#F3F6FA] hover:text-[#1F2937] transition-colors text-xs font-medium">
+                        <i class="fa-solid fa-hospital text-sm text-[#6B7280] w-4 text-center"></i>
+                        <span class="nav-text truncate">Cơ sở khám</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" id="nav-cau-hinh-phu-cap" data-tooltip="Cấu hình phụ cấp" title="Cấu hình phụ cấp" class="nav-item flex items-center gap-2.5 px-4 h-10 rounded-[8px] text-[#4B5563] hover:bg-[#F3F6FA] hover:text-[#1F2937] transition-colors text-xs font-medium">
+                        <i class="fa-solid fa-coins text-sm text-[#6B7280] w-4 text-center"></i>
+                        <span class="nav-text truncate">Cấu hình phụ cấp</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Group 3: QUẢN LÝ LỊCH KSK -->
+        <div>
+            <button id="ksk-manage-toggle" class="w-full flex items-center justify-between px-3 py-1.5 rounded-[6px] text-[#6B7280] hover:text-[#1F2937] hover:bg-[#F3F6FA] transition-colors cursor-pointer">
+                <span class="section-header text-[11px] font-bold uppercase tracking-wider text-[#6B7280]">QUẢN LÝ LỊCH KSK</span>
+                <i id="ksk-manage-arrow" class="collapse-arrow fa-solid fa-chevron-down text-[10px] transition-transform duration-200 text-[#6B7280]"></i>
+            </button>
+
+            <ul id="ksk-manage-submenu" class="submenu mt-1 space-y-1">
+                <li>
+                    <a href="#" id="nav-bang-tong-hop-lich-kham" data-tooltip="Bảng tổng hợp lịch" title="Bảng tổng hợp lịch" class="nav-item flex items-center gap-2.5 px-4 h-10 rounded-[8px] text-[#4B5563] hover:bg-[#F3F6FA] hover:text-[#1F2937] transition-colors text-xs font-medium">
+                        <i class="fa-solid fa-calendar-days text-sm text-[#6B7280] w-4 text-center"></i>
+                        <span class="nav-text truncate">Bảng tổng hợp lịch</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" id="nav-tao-lich-ksk" data-tooltip="Lịch khám đơn vị" title="Lịch khám đơn vị" class="nav-item flex items-center gap-2.5 px-4 h-10 rounded-[8px] text-[#4B5563] hover:bg-[#F3F6FA] hover:text-[#1F2937] transition-colors text-xs font-medium">
+                        <i class="fa-solid fa-calendar-plus text-sm text-[#6B7280] w-4 text-center"></i>
+                        <span class="nav-text truncate">Lịch khám đơn vị</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" id="nav-tong-hop-lich-ksk" data-tooltip="Tổng hợp lịch KSK" title="Tổng hợp lịch KSK" class="nav-item flex items-center gap-2.5 px-4 h-10 rounded-[8px] text-[#4B5563] hover:bg-[#F3F6FA] hover:text-[#1F2937] transition-colors text-xs font-medium">
+                        <i class="fa-solid fa-layer-group text-sm text-[#6B7280] w-4 text-center"></i>
+                        <span class="nav-text truncate">Tổng hợp lịch KSK</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" id="nav-cb-duyet-lich-ksk" data-tooltip="Duyệt lịch KSK" title="Duyệt lịch KSK" class="nav-item flex items-center gap-2.5 px-4 h-10 rounded-[8px] text-[#4B5563] hover:bg-[#F3F6FA] hover:text-[#1F2937] transition-colors text-xs font-medium">
+                        <i class="fa-solid fa-user-check text-sm text-[#6B7280] w-4 text-center"></i>
+                        <span class="nav-text truncate">Duyệt lịch KSK</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="p-3 border-t border-[#D9DEE5] text-center flex-shrink-0 bg-slate-50"><div class="logo-text text-[11px] text-[#9CA3AF] font-medium">MWK System v2.4.0 &copy; 2026</div></div>
+</aside>

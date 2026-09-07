@@ -1,0 +1,149 @@
+<!-- BUTTON THÊM CƠ SỞ KHÁM -->
+<button id="btn-add-facility" onclick="openCreateModal()" class="btn-primary text-xs">
+    <i class="fa-solid fa-plus text-xs"></i>
+    <span>Thêm cơ sở khám mới</span>
+</button>
+
+<!-- MODAL THÊM MỚI CƠ SỞ KHÁM -->
+<div id="create-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-[4px] shadow-lg border border-[#D9DEE5] w-full max-w-lg overflow-hidden flex flex-col">
+        <!-- Header -->
+        <div class="px-5 h-[52px] bg-[#27496D] text-white flex items-center justify-between">
+            <h3 class="font-semibold text-sm text-white flex items-center gap-2">
+                <i class="fa-solid fa-hospital text-xs"></i> Thêm mới Cơ sở khám
+            </h3>
+            <button type="button" onclick="closeCreateModal()" class="w-8 h-8 rounded-[4px] hover:bg-white/10 text-white flex items-center justify-center cursor-pointer"><i class="fa-solid fa-xmark text-sm"></i></button>
+        </div>
+
+        <!-- Form Body -->
+        <form id="create-form" onsubmit="handleSaveCreate(event)" class="p-5 space-y-4 text-xs" novalidate>
+            <!-- Tên cơ sở khám (bắt buộc) -->
+            <div>
+                <label class="sys-label">Tên cơ sở khám <span class="text-[#D32F2F]">*</span></label>
+                <input type="text" id="create-name" placeholder="Nhập tên cơ sở khám (Ví dụ: Ba Đình, Cầu Giấy, Cà Mau...)" class="sys-input text-xs">
+            </div>
+
+            <!-- Địa chỉ -->
+            <div>
+                <label class="sys-label">Địa chỉ</label>
+                <input type="text" id="create-addr" placeholder="Nhập địa chỉ..." class="sys-input text-xs">
+            </div>
+
+            <!-- Ghi chú -->
+            <div>
+                <label class="sys-label">Ghi chú</label>
+                <textarea id="create-note" rows="2" placeholder="Nhập ghi chú..." class="w-full p-2.5 bg-white border border-[#D9DEE5] rounded-[4px] text-xs text-[#1F2937] focus:outline-none focus:border-[#27496D]"></textarea>
+            </div>
+
+            <!-- Trạng thái (Switch ON/OFF) -->
+            <div class="flex items-center justify-between pt-2 border-t border-[#E6EAF0]">
+                <span class="sys-label">Trạng thái hoạt động</span>
+                <label class="relative inline-flex items-center cursor-pointer select-none">
+                    <input type="checkbox" id="create-status" checked class="sr-only peer">
+                    <div class="w-8 h-4 bg-[#D9DEE5] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-[#D9DEE5] after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-[#27496D]"></div>
+                    <span class="ml-2 text-xs font-bold text-[#2E7D32]" id="create-status-label">ON</span>
+                </label>
+            </div>
+
+            <!-- Footer Action Buttons -->
+            <div class="pt-3 flex items-center justify-end gap-2 border-t border-[#E6EAF0]">
+                <button type="button" onclick="closeCreateModal()" class="btn-secondary text-xs">Hủy bỏ</button>
+                <button type="submit" class="btn-primary text-xs">Lưu cơ sở</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL THOÁT TRANG CẢNH BÁO KHÔNG LƯU DỮ LIỆU KHI TẠO -->
+<div id="create-exit-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center hidden select-none p-4">
+    <div class="bg-white rounded-[4px] shadow-lg border border-[#D9DEE5] w-full max-w-md overflow-hidden">
+        <div class="p-5 text-center">
+            <div class="w-10 h-10 bg-[#FFF3E0] text-[#ED6C02] rounded-full flex items-center justify-center mx-auto mb-3 text-lg border border-[#FFCC80]">
+                <i class="fa-solid fa-circle-question"></i>
+            </div>
+            <h3 class="text-sm font-bold text-[#1F2937] mb-2">Thoát trang</h3>
+            <p class="text-xs text-[#4B5563] mb-5 leading-relaxed">Khi Thoát trang, các thông tin đang nhập sẽ không được lưu. Bạn có chắc muốn thoát?</p>
+            <div class="flex items-center justify-center gap-2">
+                <button type="button" onclick="cancelCreateExit()" class="btn-secondary text-xs w-28">Hủy</button>
+                <button type="button" onclick="confirmCreateExit()" class="btn-primary text-xs w-28">Thoát</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let initialCreateSnapshot = '';
+
+    function getCreateSnapshot() {
+        const name = document.getElementById('create-name') ? document.getElementById('create-name').value.trim() : '';
+        const addr = document.getElementById('create-addr') ? document.getElementById('create-addr').value.trim() : '';
+        const note = document.getElementById('create-note') ? document.getElementById('create-note').value.trim() : '';
+        const status = document.getElementById('create-status') ? document.getElementById('create-status').checked : true;
+        return `${name}|${addr}|${note}|${status}`;
+    }
+
+    function openCreateModal() {
+        if (window.MWKValidation) window.MWKValidation.clearFormErrors(document.getElementById('create-form'));
+
+        document.getElementById('create-name').value = '';
+        document.getElementById('create-addr').value = '';
+        document.getElementById('create-note').value = '';
+        document.getElementById('create-status').checked = true;
+        document.getElementById('create-status-label').innerText = 'ON';
+        document.getElementById('create-status-label').className = 'ml-2 text-xs font-bold text-[#2E7D32]';
+
+        document.getElementById('create-modal').classList.remove('hidden');
+        initialCreateSnapshot = getCreateSnapshot();
+    }
+
+    function closeCreateModal() {
+        if (getCreateSnapshot() !== initialCreateSnapshot) {
+            document.getElementById('create-exit-modal').classList.remove('hidden');
+        } else {
+            document.getElementById('create-modal').classList.add('hidden');
+        }
+    }
+
+    function cancelCreateExit() { document.getElementById('create-exit-modal').classList.add('hidden'); }
+    function confirmCreateExit() {
+        document.getElementById('create-exit-modal').classList.add('hidden');
+        document.getElementById('create-modal').classList.add('hidden');
+    }
+
+    function handleSaveCreate(e) {
+        e.preventDefault();
+        const nameElem = document.getElementById('create-name');
+
+        if (window.MWKValidation) window.MWKValidation.clearFormErrors(document.getElementById('create-form'));
+
+        let isValid = true;
+
+        if (!window.MWKValidation.validateRequired(nameElem, 'Trường dữ liệu không được để trống.')) {
+            isValid = false;
+        }
+
+        if (!isValid) return;
+
+        const name = nameElem.value.trim();
+        const addr = document.getElementById('create-addr').value.trim();
+        const note = document.getElementById('create-note').value.trim();
+        const status = document.getElementById('create-status').checked;
+
+        if (typeof window.addFacilityItem === 'function') {
+            window.addFacilityItem({ name, addr, note, status });
+        }
+        document.getElementById('create-modal').classList.add('hidden');
+        if (typeof window.showToast === 'function') window.showToast("Thêm mới thành công.", "success");
+    }
+
+    document.getElementById('create-status').addEventListener('change', function() {
+        const label = document.getElementById('create-status-label');
+        if (this.checked) {
+            label.innerText = 'ON';
+            label.className = 'ml-2 text-xs font-bold text-[#2E7D32]';
+        } else {
+            label.innerText = 'OFF';
+            label.className = 'ml-2 text-xs font-bold text-[#D32F2F]';
+        }
+    });
+</script>

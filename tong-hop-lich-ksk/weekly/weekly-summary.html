@@ -1,0 +1,49 @@
+<!-- ================= TAB CONTENT: TỔNG HỢP LỊCH TUẦN ================= -->
+<div class="space-y-4">
+    <!-- FILTER BAR FOR WEEKLY SUMMARY -->
+    <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] space-y-3">
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3 text-xs">
+            <!-- Filter Year -->
+            <div>
+                <label class="sys-label">Năm</label>
+                <select id="weekly-filter-year" class="sys-select text-xs font-semibold">
+                    <option value="2026">2026</option>
+                    <option value="2025">2025</option>
+                </select>
+            </div>
+
+            <!-- Filter Week -->
+            <div>
+                <label class="sys-label">Tuần khám</label>
+                <select id="weekly-filter-week" class="sys-select text-xs font-semibold">
+                    <!-- Populated dynamically -->
+                </select>
+            </div>
+
+            <!-- Filter Facility -->
+            <div>
+                <label class="sys-label">Cơ sở thực hiện</label>
+                <select id="weekly-filter-facility" class="sys-select text-xs font-semibold">
+                    <option value="">Tất cả cơ sở</option>
+                </select>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-end gap-2">
+                <button type="button" id="btn-weekly-reset" class="btn-secondary text-xs">
+                    <i class="fa-solid fa-rotate-right text-xs"></i>
+                    <span>Đặt lại</span>
+                </button>
+                <button type="button" id="btn-weekly-filter" class="btn-primary text-xs flex-1">
+                    <i class="fa-solid fa-filter text-xs"></i>
+                    <span>Tổng hợp dữ liệu</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN WEEKLY CONTAINER (GROUPED BY WEEK & FACILITY WITH INDEPENDENT LỊCH TUẦN & LỊCH PHÁT SINH) -->
+    <div id="weekly-summary-container" class="space-y-4">
+        <!-- Dynamic Cards -->
+    </div>
+</div>

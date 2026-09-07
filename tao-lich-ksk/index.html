@@ -1,0 +1,1549 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lịch khám đơn vị | MWK Điều phối KSK</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: { 
+                        primary: { DEFAULT: '#27496D', hover: '#1F3D5A' }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome v6 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../du-kien-lich-ksk/assets/calendar.css">
+    <style>
+        .data-grid {
+            display: flex;
+            position: relative;
+            border: 1px solid #D9DEE5;
+            border-radius: 4px 4px 0 0;
+            background-color: #FFFFFF;
+            height: auto;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .grid-left {
+            flex: 0 0 358px;
+            width: 358px;
+            display: flex;
+            flex-direction: column;
+            z-index: 20;
+            border-right: 1px solid #D9DEE5;
+            background-color: #FFFFFF;
+            box-shadow: 2px 0 6px rgba(0, 0, 0, 0.04);
+        }
+
+        .grid-center {
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: column;
+            overflow-x: auto;
+            overflow-y: hidden;
+            background-color: #FFFFFF;
+        }
+
+        .grid-center-inner {
+            min-width: 1270px;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .grid-right {
+            flex: 0 0 170px;
+            width: 170px;
+            display: flex;
+            flex-direction: column;
+            z-index: 20;
+            border-left: 1px solid #D9DEE5;
+            background-color: #FFFFFF;
+            box-shadow: -2px 0 6px rgba(0, 0, 0, 0.04);
+        }
+
+        .grid-header {
+            height: 44px;
+            min-height: 44px;
+            max-height: 44px;
+            background-color: #27496D;
+            color: #FFFFFF;
+            font-weight: 600;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        .grid-body {
+            display: flex;
+            flex-direction: column;
+            height: auto;
+            overflow: visible;
+        }
+
+        .grid-left .grid-body::-webkit-scrollbar,
+        .grid-right .grid-body::-webkit-scrollbar {
+            width: 0px;
+            display: none;
+        }
+        .grid-left .grid-body,
+        .grid-right .grid-body {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .grid-row {
+            height: 68px;
+            min-height: 68px;
+            max-height: 68px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #E6EAF0;
+            box-sizing: border-box;
+            transition: background-color 0.15s ease;
+            font-size: 12px;
+            color: #1F2937;
+        }
+
+        .grid-cell {
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            box-sizing: border-box;
+            height: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    </style>
+    <link rel="shortcut icon" href="#">
+</head>
+<body data-depth="single" data-active-nav="nav-tao-lich-ksk" data-breadcrumb="Lịch khám đơn vị" data-custom-pagination="true" class="bg-[#F4F5F7] font-sans text-[#1F2937] antialiased h-screen overflow-hidden flex flex-col">
+
+    <div class="flex h-full w-full overflow-hidden">
+        <!-- SIDEBAR CONTAINER -->
+        <div id="sidebar-container" class="flex flex-shrink-0 h-full"></div>
+
+        <!-- MAIN CONTAINER -->
+        <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-[#F4F5F7]">
+            <!-- HEADER CONTAINER -->
+            <div id="header-container"></div>
+
+            <!-- MAIN CONTENT AREA -->
+            <main class="flex-1 overflow-y-auto p-5 space-y-4">
+                <!-- Page Title & Primary Actions Card -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 rounded-[4px] border border-[#D9DEE5]">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-[4px] bg-[#E8F1FB] text-[#27496D] flex items-center justify-center text-lg font-bold border border-[#D9DEE5] flex-shrink-0">
+                            <i class="fa-solid fa-calendar-plus"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold text-[#1F2937]">Lịch khám đơn vị</h1>
+                            <p class="text-xs text-[#6B7280] mt-0.5">Màn hình làm việc cán bộ tạo lịch (Ghi nhận, quản lý và gửi CB Tổng hợp)</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2.5">
+                        <button type="button" id="btn-bulk-send" disabled onclick="handleBulkSendClick()" class="btn-secondary text-xs opacity-50 cursor-not-allowed">
+                            <i class="fa-solid fa-paper-plane text-xs"></i>
+                            <span>Gửi tổng hợp <span id="selected-count-badge" class="hidden px-1.5 py-0.5 rounded-[4px] text-[10px] bg-[#2E7D32] text-white font-bold ml-1">0</span></span>
+                        </button>
+                        <a href="create/create.html" class="btn-primary text-xs">
+                            <i class="fa-solid fa-plus text-xs"></i>
+                            <span>Tạo lịch mới</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 3 MAIN TABS CONTROL SYSTEM -->
+                <div class="bg-white rounded-[4px] border border-[#D9DEE5] px-4 flex items-center gap-6 text-xs font-bold shadow-2xs border-b border-[#D9DEE5]">
+                    <button type="button" id="tab-btn-my-schedules" onclick="switchMainTab('my_schedules')" class="main-tab-btn h-11 border-b-2 border-[#27496D] text-[#27496D] flex items-center gap-2 px-1 transition-colors cursor-pointer select-none">
+                        <i class="fa-solid fa-user-gear text-sm"></i>
+                        <span>Lịch khám sức khỏe tạo bởi tôi</span>
+                        <span id="badge-count-my-schedules" class="px-2 py-0.5 rounded-full bg-[#E8F1FB] text-[#27496D] text-[11px] font-bold">0</span>
+                    </button>
+                    <button type="button" id="tab-btn-all-schedules" onclick="switchMainTab('all_schedules')" class="main-tab-btn h-11 border-b-2 border-transparent text-[#6B7280] hover:text-[#1F2937] flex items-center gap-2 px-1 transition-colors cursor-pointer select-none">
+                        <i class="fa-solid fa-layer-group text-sm"></i>
+                        <span>Tất cả lịch KSK</span>
+                        <span id="badge-count-all-schedules" class="px-2 py-0.5 rounded-full bg-[#F4F5F7] text-[#6B7280] text-[11px] font-bold">0</span>
+                    </button>
+                    <button type="button" id="tab-btn-du-kien" onclick="switchMainTab('du_kien')" class="main-tab-btn h-11 border-b-2 border-transparent text-[#6B7280] hover:text-[#1F2937] flex items-center gap-2 px-1 transition-colors cursor-pointer select-none">
+                        <i class="fa-solid fa-calendar-days text-sm"></i>
+                        <span>Dự kiến lịch KSK</span>
+                    </button>
+                </div>
+
+                <!-- VIEW CONTAINER FOR TAB 1 & TAB 2 (LIST GRID VIEW) -->
+                <div id="view-container-list" class="space-y-4">
+                    <!-- SEARCH & FILTER TOOLBAR CARD -->
+                    <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] space-y-3">
+                        <!-- Top Search Input -->
+                        <div class="relative w-full">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] text-xs"></i>
+                            <input type="text" id="search-keyword" placeholder="Tìm kiếm theo mã lịch, tên đoàn khám hoặc tên khách hàng..." class="w-full h-9 pl-9 pr-3 bg-white border border-[#D9DEE5] rounded-[4px] text-xs text-[#1F2937] placeholder-[#9CA3AF] focus:outline-none focus:border-[#27496D] transition-colors">
+                        </div>
+
+                        <!-- Filter Options Grid (5 cột) -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 pt-2 border-t border-[#E6EAF0]">
+                            <!-- Date From -->
+                            <div>
+                                <label class="sys-label">Từ ngày</label>
+                                <input type="date" id="filter-date-from" class="sys-input text-xs">
+                            </div>
+
+                            <!-- Date To -->
+                            <div>
+                                <label class="sys-label">Đến ngày</label>
+                                <input type="date" id="filter-date-to" class="sys-input text-xs">
+                            </div>
+
+                            <!-- Schedule Form (Nguồn lịch) -->
+                            <div>
+                                <label class="sys-label">Nguồn lịch</label>
+                                <select id="filter-schedule-form" class="sys-select text-xs">
+                                    <option value="">Tất cả nguồn lịch</option>
+                                    <option value="Lịch tuần">Lịch tuần</option>
+                                    <option value="Lịch phát sinh">Lịch phát sinh</option>
+                                </select>
+                            </div>
+
+                            <!-- Facility -->
+                            <div>
+                                <label class="sys-label">Cơ sở thực hiện</label>
+                                <select id="filter-facility" class="sys-select text-xs">
+                                    <option value="">Tất cả cơ sở</option>
+                                </select>
+                            </div>
+
+                            <!-- Status -->
+                            <div>
+                                <label class="sys-label">Trạng thái</label>
+                                <select id="filter-status" class="sys-select text-xs">
+                                    <option value="">Tất cả trạng thái</option>
+                                    <option value="Tạo mới">Tạo mới</option>
+                                    <option value="Chờ tổng hợp">Chờ tổng hợp</option>
+                                    <option value="Đã tổng hợp">Đã tổng hợp</option>
+                                    <option value="Chờ duyệt">Chờ duyệt</option>
+                                    <option value="Đã duyệt">Đã duyệt</option>
+                                    <option value="Hoàn thành">Hoàn thành</option>
+                                    <option value="Trả lại">Trả lại</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Filter Action Buttons -->
+                        <div class="flex items-center justify-between pt-2 border-t border-[#E6EAF0] text-xs">
+                            <span id="filtered-count" class="text-[#6B7280] font-medium">Hiển thị <strong id="count-num" class="text-[#1F2937]">0</strong> lịch khám</span>
+                            <div class="flex items-center gap-2">
+                                <button type="button" id="btn-reset" class="btn-secondary text-xs">
+                                    <i class="fa-solid fa-rotate-right text-xs"></i>
+                                    <span>Đặt lại</span>
+                                </button>
+                                <button type="button" id="btn-search" class="btn-primary text-xs">
+                                    <i class="fa-solid fa-filter text-xs"></i>
+                                    <span>Tra cứu</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB CONTROL: LOẠI LỊCH (Tất cả / Lịch tại viện / Lịch ngoại viện / Lịch phường) -->
+                    <div class="flex items-center gap-4 bg-white border-b border-[#D9DEE5] h-10 px-4 text-xs font-semibold overflow-x-auto rounded-t-[4px]">
+                        <button type="button" onclick="switchLoaiLichTab('Tất cả')" id="tab-all" class="loai-lich-tab h-full border-b-2 border-[#27496D] text-[#27496D] font-bold px-1 transition-colors cursor-pointer">
+                            Tất cả
+                        </button>
+                        <button type="button" onclick="switchLoaiLichTab('Lịch tại viện')" id="tab-tai-vien" class="loai-lich-tab h-full border-b-2 border-transparent text-[#6B7280] hover:text-[#1F2937] px-1 transition-colors cursor-pointer">
+                            Lịch tại viện
+                        </button>
+                        <button type="button" onclick="switchLoaiLichTab('Lịch ngoại viện')" id="tab-ngoai-vien" class="loai-lich-tab h-full border-b-2 border-transparent text-[#6B7280] hover:text-[#1F2937] px-1 transition-colors cursor-pointer">
+                            Lịch ngoại viện
+                        </button>
+                        <button type="button" onclick="switchLoaiLichTab('Lịch phường')" id="tab-phuong" class="loai-lich-tab h-full border-b-2 border-transparent text-[#6B7280] hover:text-[#1F2937] px-1 transition-colors cursor-pointer">
+                            Lịch phường
+                        </button>
+                    </div>
+
+                    <!-- DATA GRID ENTERPRISE CARD -->
+                    <div class="bg-white rounded-[4px] border border-[#D9DEE5] overflow-hidden flex flex-col">
+                        <div class="data-grid">
+                            <!-- FIXED LEFT ZONE (358px) -->
+                            <div class="grid-left">
+                                <div class="grid-header">
+                                    <div class="grid-cell w-[48px] justify-center">
+                                        <input type="checkbox" id="select-all-checkbox" onchange="toggleSelectAll(this)" class="w-4 h-4 text-[#27496D] rounded-[2px] border-[#D9DEE5] cursor-pointer" title="Chọn tất cả bản ghi có thể gửi">
+                                    </div>
+                                    <div class="grid-cell w-[50px] justify-center">STT</div>
+                                    <div class="grid-cell w-[260px]">Tên đơn vị</div>
+                                </div>
+                                <div id="grid-left-body" class="grid-body">
+                                    <!-- Dynamic Rows -->
+                                </div>
+                            </div>
+
+                            <!-- SCROLLABLE CENTER ZONE (1270px min-width) -->
+                            <div class="grid-center">
+                                <div class="grid-center-inner">
+                                    <div class="grid-header">
+                                        <div class="grid-cell w-[110px] justify-center">PAKD</div>
+                                        <div class="grid-cell w-[130px] justify-center">Mã đối tượng</div>
+                                        <div class="grid-cell w-[190px]">Tổng số lịch</div>
+                                        <div class="grid-cell w-[110px] justify-center">SL khách hàng</div>
+                                        <div class="grid-cell w-[110px] justify-center">Tổng nhân sự</div>
+                                        <div class="grid-cell w-[300px]">Địa chỉ</div>
+                                        <div class="grid-cell w-[180px] justify-center">Thời gian khám</div>
+                                        <div class="grid-cell w-[140px]">Người tạo</div>
+                                    </div>
+                                    <div id="grid-center-body" class="grid-body">
+                                        <!-- Dynamic Rows -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- FIXED RIGHT ZONE (170px) -->
+                            <div class="grid-right">
+                                <div class="grid-header">
+                                    <div class="grid-cell w-[170px] justify-center">Hành động</div>
+                                </div>
+                                <div id="grid-right-body" class="grid-body">
+                                    <!-- Dynamic Rows -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PAGINATION BAR -->
+                        <div class="p-3 border-t border-[#D9DEE5] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs bg-white">
+                            <div class="flex items-center gap-2 text-[#4B5563]">
+                                <span>Hiển thị</span>
+                                <select id="select-page-size" onchange="changePageSize(this.value)" class="h-8 px-2 bg-white border border-[#D9DEE5] rounded-[4px] text-xs text-[#1F2937] font-medium focus:outline-none focus:border-[#27496D] cursor-pointer">
+                                    <option value="10" selected>10</option>
+                                    <option value="20">20</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                                <span>bản ghi.</span>
+                                <span class="font-medium text-[#4B5563] ml-2" id="pagination-info">
+                                    0 - 0 trong tổng 0
+                                </span>
+                            </div>
+                            <div class="flex items-center gap-1" id="pagination-controls">
+                                <!-- Page buttons -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW CONTAINER FOR TAB 3 (DỰ KIẾN LỊCH KSK - PLANNING CALENDAR VIEW) -->
+                <div id="view-container-du-kien" class="hidden space-y-3">
+                    
+                    <!-- UNIFIED CONTROL BAR (Header + Navigation + View Controls + Compact Filters) -->
+                    <div class="bg-white p-3 rounded-[4px] border border-[#D9DEE5] shrink-0 space-y-2.5 shadow-2xs">
+                        
+                        <!-- Row 1: Page Title & Time Navigation & View Mode Switcher -->
+                        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-[#F0F3F7] pb-2.5">
+                            <!-- Title & Subtitle -->
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-[4px] bg-[#27496D] text-white flex items-center justify-center font-bold text-sm shadow-xs">
+                                    <i class="fa-solid fa-calendar-days"></i>
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <h2 class="text-sm font-bold text-[#1F2937]">Dự kiến lịch KSK</h2>
+                                    </div>
+                                    <p class="text-[11px] text-[#6B7280]">Lập kế hoạch xem trước lịch khám sức khỏe, theo dõi mật độ lịch & phân bổ nguồn lực</p>
+                                </div>
+                            </div>
+
+                            <!-- Center: Time Navigation Controls -->
+                            <div class="flex items-center gap-2">
+                                <button type="button" id="btn-today" class="btn-secondary text-xs px-3 py-1 h-7 font-semibold">
+                                    <i class="fa-solid fa-calendar-day text-xs text-[#27496D]"></i>
+                                    <span>Hôm nay</span>
+                                </button>
+                                <div class="inline-flex items-center bg-[#F8FAFC] p-0.5 rounded-[4px] border border-[#CBD5E1]">
+                                    <button type="button" id="btn-prev" class="w-6 h-6 hover:bg-white rounded-[3px] text-[#4B5563] flex items-center justify-center transition-colors">
+                                        <i class="fa-solid fa-chevron-left text-xs"></i>
+                                    </button>
+                                    <span id="calendar-title-range" class="px-3 font-bold text-xs text-[#27496D] min-w-[200px] text-center font-mono">--</span>
+                                    <button type="button" id="btn-next" class="w-6 h-6 hover:bg-white rounded-[3px] text-[#4B5563] flex items-center justify-center transition-colors">
+                                        <i class="fa-solid fa-chevron-right text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Right: View Mode Segmented Control -->
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-bold text-[#6B7280] uppercase tracking-wide">Hiển thị:</span>
+                                <div class="bg-[#F1F5F9] p-0.5 rounded-[4px] border border-[#CBD5E1] inline-flex items-center gap-1">
+                                    <button type="button" id="btn-view-week" class="segmented-btn active px-3 py-0.5 text-xs rounded-[3px] transition-all">
+                                        <i class="fa-solid fa-calendar-week mr-1"></i> Tuần
+                                    </button>
+                                    <button type="button" id="btn-view-month" class="segmented-btn px-3 py-0.5 text-xs rounded-[3px] text-[#6B7280] hover:text-[#1F2937] transition-all">
+                                        <i class="fa-solid fa-calendar-days mr-1"></i> Tháng
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Row 2: Compact Filter Bar (Quick Type Pills & Filter Popover) -->
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-2.5">
+                            
+                            <!-- Left: Search Box + Quick Type Filter Pills Group -->
+                            <div class="flex items-center gap-2.5 flex-wrap flex-1">
+                                <!-- Compact Search Box -->
+                                <div class="relative w-48">
+                                    <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-[#9CA3AF]"></i>
+                                    <input type="text" id="filter-search" placeholder="Tìm tên đơn vị..." class="sys-input text-xs pl-8 h-7.5 text-[#1F2937]">
+                                </div>
+
+                                <div class="h-4 w-px bg-[#D9DEE5] hidden sm:block"></div>
+
+                                <!-- Quick Type Filter Pills Container (Chỉ 3 loại: Tại viện, Ngoại viện, Phường) -->
+                                <div class="inline-flex items-center bg-[#F8FAFC] p-0.5 rounded-[5px] border border-[#CBD5E1] gap-0.5 flex-wrap">
+                                    <button type="button" class="filter-type-pill active px-3 py-1 text-xs rounded-[3px] font-semibold text-white bg-[#27496D] transition-all cursor-pointer" data-type="Lịch tại viện">
+                                        <span class="inline-block w-2 h-2 rounded-full bg-white mr-1.5"></span> Lịch tại viện
+                                    </button>
+                                    <button type="button" class="filter-type-pill px-3 py-1 text-xs rounded-[3px] font-medium text-[#4B5563] hover:bg-[#FFF3E0] hover:text-[#E65100] transition-all cursor-pointer" data-type="Lịch ngoại viện">
+                                        <span class="inline-block w-2 h-2 rounded-full bg-[#ED6C02] mr-1.5"></span> Lịch ngoại viện
+                                    </button>
+                                    <button type="button" class="filter-type-pill px-3 py-1 text-xs rounded-[3px] font-medium text-[#4B5563] hover:bg-[#F3E8FF] hover:text-[#6B21A8] transition-all cursor-pointer" data-type="Lịch phường">
+                                        <span class="inline-block w-2 h-2 rounded-full bg-[#7E22CE] mr-1.5"></span> Lịch phường
+                                    </button>
+                                    <button type="button" class="filter-type-pill px-3 py-1 text-xs rounded-[3px] font-medium text-[#4B5563] hover:bg-[#F4F5F7] hover:text-[#1F2937] transition-all cursor-pointer" data-type="">
+                                        Tất cả 3 loại
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Right: Advanced Filter Popover Toggle & Summary Panel Toggle -->
+                            <div class="flex items-center gap-2 relative shrink-0">
+                                
+                                <!-- Advanced Filter Popover Dropdown Container -->
+                                <div class="relative">
+                                    <button type="button" id="btn-toggle-filter-popover" class="btn-secondary text-xs h-7.5 px-3 flex items-center gap-1.5 font-semibold">
+                                        <i class="fa-solid fa-sliders text-xs text-[#27496D]"></i>
+                                        <span>Bộ lọc khác</span>
+                                        <span id="filter-popover-badge" class="hidden px-1.5 py-0.2 rounded-full bg-[#27496D] text-white text-[10px] font-bold">0</span>
+                                        <i class="fa-solid fa-chevron-down text-[10px] text-[#6B7280] ml-0.5"></i>
+                                    </button>
+
+                                    <!-- Floating Filter Popover Panel -->
+                                    <div id="filter-popover-panel" class="hidden absolute right-0 top-9 w-72 bg-white rounded-[6px] shadow-lg border border-[#D9DEE5] z-50 p-3.5 space-y-3">
+                                        <div class="flex items-center justify-between border-b border-[#F0F3F7] pb-2">
+                                            <span class="text-xs font-bold text-[#1F2937] flex items-center gap-1.5">
+                                                <i class="fa-solid fa-filter text-[#27496D]"></i> Bộ lọc nâng cao
+                                            </span>
+                                            <button type="button" id="btn-reset-filters" class="text-[11px] text-[#27496D] hover:underline font-semibold">Xóa chọn</button>
+                                        </div>
+
+                                        <!-- Select Cơ sở -->
+                                        <div class="space-y-1">
+                                            <label class="text-[11px] font-semibold text-[#6B7280]">Cơ sở thực hiện:</label>
+                                            <select id="filter-co-so" class="sys-select text-xs h-8 text-[#1F2937] w-full">
+                                                <option value="">Tất cả cơ sở</option>
+                                                <option value="MEDLATEC Ba Đình">MEDLATEC Ba Đình</option>
+                                                <option value="MEDLATEC Tây Hồ">MEDLATEC Tây Hồ</option>
+                                                <option value="MEDLATEC Thanh Xuân">MEDLATEC Thanh Xuân</option>
+                                                <option value="Ngoại viện">Khám Ngoại viện</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Select CB Phụ trách -->
+                                        <div class="space-y-1">
+                                            <label class="text-[11px] font-semibold text-[#6B7280]">Cán bộ phụ trách:</label>
+                                            <select id="filter-cb-phu-trach" class="sys-select text-xs h-8 text-[#1F2937] w-full">
+                                                <option value="">Tất cả cán bộ</option>
+                                                <option value="Nguyễn Văn An">Nguyễn Văn An</option>
+                                                <option value="Lê Hoàng Nam">Lê Hoàng Nam</option>
+                                                <option value="Trần Văn Bình">Trần Văn Bình</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- MAIN GRID & RIGHT SUMMARY PANEL CONTENT -->
+                    <div class="flex-1 flex gap-3 min-h-0 overflow-hidden">
+                        
+                        <!-- CALENDAR GRID WRAPPER (Left / Center) -->
+                        <div id="calendar-grid-wrapper" class="flex-1 bg-white rounded-[4px] border border-[#D9DEE5] flex flex-col min-w-0 h-full overflow-hidden shadow-2xs">
+                            
+                            <!-- WEEK VIEW CONTAINER -->
+                            <div id="week-view-container" class="flex-1 flex flex-col h-full overflow-y-auto calendar-grid-scroll">
+                                <table class="w-full border-collapse text-xs table-fixed">
+                                    <thead>
+                                        <tr class="bg-[#F8FAFC] border-b border-[#D9DEE5] sticky top-0 z-20 shadow-2xs">
+                                            <th class="w-24 p-2 text-center bg-[#F1F5F9] border-r border-[#D9DEE5] text-[#27496D] font-bold text-[11px]">
+                                                CA / NGÀY
+                                            </th>
+                                            <!-- 7 Days headers rendered via JS -->
+                                            <th class="p-2 text-center border-r border-[#D9DEE5] day-col-header" data-day-index="0"></th>
+                                            <th class="p-2 text-center border-r border-[#D9DEE5] day-col-header" data-day-index="1"></th>
+                                            <th class="p-2 text-center border-r border-[#D9DEE5] day-col-header" data-day-index="2"></th>
+                                            <th class="p-2 text-center border-r border-[#D9DEE5] day-col-header" data-day-index="3"></th>
+                                            <th class="p-2 text-center border-r border-[#D9DEE5] day-col-header" data-day-index="4"></th>
+                                            <th class="p-2 text-center border-r border-[#D9DEE5] day-col-header" data-day-index="5"></th>
+                                            <th class="p-2 text-center day-col-header" data-day-index="6"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="week-grid-tbody">
+                                        <!-- 3 fixed rows: Sáng, Chiều, Cả ngày rendered via JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- MONTH VIEW CONTAINER (Hidden by default) -->
+                            <div id="month-view-container" class="flex-1 flex flex-col h-full overflow-y-auto calendar-grid-scroll hidden">
+                                <table class="w-full border-collapse text-xs table-fixed h-full">
+                                    <thead>
+                                        <tr class="bg-[#27496D] text-white sticky top-0 z-20">
+                                            <th class="p-2 text-center font-bold">Thứ 2</th>
+                                            <th class="p-2 text-center font-bold">Thứ 3</th>
+                                            <th class="p-2 text-center font-bold">Thứ 4</th>
+                                            <th class="p-2 text-center font-bold">Thứ 5</th>
+                                            <th class="p-2 text-center font-bold">Thứ 6</th>
+                                            <th class="p-2 text-center font-bold">Thứ 7</th>
+                                            <th class="p-2 text-center font-bold">Chủ nhật</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="month-grid-tbody">
+                                        <!-- Month day cells rendered via JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- FOOTER STATUS BAR -->
+                    <div class="bg-[#27496D] text-white px-4 py-2 rounded-[4px] flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs shrink-0 shadow-xs">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-circle-info text-sky-300"></i>
+                            <span id="footer-period-label" class="font-semibold">Tuần 33 / 2026</span>
+                        </div>
+
+                        <div class="flex items-center gap-5 text-xs font-medium">
+                            <div>Tổng Lịch: <strong id="footer-count-schedules" class="text-white font-bold ml-1">0</strong></div>
+                            <div class="w-px h-3 bg-white/20"></div>
+                            <div>Tổng Khách: <strong id="footer-count-guests" class="text-sky-200 font-bold ml-1">0</strong></div>
+                            <div class="w-px h-3 bg-white/20"></div>
+                            <div>Tổng Nhân sự: <strong id="footer-count-staff" class="text-amber-200 font-bold ml-1">0</strong></div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- BULK SEND CONFIRMATION MODAL -->
+    <div id="bulk-send-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs hidden items-center justify-center p-4">
+        <div class="bg-white rounded-[4px] shadow-lg max-w-xl w-full p-5 space-y-4 border border-[#D9DEE5] flex flex-col max-h-[90vh]">
+            <!-- Modal Header -->
+            <div class="flex items-start justify-between border-b border-[#D9DEE5] pb-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-[4px] bg-[#E8F1FB] text-[#27496D] flex items-center justify-center text-base flex-shrink-0">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-semibold text-[#1F2937]">Gửi tổng hợp lịch khám sức khỏe</h3>
+                        <p class="text-xs text-[#6B7280] mt-0.5">Xác nhận gửi các lịch khám đã chọn cho Bộ phận Hành chính Tổng hợp</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeBulkSendModal()" class="w-8 h-8 rounded-[4px] text-[#9CA3AF] hover:text-[#1F2937] hover:bg-[#F3F6FA] flex items-center justify-center text-sm transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Description -->
+            <p class="text-xs text-[#4B5563] font-medium leading-relaxed">
+                Bạn đang thực hiện gửi Bộ phận Hành chính Tổng hợp các lịch khám sức khỏe sau:
+            </p>
+
+            <!-- Group List Container -->
+            <div id="bulk-send-group-list" class="overflow-y-auto max-h-[45vh] pr-1 space-y-3 text-xs">
+                <!-- Dynamic grouped content -->
+            </div>
+
+            <!-- Modal Footer Actions -->
+            <div class="flex items-center justify-end gap-3 pt-3 border-t border-[#D9DEE5] flex-shrink-0">
+                <button type="button" onclick="closeBulkSendModal()" class="btn-secondary text-xs">
+                    Hủy
+                </button>
+                <button type="button" id="confirm-bulk-send-btn" onclick="confirmBulkSend()" class="btn-primary text-xs">
+                    <i class="fa-solid fa-paper-plane text-xs"></i>
+                    <span>Xác nhận gửi (<span id="bulk-send-confirm-count">0</span>)</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DELETE CONFIRMATION MODAL -->
+    <div id="delete-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs hidden items-center justify-center p-4">
+        <div class="bg-white rounded-[4px] shadow-lg max-w-md w-full p-5 space-y-4 border border-[#D9DEE5]">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-[4px] bg-[#FDECEC] text-[#D32F2F] flex items-center justify-center text-lg flex-shrink-0">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-[#1F2937]">Xác nhận xóa lịch khám đơn vị</h3>
+                    <p class="text-xs text-[#6B7280] mt-0.5">Bạn có chắc chắn muốn xóa lịch khám của đơn vị này không?</p>
+                </div>
+            </div>
+            <div class="p-3.5 bg-[#F8FAFC] rounded-[4px] border border-[#D9DEE5] text-xs space-y-2">
+                <div class="flex justify-between items-center border-b border-[#E6EAF0] pb-1.5">
+                    <span class="text-[#6B7280] font-medium">Tên đơn vị:</span>
+                    <strong id="delete-item-name" class="text-[#1F2937] font-bold"></strong>
+                </div>
+                <div class="flex justify-between items-center border-b border-[#E6EAF0] pb-1.5">
+                    <span class="text-[#6B7280] font-medium">Mã lịch:</span>
+                    <span id="delete-item-code" class="font-mono font-bold text-[#27496D]"></span>
+                </div>
+                <div class="flex justify-between items-center border-b border-[#E6EAF0] pb-1.5">
+                    <span class="text-[#6B7280] font-medium">Tổng số lịch con:</span>
+                    <span id="delete-item-child-count" class="font-bold text-[#27496D]"></span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-[#6B7280] font-medium">Tổng số khách hàng:</span>
+                    <span id="delete-item-guests" class="font-bold text-[#2E7D32]"></span>
+                </div>
+            </div>
+            <div class="flex items-center justify-end gap-3 pt-1">
+                <button type="button" onclick="closeDeleteModal()" class="btn-secondary text-xs">
+                    Hủy
+                </button>
+                <button type="button" id="confirm-delete-btn" class="btn-danger text-xs">
+                    <i class="fa-regular fa-trash-can text-xs mr-1"></i> Xóa
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SINGLE SEND CONFIRMATION MODAL -->
+    <div id="single-send-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs hidden items-center justify-center p-4">
+        <div class="bg-white rounded-[4px] shadow-lg max-w-md w-full p-5 space-y-4 border border-[#D9DEE5]">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-[4px] bg-[#E6F4EA] text-[#2E7D32] flex items-center justify-center text-lg flex-shrink-0">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-[#1F2937]">Gửi lịch sang tổng hợp?</h3>
+                    <p class="text-xs text-[#6B7280] mt-0.5">Xác nhận gửi các lịch con của đơn vị này sang bộ phận Tổng hợp lịch KSK.</p>
+                </div>
+            </div>
+            <div class="p-3.5 bg-[#F8FAFC] rounded-[4px] border border-[#D9DEE5] text-xs space-y-2">
+                <div class="flex justify-between items-center border-b border-[#E6EAF0] pb-1.5">
+                    <span class="text-[#6B7280] font-medium">Tên đơn vị:</span>
+                    <strong id="send-modal-unit-name" class="text-[#1F2937] font-bold"></strong>
+                </div>
+                <div class="flex justify-between items-center border-b border-[#E6EAF0] pb-1.5">
+                    <span class="text-[#6B7280] font-medium">Tổng số lịch gửi:</span>
+                    <strong id="send-modal-total-count" class="text-[#27496D] font-bold"></strong>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-[#6B7280] font-medium">Chi tiết phân loại:</span>
+                    <span id="send-modal-breakdown" class="text-[#374151] font-semibold"></span>
+                </div>
+            </div>
+            <div class="flex items-center justify-end gap-2.5 pt-1">
+                <button type="button" onclick="closeSingleSendModal()" class="btn-secondary text-xs">
+                    Hủy
+                </button>
+                <button type="button" onclick="confirmSingleSend()" class="btn-primary bg-[#2E7D32] hover:bg-[#1B5E20] text-xs">
+                    <i class="fa-solid fa-paper-plane text-xs mr-1"></i> Gửi tổng hợp
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL POPUP: XEM TẤT CẢ LỊCH CỦA 1 NGÀY (DÙNG TRONG MONTH VIEW HOẶC DOUBLE CLICK) -->
+    <div id="modal-day-details" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white w-[560px] max-w-full rounded-[6px] shadow-xl border border-[#D9DEE5] flex flex-col max-h-[85vh]">
+            <div class="px-4 py-3 bg-[#27496D] text-white flex items-center justify-between rounded-t-[5px]">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-day"></i>
+                    <h3 id="modal-day-title" class="font-bold text-sm">Danh sách lịch dự kiến</h3>
+                </div>
+                <button type="button" onclick="closeDayDetailsModal()" class="w-7 h-7 rounded-[4px] hover:bg-white/10 text-white flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+
+            <div id="modal-day-content" class="p-4 overflow-y-auto flex-1 space-y-2.5 bg-[#F8FAFC]">
+                <!-- Item list rendered dynamically -->
+            </div>
+
+            <div class="px-4 py-2.5 bg-white border-t border-[#D9DEE5] flex items-center justify-between text-xs text-[#6B7280] rounded-b-[5px]">
+                <span id="modal-day-count-summary" class="font-medium"></span>
+                <button type="button" onclick="closeDayDetailsModal()" class="btn-secondary text-xs">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN JAVASCRIPT & DATA-STORE INTEGRATION -->
+    <script src="../js/data-store.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../du-kien-lich-ksk/utils/calendar-helper.js"></script>
+    <script src="../du-kien-lich-ksk/calendar.js"></script>
+    <script>
+        let currentPage = 1;
+        let pageSize = 10;
+        let filteredData = [];
+        let deletingId = null;
+        let selectedScheduleIds = new Set();
+        let currentTab = 'Tất cả';
+        let currentMainTab = 'my_schedules'; // 'my_schedules' | 'all_schedules' | 'du_kien'
+
+        document.addEventListener('DOMContentLoaded', function() {
+
+            populateFacilityDropdown();
+            bindFilterEvents();
+
+            // Check URL query parameter for tab selection
+            const urlParams = new URLSearchParams(window.location.search);
+            const paramTab = urlParams.get('tab');
+            if (paramTab === 'du_kien' || paramTab === 'du-kien') {
+                switchMainTab('du_kien');
+            } else if (paramTab === 'all_schedules' || paramTab === 'all') {
+                switchMainTab('all_schedules');
+            } else {
+                switchMainTab('my_schedules');
+            }
+
+            setupScrollSync();
+        });
+
+        function switchMainTab(tabKey) {
+            currentMainTab = tabKey;
+
+            const btnMy = document.getElementById('tab-btn-my-schedules');
+            const btnAll = document.getElementById('tab-btn-all-schedules');
+            const btnDuKien = document.getElementById('tab-btn-du-kien');
+
+            const viewList = document.getElementById('view-container-list');
+            const viewDuKien = document.getElementById('view-container-du-kien');
+
+            [btnMy, btnAll, btnDuKien].forEach(btn => {
+                if (!btn) return;
+                btn.className = 'main-tab-btn h-11 border-b-2 border-transparent text-[#6B7280] hover:text-[#1F2937] flex items-center gap-2 px-1 transition-colors cursor-pointer select-none';
+            });
+
+            if (tabKey === 'du_kien') {
+                if (btnDuKien) btnDuKien.className = 'main-tab-btn h-11 border-b-2 border-[#27496D] text-[#27496D] font-bold flex items-center gap-2 px-1 transition-colors cursor-pointer select-none';
+                if (viewList) viewList.classList.add('hidden');
+                if (viewDuKien) viewDuKien.classList.remove('hidden');
+
+                const url = new URL(window.location);
+                url.searchParams.set('tab', 'du_kien');
+                window.history.replaceState({}, '', url);
+
+                if (typeof renderCalendar === 'function') {
+                    if (typeof loadSchedulesData === 'function') loadSchedulesData();
+                    renderCalendar();
+                }
+            } else {
+                if (viewDuKien) viewDuKien.classList.add('hidden');
+                if (viewList) viewList.classList.remove('hidden');
+
+                if (tabKey === 'my_schedules') {
+                    if (btnMy) btnMy.className = 'main-tab-btn h-11 border-b-2 border-[#27496D] text-[#27496D] font-bold flex items-center gap-2 px-1 transition-colors cursor-pointer select-none';
+                } else {
+                    if (btnAll) btnAll.className = 'main-tab-btn h-11 border-b-2 border-[#27496D] text-[#27496D] font-bold flex items-center gap-2 px-1 transition-colors cursor-pointer select-none';
+                }
+
+                const url = new URL(window.location);
+                url.searchParams.set('tab', tabKey);
+                window.history.replaceState({}, '', url);
+
+                filterData();
+            }
+        }
+
+        function changePageSize(val) {
+            pageSize = parseInt(val) || 20;
+            currentPage = 1;
+            renderTable();
+        }
+
+        function setRowHover(index, hover) {
+            const leftBody = document.getElementById('grid-left-body');
+            const centerBody = document.getElementById('grid-center-body');
+            const rightBody = document.getElementById('grid-right-body');
+
+            if (leftBody && leftBody.children[index]) leftBody.children[index].classList.toggle('bg-[#F7F9FC]', hover);
+            if (centerBody && centerBody.children[index]) centerBody.children[index].classList.toggle('bg-[#F7F9FC]', hover);
+            if (rightBody && rightBody.children[index]) rightBody.children[index].classList.toggle('bg-[#F7F9FC]', hover);
+        }
+
+        function setupScrollSync() {
+            const leftBody = document.getElementById('grid-left-body');
+            const centerBody = document.getElementById('grid-center-body');
+            const rightBody = document.getElementById('grid-right-body');
+
+            if (!leftBody || !centerBody || !rightBody) return;
+
+            let isSyncing = false;
+
+            function handleScroll(source) {
+                if (isSyncing) return;
+                isSyncing = true;
+                const top = source.scrollTop;
+                if (source !== leftBody) leftBody.scrollTop = top;
+                if (source !== centerBody) centerBody.scrollTop = top;
+                if (source !== rightBody) rightBody.scrollTop = top;
+                requestAnimationFrame(() => { isSyncing = false; });
+            }
+
+            leftBody.addEventListener('scroll', () => handleScroll(leftBody));
+            centerBody.addEventListener('scroll', () => handleScroll(centerBody));
+            rightBody.addEventListener('scroll', () => handleScroll(rightBody));
+        }
+
+        function formatExamDateRange(item) {
+            if (item.thoiGianKham) return item.thoiGianKham;
+            if (item.examDateFrom && item.examDateTo) {
+                return `${formatDateStr(item.examDateFrom)} - ${formatDateStr(item.examDateTo)}`;
+            }
+            if (item.examDate) {
+                const d = formatDateStr(item.examDate);
+                return `${d} - ${d}`;
+            }
+            return '09/05/2025 - 10/05/2025';
+        }
+
+        function formatExamDateHtml(item) {
+            let dateStr = '';
+            if (item.examDateFrom && item.examDateTo) {
+                dateStr = `${formatDateStr(item.examDateFrom)} - ${formatDateStr(item.examDateTo)}`;
+            } else if (item.examDate) {
+                dateStr = formatDateStr(item.examDate);
+            } else if (item.thoiGianKham) {
+                dateStr = item.thoiGianKham;
+            } else {
+                dateStr = '24/08/2026';
+            }
+
+            let timeStr = (item.startTime && item.endTime) ? `${item.startTime} - ${item.endTime}` : (item.session ? `${item.session} (07:30 - 11:30)` : '07:30 - 11:30');
+
+            return `
+                <div class="flex flex-col justify-center items-center leading-tight">
+                    <span class="font-semibold text-[#1F2937] text-xs">${dateStr}</span>
+                    <span class="text-[11px] text-[#6B7280] font-mono mt-0.5">${timeStr}</span>
+                </div>
+            `;
+        }
+
+        function formatDateStr(dateStr) {
+            if (!dateStr) return '';
+            if (dateStr.includes('/')) return dateStr;
+            const parts = dateStr.split('-');
+            if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+            return dateStr;
+        }
+
+        function switchLoaiLichTab(tabName) {
+            currentTab = tabName;
+            const tabs = [
+                { name: 'Tất cả', id: 'tab-all' },
+                { name: 'Lịch tại viện', id: 'tab-tai-vien' },
+                { name: 'Lịch ngoại viện', id: 'tab-ngoai-vien' },
+                { name: 'Lịch phường', id: 'tab-phuong' }
+            ];
+            tabs.forEach(t => {
+                const btn = document.getElementById(t.id);
+                if (!btn) return;
+                if (t.name === tabName) {
+                    btn.className = 'loai-lich-tab h-full border-b-2 border-[#27496D] text-[#27496D] font-bold px-1 transition-colors cursor-pointer';
+                } else {
+                    btn.className = 'loai-lich-tab h-full border-b-2 border-transparent text-[#6B7280] hover:text-[#1F2937] px-1 transition-colors cursor-pointer';
+                }
+            });
+            filterData();
+        }
+
+        function populateFacilityDropdown() {
+            const select = document.getElementById('filter-facility');
+            if (!select) return;
+            const facilities = MWKDataStore.getActiveFacilities();
+            select.innerHTML = '<option value="">Tất cả cơ sở</option>';
+            facilities.forEach(f => {
+                const opt = document.createElement('option');
+                opt.value = f.name;
+                opt.textContent = f.name;
+                select.appendChild(opt);
+            });
+        }
+
+        function bindFilterEvents() {
+            document.getElementById('btn-search').addEventListener('click', filterData);
+            document.getElementById('btn-reset').addEventListener('click', resetFilters);
+            document.getElementById('search-keyword').addEventListener('input', filterData);
+            document.getElementById('filter-date-from').addEventListener('change', filterData);
+            document.getElementById('filter-date-to').addEventListener('change', filterData);
+            document.getElementById('filter-schedule-form').addEventListener('change', filterData);
+            document.getElementById('filter-facility').addEventListener('change', filterData);
+            document.getElementById('filter-status').addEventListener('change', filterData);
+        }
+
+        function filterData() {
+            const keyword = document.getElementById('search-keyword').value.trim().toLowerCase();
+            const dateFrom = document.getElementById('filter-date-from').value;
+            const dateTo = document.getElementById('filter-date-to').value;
+            const scheduleForm = document.getElementById('filter-schedule-form').value;
+            const facility = document.getElementById('filter-facility').value;
+            const status = document.getElementById('filter-status').value;
+
+            const allSchedules = MWKDataStore.getKskSchedules();
+            const currentUser = 'Nguyễn Văn An';
+
+            console.log("[KSK STORE] all units:", allSchedules);
+            console.log("[KSK MY TAB] current user:", currentUser);
+
+            const isCreatedByMe = (item) => {
+                const creator = item.nguoiTao || item.personInCharge || item.cbPhuTrach || item.cbkd || '';
+                if (!creator || creator.includes('Nguyễn Văn An') || creator === currentUser) return true;
+                if (item.trangThai === 'TAO_MOI' || item.trangThai === 'NHAP') return true;
+                return false;
+            };
+
+            const myCount = allSchedules.filter(isCreatedByMe).length;
+
+            const badgeMy = document.getElementById('badge-count-my-schedules');
+            const badgeAll = document.getElementById('badge-count-all-schedules');
+            if (badgeMy) badgeMy.innerText = myCount;
+            if (badgeAll) badgeAll.innerText = allSchedules.length;
+
+            filteredData = allSchedules.filter(item => {
+                // Main Tab 1 Filter: Lịch khám sức khỏe tạo bởi tôi
+                if (currentMainTab === 'my_schedules') {
+                    if (!isCreatedByMe(item)) return false;
+                }
+
+                const matchKeyword = !keyword || 
+                    (item.code && item.code.toLowerCase().includes(keyword)) ||
+                    (item.contactPerson && item.contactPerson.toLowerCase().includes(keyword)) ||
+                    (item.customerName && item.customerName.toLowerCase().includes(keyword)) ||
+                    (item.teamName && item.teamName.toLowerCase().includes(keyword)) ||
+                    (item.tenDonVi && item.tenDonVi.toLowerCase().includes(keyword)) ||
+                    (item.maDoiTuong && item.maDoiTuong.toLowerCase().includes(keyword));
+
+                const matchTab = currentTab === 'Tất cả' || 
+                    (item.loaiLich && item.loaiLich.includes(currentTab)) ||
+                    (Array.isArray(item.loaiLichTypes) && item.loaiLichTypes.includes(currentTab));
+                const matchDateFrom = !dateFrom || (item.examDate && item.examDate >= dateFrom);
+                const matchDateTo = !dateTo || (item.examDate && item.examDate <= dateTo);
+                const matchScheduleForm = !scheduleForm || item.scheduleForm === scheduleForm;
+                const matchFacility = !facility || item.facility === facility;
+                
+                let matchStatus = true;
+                if (status) {
+                    const filterKey = MWKDataStore.normalizeScheduleStatusKey(status);
+                    const itemKey = MWKDataStore.normalizeScheduleStatusKey(item.trangThai || item.status);
+                    matchStatus = (filterKey === itemKey) || (item.status === status);
+                }
+
+                return matchKeyword && matchTab && matchDateFrom && matchDateTo && matchScheduleForm && matchFacility && matchStatus;
+            });
+
+            currentPage = 1;
+            renderTable();
+        }
+
+        function resetFilters() {
+            document.getElementById('search-keyword').value = '';
+            document.getElementById('filter-date-from').value = '';
+            document.getElementById('filter-date-to').value = '';
+            document.getElementById('filter-schedule-form').value = '';
+            document.getElementById('filter-facility').value = '';
+            document.getElementById('filter-status').value = '';
+            switchLoaiLichTab('Tất cả');
+        }
+
+        function loadAndRenderData() {
+            filterData();
+        }
+
+        function toggleRowSelect(id, checkbox) {
+            if (checkbox.checked) {
+                selectedScheduleIds.add(id);
+            } else {
+                selectedScheduleIds.delete(id);
+            }
+            updateBulkSendButtonState();
+        }
+
+        function toggleSelectAll(masterCheckbox) {
+            const isChecked = masterCheckbox.checked;
+            const checkboxes = document.querySelectorAll('.row-checkbox:not([disabled])');
+            checkboxes.forEach(cb => {
+                const id = parseInt(cb.value);
+                cb.checked = isChecked;
+                if (isChecked) {
+                    selectedScheduleIds.add(id);
+                } else {
+                    selectedScheduleIds.delete(id);
+                }
+            });
+            updateBulkSendButtonState();
+        }
+
+        function updateBulkSendButtonState() {
+            const btn = document.getElementById('btn-bulk-send');
+            const badge = document.getElementById('selected-count-badge');
+            const selectAllCb = document.getElementById('select-all-checkbox');
+            const count = selectedScheduleIds.size;
+
+            if (!btn) return;
+
+            if (count > 0) {
+                btn.disabled = false;
+                btn.className = 'btn-primary text-xs cursor-pointer';
+                if (badge) {
+                    badge.innerText = count;
+                    badge.classList.remove('hidden');
+                }
+            } else {
+                btn.disabled = true;
+                btn.className = 'btn-secondary text-xs opacity-50 cursor-not-allowed';
+                if (badge) {
+                    badge.classList.add('hidden');
+                }
+            }
+
+            if (selectAllCb) {
+                const pageCheckboxes = document.querySelectorAll('.row-checkbox:not([disabled])');
+                if (pageCheckboxes.length > 0) {
+                    const allChecked = Array.from(pageCheckboxes).every(cb => cb.checked);
+                    selectAllCb.checked = allChecked;
+                } else {
+                    selectAllCb.checked = false;
+                }
+            }
+        }
+
+        function handleBulkSendClick() {
+            if (selectedScheduleIds.size === 0) {
+                if (window.showToast) {
+                    window.showToast('Vui lòng chọn ít nhất một lịch khám sức khỏe để gửi tổng hợp.', 'error');
+                } else {
+                    alert('Vui lòng chọn ít nhất một lịch khám sức khỏe để gửi tổng hợp.');
+                }
+                return;
+            }
+            openBulkSendModal();
+        }
+
+        function openBulkSendModal() {
+            renderBulkSendGroupList();
+            const modal = document.getElementById('bulk-send-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        function closeBulkSendModal() {
+            const modal = document.getElementById('bulk-send-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        function renderBulkSendGroupList() {
+            const container = document.getElementById('bulk-send-group-list');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const selectedItems = Array.from(selectedScheduleIds)
+                .map(id => MWKDataStore.getKskScheduleById(id))
+                .filter(Boolean);
+
+            const confirmCount = document.getElementById('bulk-send-confirm-count');
+            if (confirmCount) confirmCount.innerText = selectedItems.length;
+
+            const groupEl = document.createElement('div');
+            groupEl.className = 'bg-[#F4F5F7] border border-[#D9DEE5] rounded-[4px] p-3 space-y-2';
+
+            let itemsHtml = '';
+            if (selectedItems.length === 0) {
+                itemsHtml = `<p class="text-[#9CA3AF] italic text-xs pl-2">Không có.</p>`;
+            } else {
+                itemsHtml = `<ul class="space-y-1 pl-4 list-disc marker:text-[#2E7D32] text-xs">`;
+                selectedItems.forEach(item => {
+                    const tenDonVi = item.tenDonVi || item.customerName || item.teamName;
+                    itemsHtml += `
+                        <li class="text-[#374151] font-medium">
+                            <strong class="text-[#1F2937] font-bold">${item.code || item.maDoiTuong || 'Lịch KSK'}</strong> - ${tenDonVi}
+                        </li>
+                    `;
+                });
+                itemsHtml += `</ul>`;
+            }
+
+            groupEl.innerHTML = `
+                <div class="flex items-center justify-between border-b border-[#D9DEE5] pb-2 mb-2">
+                    <div class="flex items-center gap-2 font-bold text-[#1F2937] text-xs">
+                        <i class="fa-solid fa-list-check text-[#27496D]"></i>
+                        <span>Danh sách lịch đã chọn</span>
+                    </div>
+                    <span class="badge-success">
+                        ${selectedItems.length} lịch
+                    </span>
+                </div>
+                ${itemsHtml}
+            `;
+
+            container.appendChild(groupEl);
+        }
+
+        function confirmBulkSend() {
+            if (selectedScheduleIds.size === 0) return;
+
+            const count = selectedScheduleIds.size;
+            selectedScheduleIds.forEach(id => {
+                MWKDataStore.updateKskSchedule(id, { 
+                    status: 'Chờ tổng hợp',
+                    trangThai: 'CHO_TONG_HOP',
+                    daGuiTongHop: true,
+                    ngayGuiTongHop: new Date().toISOString()
+                });
+            });
+
+            closeBulkSendModal();
+
+            if (window.showToast) {
+                window.showToast(`Đã gửi tổng hợp thành công ${count} lịch khám sức khỏe!`, 'success');
+            }
+
+            selectedScheduleIds.clear();
+            loadAndRenderData();
+        }
+
+        function renderTable() {
+            const leftBody = document.getElementById('grid-left-body');
+            const centerBody = document.getElementById('grid-center-body');
+            const rightBody = document.getElementById('grid-right-body');
+
+            if (!leftBody || !centerBody || !rightBody) return;
+
+            leftBody.innerHTML = '';
+            centerBody.innerHTML = '';
+            rightBody.innerHTML = '';
+
+            const total = filteredData.length;
+            const countNum = document.getElementById('count-num');
+            if (countNum) countNum.innerText = total;
+
+            if (total === 0) {
+                leftBody.innerHTML = `
+                    <div class="flex items-center justify-center h-48 text-xs text-[#9CA3AF] italic bg-white border-b border-[#E6EAF0]">
+                        Không có dữ liệu
+                    </div>
+                `;
+                centerBody.innerHTML = `
+                    <div class="flex flex-col items-center justify-center py-12 text-[#9CA3AF] bg-white border-b border-[#E6EAF0]">
+                        <div class="w-12 h-12 rounded-full bg-[#F4F5F7] border border-[#D9DEE5] flex items-center justify-center text-[#9CA3AF] text-xl mb-2.5">
+                            <i class="fa-regular fa-folder-open"></i>
+                        </div>
+                        <p class="font-bold text-sm text-[#374151]">Không có dữ liệu lịch khám đơn vị</p>
+                        <p class="text-xs text-[#9CA3AF] mt-1">Vui lòng nhấn nút <strong class="text-[#27496D] font-bold">"+ Tạo lịch mới"</strong> để khởi tạo đợt khám mới.</p>
+                    </div>
+                `;
+                rightBody.innerHTML = `
+                    <div class="flex items-center justify-center h-48 text-xs text-[#9CA3AF] italic bg-white border-b border-[#E6EAF0]">
+                        -
+                    </div>
+                `;
+                renderPagination(0, 0, 0);
+                updateBulkSendButtonState();
+                return;
+            }
+
+            const totalPages = Math.ceil(total / pageSize);
+            if (currentPage > totalPages) currentPage = totalPages;
+            const startIdx = (currentPage - 1) * pageSize;
+            const endIdx = Math.min(startIdx + pageSize, total);
+            const pageItems = filteredData.slice(startIdx, endIdx);
+
+            let leftRowsHtml = '';
+            let centerRowsHtml = '';
+            let rightRowsHtml = '';
+
+            pageItems.forEach((item, index) => {
+                const isReturned = item.status === 'Trả lại' || item.trangThai === 'TRA_CHINH_SUA' || item.trangThai === 'TRA_LAI';
+                const canSelect = item.status === 'Nháp' || isReturned || item.daGuiTongHop === false;
+                const isChecked = selectedScheduleIds.has(item.id);
+                const stt = startIdx + index + 1;
+
+                const tenDonVi = item.tenDonVi || item.customerName || item.teamName || '-';
+                const isPakd = item.suDungPAKD === true || item.pakdStatus === 'Có PAKD' || item.pakdStatus === 'Đã có PAKD' || item.phuongAnKinhDoanh === 'Có PAKD' || item.pakd === true;
+                const maDoiTuong = item.maDoiTuong || item.customerCode || item.code || '-';
+
+                // Calculate child schedules statistics via MWKDataStore single source of truth
+                const summary = MWKDataStore.getScheduleTypeSummary(item);
+                const totalChildCount = summary.total;
+                const taiVienCount = summary.taiVien;
+                const ngoaiVienCount = summary.ngoaiVien;
+                const phuongCount = summary.phuong;
+                const returnedCount = summary.returned;
+
+                let breakdownParts = [];
+                if (taiVienCount > 0) breakdownParts.push(`${taiVienCount} Tại viện`);
+                if (ngoaiVienCount > 0) breakdownParts.push(`${ngoaiVienCount} Ngoại viện`);
+                if (phuongCount > 0) breakdownParts.push(`${phuongCount} Phường`);
+
+                const breakdownStr = breakdownParts.length > 0 ? breakdownParts.join(' · ') : '';
+
+                const slKhach = item.soLuongKhach || item.estimatedCount || item.soLuong || 0;
+                const tongNhanSu = item.tongNhanSu || item.staffCount || item.maxStaff || (item.categories ? item.categories.length * 2 : 4);
+                const diaChi = item.diaChi || item.examLocation || item.facility || '-';
+                const thoiGianHtml = formatExamDateHtml(item);
+                const nguoiTao = item.nguoiTao || item.personInCharge || item.cbPhuTrach || 'Nguyễn Văn An';
+
+                leftRowsHtml += `
+                    <div class="grid-row" data-index="${index}" onmouseenter="setRowHover(${index}, true)" onmouseleave="setRowHover(${index}, false)">
+                        <div class="grid-cell w-[48px] justify-center">
+                            <input type="checkbox" value="${item.id}" class="row-checkbox w-4 h-4 text-[#27496D] rounded-[2px] border-[#D9DEE5] ${canSelect ? 'cursor-pointer' : 'cursor-not-allowed opacity-40'}" ${canSelect ? '' : 'disabled'} ${isChecked ? 'checked' : ''} onchange="toggleRowSelect(${item.id}, this)">
+                        </div>
+                        <div class="grid-cell w-[50px] justify-center text-[#6B7280] font-medium">${stt}</div>
+                        <div class="grid-cell w-[260px] font-bold text-[#1F2937] truncate" title="${tenDonVi}">
+                            <span>${tenDonVi}</span>
+                        </div>
+                    </div>
+                `;
+
+                const totalSchedulesHtml = totalChildCount > 0 ? `
+                    <a href="detail/detail.html?id=${item.id}" class="text-[#27496D] hover:underline font-bold text-sm">${totalChildCount}</a>
+                    <div class="text-[11px] text-[#6B7280] font-normal truncate w-full" title="${breakdownStr}">${breakdownStr}</div>
+                    ${returnedCount > 0 ? `
+                        <a href="detail/detail.html?id=${item.id}&filterStatus=TRA_LAI" class="text-[10px] text-[#DC2626] font-semibold flex items-center gap-1 hover:underline mt-0.5 truncate w-full" title="Có ${returnedCount} lịch con bị trả về. Mở chi tiết để xem.">
+                            <span>🔴 ${returnedCount} lịch bị trả về</span>
+                        </a>
+                    ` : ''}
+                ` : `<span class="text-[#9CA3AF] font-bold text-sm">-</span>`;
+
+                centerRowsHtml += `
+                    <div class="grid-row" data-index="${index}" onmouseenter="setRowHover(${index}, true)" onmouseleave="setRowHover(${index}, false)">
+                        <div class="grid-cell w-[110px] justify-center">
+                            <input type="checkbox" ${isPakd ? 'checked' : ''} disabled class="w-4 h-4 text-[#27496D] rounded-[2px] border-[#D9DEE5] cursor-default accent-[#27496D] opacity-90" title="${isPakd ? 'Có PAKD' : 'Không có PAKD'}">
+                        </div>
+                        <div class="grid-cell w-[130px] justify-center font-mono text-[#27496D] font-bold truncate" title="${maDoiTuong}">${maDoiTuong}</div>
+                        <div class="grid-cell w-[190px] flex-col justify-center items-start leading-tight py-1 overflow-hidden" title="Tổng số lịch: ${totalChildCount}">
+                            ${totalSchedulesHtml}
+                        </div>
+                        <div class="grid-cell w-[110px] justify-center font-bold text-[#1F2937] text-xs">${slKhach}</div>
+                        <div class="grid-cell w-[110px] justify-center font-semibold text-[#27496D] text-xs">${tongNhanSu}</div>
+                        <div class="grid-cell w-[300px] text-[#4B5563] truncate text-xs" title="${diaChi}">${diaChi}</div>
+                        <div class="grid-cell w-[180px] justify-center text-xs">${thoiGianHtml}</div>
+                        <div class="grid-cell w-[140px] text-[#374151] font-medium truncate text-xs" title="${nguoiTao}">${nguoiTao}</div>
+                    </div>
+                `;
+
+                const canEdit = MWKDataStore.canEditSchedule(item);
+                const canSend = MWKDataStore.canSendSchedule(item);
+
+                const btnViewHtml = `
+                    <a href="detail/detail.html?id=${item.id}" class="w-8 h-8 rounded-[4px] bg-white border border-[#D9DEE5] hover:bg-[#F3F6FA] text-[#27496D] flex items-center justify-center flex-shrink-0 transition-colors shadow-2xs cursor-pointer" title="Xem chi tiết">
+                        <i class="fa-regular fa-eye text-xs"></i>
+                    </a>
+                `;
+
+                let actionButtonsHtml = btnViewHtml;
+
+                if (canEdit) {
+                    const btnEditHtml = `
+                        <a href="edit/edit.html?id=${item.id}" class="w-8 h-8 rounded-[4px] bg-white border border-[#D9DEE5] hover:bg-[#F3F6FA] text-[#27496D] flex items-center justify-center flex-shrink-0 transition-colors shadow-2xs cursor-pointer" title="Chỉnh sửa">
+                            <i class="fa-regular fa-pen-to-square text-xs"></i>
+                        </a>
+                    `;
+
+                    const btnDeleteHtml = `
+                        <button type="button" onclick="openDeleteModal(${item.id})" class="w-8 h-8 rounded-[4px] bg-white border border-[#D9DEE5] hover:bg-[#FDECEC] hover:border-red-300 text-[#D32F2F] flex items-center justify-center flex-shrink-0 transition-colors shadow-2xs cursor-pointer" title="Xóa">
+                            <i class="fa-regular fa-trash-can text-xs"></i>
+                        </button>
+                    `;
+
+                    let btnSendHtml = '';
+                    if (canSend) {
+                        btnSendHtml = `
+                            <button type="button" onclick="openSingleSendModal(${item.id})" class="w-8 h-8 rounded-[4px] bg-white border border-[#D9DEE5] hover:bg-[#E6F4EA] hover:border-green-300 text-[#2E7D32] flex items-center justify-center flex-shrink-0 transition-colors shadow-2xs cursor-pointer" title="Gửi tổng hợp">
+                                <i class="fa-solid fa-paper-plane text-xs"></i>
+                            </button>
+                        `;
+                    }
+
+                    actionButtonsHtml = `
+                        ${btnViewHtml}
+                        ${btnEditHtml}
+                        ${btnDeleteHtml}
+                        ${btnSendHtml}
+                    `;
+                }
+
+                rightRowsHtml += `
+                    <div class="grid-row" data-index="${index}" onmouseenter="setRowHover(${index}, true)" onmouseleave="setRowHover(${index}, false)">
+                        <div class="grid-cell w-[170px] justify-center items-center gap-1.5 px-2">
+                            ${actionButtonsHtml}
+                        </div>
+                    </div>
+                `;
+            });
+
+            leftBody.innerHTML = leftRowsHtml;
+            centerBody.innerHTML = centerRowsHtml;
+            rightBody.innerHTML = rightRowsHtml;
+
+            renderPagination(total, startIdx + 1, endIdx);
+            updateBulkSendButtonState();
+        }
+
+        let sendingSingleId = null;
+
+        function editSchedule(id) {
+            const item = MWKDataStore.getKskScheduleById(id);
+            if (!item || !MWKDataStore.canEditSchedule(item)) {
+                if (window.showToast) window.showToast("Lịch đã gửi đi / đã khóa, không thể chỉnh sửa!", "error");
+                return;
+            }
+            window.location.href = `edit/edit.html?id=${id}`;
+        }
+
+        function openSingleSendModal(id) {
+            const item = MWKDataStore.getKskScheduleById(id);
+            if (!item || !MWKDataStore.canSendSchedule(item)) {
+                if (window.showToast) window.showToast("Lịch đã được gửi đi / đã khóa, không thể gửi tổng hợp nữa!", "error");
+                return;
+            }
+
+            sendingSingleId = id;
+            const summary = MWKDataStore.getScheduleTypeSummary(item);
+            const tenDonVi = item.tenDonVi || item.customerName || item.teamName || 'Đơn vị KSK';
+
+            let breakdownParts = [];
+            if (summary.taiVien > 0) breakdownParts.push(`${summary.taiVien} Tại viện`);
+            if (summary.ngoaiVien > 0) breakdownParts.push(`${summary.ngoaiVien} Ngoại viện`);
+            if (summary.phuong > 0) breakdownParts.push(`${summary.phuong} Phường`);
+            const breakdownStr = breakdownParts.join(' · ') || '1 Tại viện';
+
+            const unitNameElem = document.getElementById('send-modal-unit-name');
+            const totalCountElem = document.getElementById('send-modal-total-count');
+            const breakdownElem = document.getElementById('send-modal-breakdown');
+
+            if (unitNameElem) unitNameElem.innerText = tenDonVi;
+            if (totalCountElem) totalCountElem.innerText = `${summary.total} lịch con`;
+            if (breakdownElem) breakdownElem.innerText = breakdownStr;
+
+            const modal = document.getElementById('single-send-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        function closeSingleSendModal() {
+            sendingSingleId = null;
+            const modal = document.getElementById('single-send-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        function confirmSingleSend() {
+            if (!sendingSingleId) return;
+            const item = MWKDataStore.getKskScheduleById(sendingSingleId);
+            if (!item || !MWKDataStore.canSendSchedule(item)) {
+                if (window.showToast) window.showToast("Lịch đã được gửi đi / đã khóa, không thể gửi tổng hợp!", "error");
+                closeSingleSendModal();
+                return;
+            }
+
+            // Update eligible child schedules inside step2Data
+            if (item.step2Data) {
+                ['taiVien', 'ngoaiVien', 'lichPhuong'].forEach(key => {
+                    if (Array.isArray(item.step2Data[key])) {
+                        item.step2Data[key].forEach(child => {
+                            const keySt = MWKDataStore.normalizeScheduleStatusKey(child.trangThai || child.status);
+                            if (keySt === 'TAO_MOI' || keySt === 'TRA_LAI') {
+                                child.trangThai = 'CHO_TONG_HOP';
+                                child.status = 'Chờ tổng hợp';
+                                child.ngayGuiTongHop = new Date().toISOString();
+                            }
+                        });
+                    }
+                });
+            }
+
+            MWKDataStore.updateKskSchedule(sendingSingleId, {
+                status: 'Chờ tổng hợp',
+                trangThai: 'CHO_TONG_HOP',
+                daGuiTongHop: true,
+                ngayGuiTongHop: new Date().toISOString(),
+                step2Data: item.step2Data
+            });
+
+            closeSingleSendModal();
+
+            if (window.showToast) {
+                window.showToast('Đã gửi tổng hợp lịch khám thành công!', 'success');
+            }
+            loadAndRenderData();
+        }
+
+        function openDeleteModal(id) {
+            const item = MWKDataStore.getKskScheduleById(id);
+            if (!item || !MWKDataStore.canDeleteSchedule(item)) {
+                if (window.showToast) window.showToast("Lịch đã gửi đi / đã khóa, không thể xóa!", "error");
+                return;
+            }
+
+            deletingId = id;
+            const summary = MWKDataStore.getScheduleTypeSummary(item);
+            const tenDonVi = item.tenDonVi || item.customerName || item.teamName || 'Đoàn khám KSK';
+            const code = item.code || item.maDoiTuong || `LK-2026-${id}`;
+            const slKhach = item.soLuongKhach || item.estimatedCount || item.soLuong || 0;
+
+            const codeElem = document.getElementById('delete-item-code');
+            const nameElem = document.getElementById('delete-item-name');
+            const childCountElem = document.getElementById('delete-item-child-count');
+            const guestsElem = document.getElementById('delete-item-guests');
+
+            if (codeElem) codeElem.innerText = code;
+            if (nameElem) nameElem.innerText = tenDonVi;
+            if (childCountElem) {
+                if (summary.total > 0) {
+                    childCountElem.innerHTML = `<span class="text-[#D32F2F] font-bold">${summary.total} lịch con</span> <span class="text-xs text-[#D32F2F] font-normal">(sẽ bị xóa toàn bộ)</span>`;
+                } else {
+                    childCountElem.innerText = `0 lịch con`;
+                }
+            }
+            if (guestsElem) guestsElem.innerText = `${slKhach} khách`;
+
+            const modalSubtitle = document.querySelector('#delete-modal p');
+            if (modalSubtitle) {
+                if (summary.total > 0) {
+                    modalSubtitle.innerText = `Lịch đơn vị này đang có ${summary.total} lịch con. Bạn có chắc chắn muốn xóa không?`;
+                } else {
+                    modalSubtitle.innerText = `Bạn có chắc chắn muốn xóa lịch khám của đơn vị này không?`;
+                }
+            }
+
+            const modal = document.getElementById('delete-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+
+            const btnConfirm = document.getElementById('confirm-delete-btn');
+            if (btnConfirm) {
+                btnConfirm.onclick = function() {
+                    confirmDelete();
+                };
+            }
+        }
+
+        function closeDeleteModal() {
+            deletingId = null;
+            const modal = document.getElementById('delete-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        function confirmDelete() {
+            if (!deletingId) return;
+            const item = MWKDataStore.getKskScheduleById(deletingId);
+            if (!item || !MWKDataStore.canDeleteSchedule(item)) {
+                if (window.showToast) window.showToast("Lịch đã gửi đi / đã khóa, không thể xóa!", "error");
+                closeDeleteModal();
+                return;
+            }
+
+            MWKDataStore.deleteKskSchedule(deletingId);
+            closeDeleteModal();
+
+            if (window.showToast) {
+                window.showToast('Đã xóa thành công lịch khám sức khỏe!', 'success');
+            }
+            loadAndRenderData();
+        }
+
+        function renderPagination(total, start, end) {
+            const infoElem = document.getElementById('pagination-info');
+            const controlsElem = document.getElementById('pagination-controls');
+
+            if (!infoElem || !controlsElem) return;
+
+            if (total === 0) {
+                infoElem.innerText = '0 - 0 trong tổng 0';
+                controlsElem.innerHTML = '';
+                return;
+            }
+
+            infoElem.innerText = `${start} - ${end} trong tổng ${total}`;
+
+            const totalPages = Math.ceil(total / pageSize);
+            let btnHtml = '';
+
+            btnHtml += `
+                <button type="button" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled class="w-7 h-7 rounded-[4px] border border-[#D9DEE5] text-[#9CA3AF] cursor-not-allowed flex items-center justify-center opacity-50"' : 'class="w-7 h-7 rounded-[4px] border border-[#D9DEE5] hover:bg-[#F3F6FA] text-[#374151] flex items-center justify-center cursor-pointer transition-colors"'}>
+                    <i class="fa-solid fa-chevron-left text-[10px]"></i>
+                </button>
+            `;
+
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === currentPage) {
+                    btnHtml += `
+                        <button type="button" class="w-7 h-7 rounded-[4px] bg-[#27496D] text-white font-bold flex items-center justify-center shadow-xs">
+                            ${i}
+                        </button>
+                    `;
+                } else {
+                    btnHtml += `
+                        <button type="button" onclick="goToPage(${i})" class="w-7 h-7 rounded-[4px] border border-[#D9DEE5] hover:bg-[#F3F6FA] text-[#374151] flex items-center justify-center cursor-pointer transition-colors font-medium">
+                            ${i}
+                        </button>
+                    `;
+                }
+            }
+
+            btnHtml += `
+                <button type="button" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled class="w-7 h-7 rounded-[4px] border border-[#D9DEE5] text-[#9CA3AF] cursor-not-allowed flex items-center justify-center opacity-50"' : 'class="w-7 h-7 rounded-[4px] border border-[#D9DEE5] hover:bg-[#F3F6FA] text-[#374151] flex items-center justify-center cursor-pointer transition-colors"'}>
+                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                </button>
+            `;
+
+            controlsElem.innerHTML = btnHtml;
+        }
+
+        function goToPage(page) {
+            const totalPages = Math.ceil(filteredData.length / pageSize);
+            if (page < 1 || page > totalPages) return;
+            currentPage = page;
+            renderTable();
+        }
+    </script>
+</body>
+</html>

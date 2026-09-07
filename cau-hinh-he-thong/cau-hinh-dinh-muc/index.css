@@ -1,0 +1,274 @@
+/* MODULE CẤU HÌNH ĐỊNH MỨC - ENTERPRISE DARK SLATE DESIGN SYSTEM */
+:root {
+    --bg-page: #F5F7FA;
+    --header-dark: #2F3E4E;
+    --header-dark-hover: #24313E;
+    --header-table: #32475B;
+    --text-title: #FFFFFF;
+    --primary: #0F6CBD;
+    --primary-hover: #1E7FE5;
+    --border-color: #D9DEE7;
+    --border-light: #E5E7EB;
+    --text-main: #1F2937;
+    --text-muted: #6B7280;
+    --row-hover: #F7F9FC;
+}
+
+/* Base resets & layout */
+#tab-content-container {
+    background-color: var(--bg-page);
+}
+
+/* Module Banner Header */
+.excel-banner {
+    background-color: var(--header-dark) !important;
+    color: var(--text-title) !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    height: 54px;
+    padding: 0 1.25rem;
+    border-radius: 0 !important;
+    border: 1px solid var(--header-dark);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Sharp Table Container & Rectangular Grid */
+.matrix-table-wrapper {
+    border-radius: 0 !important;
+    border: 1px solid var(--border-color);
+    background-color: #FFFFFF;
+}
+
+.matrix-table {
+    border-radius: 0 !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+}
+
+.matrix-table td, .matrix-table th {
+    border-right: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.matrix-table tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+.matrix-table tbody tr:hover {
+    background-color: var(--row-hover) !important;
+}
+
+/* SOLID OPAQUE STICKY HEADERS & STICKY COLUMNS LAYER HIERARCHY */
+
+/* Level 50: Top-Left Intersection Header Corners (STT & Nội dung TH) */
+.sticky-corner-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 50 !important;
+    background-color: #32475B !important;
+    color: #FFFFFF !important;
+    border-right: 1px solid #475B6E !important;
+    border-bottom: 1px solid #475B6E !important;
+}
+
+.sticky-corner-content {
+    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Level 30: Top Facilities Tier 1 & Tier 2 Shift Headers (Sáng / Chiều) */
+.sticky-header-fac {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 30 !important;
+    background-color: #32475B !important;
+    color: #FFFFFF !important;
+    border-right: 1px solid #475B6E !important;
+    border-bottom: 1px solid #475B6E !important;
+}
+
+.sticky-header-shift {
+    position: sticky !important;
+    top: 33px !important;
+    z-index: 30 !important;
+    background-color: #2B3C4E !important;
+    color: #FFFFFF !important;
+    border-right: 1px solid #475B6E !important;
+    border-bottom: 1px solid #475B6E !important;
+}
+
+/* Level 20: Body Sticky Columns (STT & Nội dung TD) */
+.sticky-col-stt {
+    position: sticky !important;
+    left: 0 !important;
+    z-index: 20 !important;
+    width: 48px !important;
+    min-width: 48px !important;
+    max-width: 48px !important;
+    vertical-align: middle !important;
+    text-align: center !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    border-right: 1px solid var(--border-color) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.sticky-col-stt-inner {
+    width: 100%;
+    height: 100%;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4px;
+    box-sizing: border-box;
+    line-height: 1.2;
+}
+
+.sticky-col-content {
+    position: sticky !important;
+    left: 48px !important;
+    z-index: 20 !important;
+    min-width: 340px !important;
+    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.08) !important;
+    border-right: 1px solid var(--border-color) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+/* Level 1: Normal Body Data Cells */
+.matrix-table tbody td:not(.sticky-col-stt):not(.sticky-col-content) {
+    position: relative;
+    z-index: 1;
+    background-color: #FFFFFF;
+}
+
+/* Solid Opaque Background Classes (NO TRANSLUCENCY / NO OPACITY FRACTIONS) */
+.matrix-group-header {
+    background-color: #E2E8F0 !important;
+    color: #0F172A !important;
+    font-weight: 700;
+}
+
+.matrix-specialty-header {
+    background-color: #F1F5F9 !important;
+    color: #1E293B !important;
+    font-weight: 600;
+}
+
+.matrix-info-header {
+    background-color: #F1F5F9 !important;
+    color: #1E293B !important;
+    font-weight: 700;
+}
+
+.matrix-notes-header {
+    background-color: #FEF3C7 !important;
+    color: #92400E !important;
+    font-weight: 700;
+}
+
+.matrix-default-header {
+    background-color: #F8FAFC !important;
+    color: #1E293B !important;
+    font-weight: 700;
+}
+
+/* ChatGPT Style Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #F1F3F6;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #CBD5E1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94A3B8;
+}
+
+/* Buttons System */
+.btn-enterprise-primary {
+    height: 36px;
+    padding: 0 16px;
+    border-radius: 6px;
+    background-color: var(--primary);
+    color: #FFFFFF;
+    font-weight: 600;
+    font-size: 0.75rem;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.btn-enterprise-primary:hover {
+    background-color: var(--primary-hover);
+}
+
+.btn-enterprise-secondary {
+    height: 36px;
+    padding: 0 16px;
+    border-radius: 6px;
+    background-color: #E5E7EB;
+    color: #374151;
+    font-weight: 600;
+    font-size: 0.75rem;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.btn-enterprise-secondary:hover {
+    background-color: #D1D5DB;
+}
+
+/* Inputs & Selects & Textareas */
+input[type="text"], input[type="number"], select, textarea {
+    height: 36px;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    padding: 0 10px;
+    font-size: 0.75rem;
+    color: var(--text-main);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+textarea {
+    height: auto;
+    padding: 6px 10px;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 2px rgba(15, 108, 189, 0.15) !important;
+}
+
+/* Modals & Popups */
+.enterprise-modal {
+    background: #FFFFFF;
+    border-radius: 8px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.enterprise-modal-header {
+    background-color: var(--header-dark);
+    color: var(--text-title);
+    padding: 12px 20px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}

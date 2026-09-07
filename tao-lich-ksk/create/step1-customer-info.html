@@ -1,0 +1,116 @@
+<!-- ================= MÀN 1: THÔNG TIN KHÁCH HÀNG / THÔNG TIN CHUNG ================= -->
+<div id="step-1-panel" class="space-y-4">
+
+    <!-- CARD 1: MÃ ĐỐI TƯỢNG VÀ SỬ DỤNG PAKD -->
+    <div class="bg-white border border-[#D9DEE5] rounded-[4px] p-4 space-y-3">
+        <div class="flex items-center justify-between border-b border-[#E6EAF0] pb-2">
+            <div class="flex items-center gap-2">
+                <input type="checkbox" id="suDungPAKD" class="w-4 h-4 text-[#27496D] rounded border-[#D9DEE5] focus:ring-[#27496D] cursor-pointer" onchange="if (typeof handleSuDungPAKDToggle === 'function') handleSuDungPAKDToggle(this.checked)">
+                <label for="suDungPAKD" class="sys-label font-bold text-xs text-[#1F2937] mb-0 cursor-pointer select-none">Sử dụng Phương án kinh doanh (PAKD)</label>
+            </div>
+        </div>
+
+        <div id="pakd-input-group" class="space-y-2">
+            <div class="flex items-center gap-1.5">
+                <label for="customerCode" class="sys-label font-bold text-xs text-[#1F2937] mb-0">Mã đối tượng</label>
+                <div class="relative group cursor-pointer inline-flex items-center">
+                    <i class="fa-regular fa-circle-question text-[#6B7280] text-xs hover:text-[#27496D] transition-colors"></i>
+                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 hidden group-hover:block w-64 p-2 bg-[#1F2937] text-white text-[11px] rounded shadow-lg z-20 pointer-events-none">
+                        Nhập mã đối tượng trong Phương án kinh doanh (PAKD) để tự động đồng bộ dữ liệu.
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative flex items-center">
+                <input type="text" id="customerCode" placeholder="Nhập mã đối tượng trong PAKD" class="sys-input text-xs pr-36 h-9">
+                <button type="button" id="btn-fetch-pakd" onclick="handleFetchPakd()" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#27496D] hover:text-[#1F3D5A] font-semibold text-xs transition-colors cursor-pointer flex items-center gap-1">
+                    <span>Lấy thông tin PAKD</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CARD 2: THÔNG TIN CHUNG -->
+    <div class="bg-white border border-[#D9DEE5] rounded-[4px] p-4 space-y-4">
+        <div class="border-b border-[#E6EAF0] pb-2.5">
+            <h3 class="text-sm font-bold text-[#1F2937]">Thông tin chung</h3>
+        </div>
+
+        <!-- Hidden input for backward compatibility -->
+        <input type="hidden" id="pakdStatus" value="Không có PAKD">
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <!-- Row 1 Col 1: CBKD * -->
+            <div>
+                <label for="cbkd" class="sys-label font-bold text-xs text-[#1F2937]">CBKD <span class="text-[#D32F2F]">*</span></label>
+                <input type="text" id="cbkd" placeholder="Tự động điền khi có PAKD" class="sys-input text-xs h-9">
+            </div>
+
+            <!-- Row 1 Col 2: Mã nhân viên * -->
+            <div>
+                <label for="maNhanVien" class="sys-label font-bold text-xs text-[#1F2937]">Mã nhân viên <span class="text-[#D32F2F]">*</span></label>
+                <input type="text" id="maNhanVien" placeholder="Tự động điền khi có PAKD" class="sys-input text-xs h-9">
+            </div>
+
+            <!-- Row 2 Col 1: Tên đơn vị KSK * -->
+            <div>
+                <label for="customerName" class="sys-label font-bold text-xs text-[#1F2937]">Tên đơn vị KSK <span class="text-[#D32F2F]">*</span></label>
+                <input type="text" id="customerName" placeholder="Tự động điền khi có PAKD" class="sys-input text-xs h-9">
+            </div>
+
+            <!-- Row 2 Col 2: Loại khách hàng * -->
+            <div>
+                <label for="customerType" class="sys-label font-bold text-xs text-[#1F2937]">Loại khách hàng <span class="text-[#D32F2F]">*</span></label>
+                <select id="customerType" class="sys-select text-xs h-9 font-medium">
+                    <option value="Doanh nghiệp" selected>Doanh nghiệp</option>
+                    <option value="Trường học">Trường học</option>
+                    <option value="Khối ngân hàng">Khối ngân hàng</option>
+                </select>
+            </div>
+
+            <!-- Row 2 Col 2: Địa chỉ * -->
+            <div>
+                <label for="address" class="sys-label font-bold text-xs text-[#1F2937]">Địa chỉ <span class="text-[#D32F2F]">*</span></label>
+                <input type="text" id="address" placeholder="Tự động điền khi có PAKD" class="sys-input text-xs h-9">
+            </div>
+
+            <!-- Row 3 Col 1: Số lượng khách * -->
+            <div>
+                <label for="estimatedCount" class="sys-label font-bold text-xs text-[#1F2937]">Số lượng khách <span class="text-[#D32F2F]">*</span></label>
+                <input type="number" id="estimatedCount" min="0" placeholder="Tự động điền khi có PAKD" class="sys-input text-xs h-9">
+            </div>
+
+            <!-- Row 3 Col 2: Thời gian khám * -->
+            <div>
+                <label for="examDate" class="sys-label font-bold text-xs text-[#1F2937]">Thời gian khám <span class="text-[#D32F2F]">*</span></label>
+                <div class="relative">
+                    <input type="date" id="examDate" placeholder="Tự động điền khi có PAKD" class="sys-input text-xs h-9 pr-9">
+                    <i class="fa-regular fa-calendar absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none text-xs"></i>
+                </div>
+            </div>
+
+            <!-- Row 4 Col 1: Người liên hệ -->
+            <div>
+                <label for="contactPerson" class="sys-label font-bold text-xs text-[#1F2937]">Người liên hệ</label>
+                <input type="text" id="contactPerson" placeholder="Tự động điền khi có PAKD" class="sys-input text-xs h-9">
+            </div>
+
+            <!-- Row 4 Col 2: Ghi chú hợp đồng -->
+            <div>
+                <label for="contractNote" class="sys-label font-bold text-xs text-[#1F2937]">Ghi chú hợp đồng</label>
+                <input type="text" id="contractNote" placeholder="Tự động điền khi có PAKD" class="sys-input text-xs h-9">
+            </div>
+        </div>
+    </div>
+
+    <!-- CARD 3: FOOTER ACTIONS -->
+    <div class="bg-white border border-[#D9DEE5] rounded-[4px] p-4 flex items-center justify-end gap-3">
+        <button type="button" id="btn-step1-next" class="px-5 py-2 rounded-[4px] bg-[#27496D] hover:bg-[#1F3D5A] text-white font-medium text-xs transition-colors cursor-pointer shadow-2xs">
+            Lưu & Thêm lịch chi tiết
+        </button>
+        <a href="../index.html" class="px-5 py-2 rounded-[4px] bg-white border border-[#D9DEE5] hover:bg-[#F3F6FA] text-[#374151] font-medium text-xs transition-colors text-center">
+            Thoát
+        </a>
+    </div>
+
+</div>

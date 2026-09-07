@@ -1,0 +1,52 @@
+<!-- MODAL XEM ĐỊNH MỨC KSK -->
+<div id="modal-view-dinh-muc" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-[4px] max-w-4xl w-full max-h-[90vh] shadow-lg border border-[#D9DEE5] flex flex-col overflow-hidden">
+        
+        <!-- Header Modal -->
+        <div class="px-5 h-[52px] border-b border-[#D9DEE5] flex items-center justify-between bg-[#F4F5F7]">
+            <div class="flex items-center gap-2.5">
+                <div class="w-7 h-7 rounded-[4px] bg-[#E8F1FB] text-[#27496D] flex items-center justify-center text-sm font-bold">
+                    <i class="fa-solid fa-sliders"></i>
+                </div>
+                <div>
+                    <h3 id="modal-dinh-muc-title" class="font-semibold text-[#1F2937] text-sm">Cấu hình định mức tiếp nhận & Nhân sự KSK</h3>
+                </div>
+            </div>
+            <button type="button" onclick="closeDinhMucModal()" class="w-8 h-8 rounded-[4px] text-[#9CA3AF] hover:text-[#1F2937] hover:bg-[#F3F6FA] flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="px-5 border-b border-[#D9DEE5] bg-white flex items-center gap-4 h-10">
+            <button type="button" id="tab-btn-ngoai-vien" onclick="switchDinhMucModalTab('Ngoại viện')" class="h-full px-1 text-xs font-bold border-b-2 border-[#27496D] text-[#27496D] transition-colors flex items-center gap-1.5 cursor-pointer">
+                <i class="fa-solid fa-truck-medical text-xs"></i> Định mức Ngoại viện
+            </button>
+            <button type="button" id="tab-btn-tai-vien" onclick="switchDinhMucModalTab('Tại viện')" class="h-full px-1 text-xs font-medium text-[#6B7280] hover:text-[#1F2937] border-b-2 border-transparent transition-colors flex items-center gap-1.5 cursor-pointer">
+                <i class="fa-solid fa-hospital text-xs"></i> Định mức Tại viện
+            </button>
+            <button type="button" id="tab-btn-lich-phuong" onclick="switchDinhMucModalTab('Lịch phường')" class="h-full px-1 text-xs font-medium text-[#6B7280] hover:text-[#1F2937] border-b-2 border-transparent transition-colors flex items-center gap-1.5 cursor-pointer">
+                <i class="fa-solid fa-building-flag text-xs"></i> Định mức Lịch phường
+            </button>
+        </div>
+
+        <!-- Content Body -->
+        <div class="flex-1 overflow-y-auto p-5 space-y-4 text-xs">
+            <div id="dinh-muc-modal-content">
+                <!-- Dynamic Content -->
+            </div>
+        </div>
+
+        <!-- Footer Modal -->
+        <div class="px-5 py-3 bg-[#F4F5F7] border-t border-[#D9DEE5] flex items-center justify-between text-xs text-[#6B7280]">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-database text-[#27496D]"></i>
+                <span>Dữ liệu được cập nhật từ Master Data Cấu hình định mức hệ thống</span>
+            </div>
+            <button type="button" onclick="closeDinhMucModal()" class="btn-secondary text-xs">
+                Đóng
+            </button>
+        </div>
+
+    </div>
+</div>

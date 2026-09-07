@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MWK - Chi tiết tiếp nhận lịch KSK</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { DEFAULT: '#27496D', hover: '#1F3D5A' }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome 6.4.0 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Main Style -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="shortcut icon" href="#">
+</head>
+<body class="bg-[#F4F5F7] font-sans text-[#1F2937] antialiased h-screen overflow-hidden flex flex-col" data-depth="sub" data-active-nav="nav-tong-hop-lich-ksk" data-breadcrumb="Chi tiết tiếp nhận lịch KSK">
+
+    <div class="flex h-full w-full overflow-hidden">
+        <!-- SIDEBAR CONTAINER -->
+        <div id="sidebar-container" class="flex flex-shrink-0 h-full"></div>
+
+        <!-- MAIN WRAPPER -->
+        <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-[#F4F5F7]">
+            <!-- HEADER CONTAINER -->
+            <div id="header-container"></div>
+
+            <!-- MAIN CONTENT AREA -->
+            <main class="flex-1 overflow-y-auto p-5 space-y-4">
+                <!-- TOP HEADER CARD WITH ACTIONS -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 rounded-[4px] border border-[#D9DEE5]">
+                    <div class="flex items-center gap-3">
+                        <a href="../tong-hop.html" class="w-8 h-8 rounded-[4px] bg-white border border-[#D9DEE5] hover:bg-[#F3F6FA] text-[#4B5563] flex items-center justify-center transition-colors" title="Quay lại">
+                            <i class="fa-solid fa-arrow-left text-xs"></i>
+                        </a>
+                        <div>
+                            <div class="flex items-center gap-2.5">
+                                <h1 id="detail-code" class="text-xl font-bold text-[#1F2937]">LK-2026-xxx</h1>
+                            </div>
+                            <h2 id="detail-team-name" class="text-xs font-semibold text-[#4B5563] mt-0.5">Tên đoàn khám</h2>
+                        </div>
+                    </div>
+
+                    <!-- ACTION BUTTONS -->
+                    <div id="action-buttons-container" class="flex flex-wrap items-center gap-2 text-xs">
+                        <button type="button" onclick="openHistoryDrawer()" class="btn-secondary text-xs" title="Xem lịch sử thay đổi">
+                            <i class="fa-solid fa-clock-rotate-left text-[#27496D] text-xs"></i>
+                            <span>Lịch sử thay đổi</span>
+                        </button>
+                        
+                        <!-- Hiệu chỉnh thông tin chung -->
+                        <a id="btn-goto-edit" href="#" class="btn-secondary text-xs">
+                            <i class="fa-solid fa-pen-to-square text-[#ED6C02] text-xs"></i>
+                            <span>Hiệu chỉnh thông tin chung</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- LEVEL 1: OVERVIEW DETAILS GRID -->
+                <div class="space-y-4">
+                    <!-- SECTION 1: THÔNG TIN KHÁCH HÀNG & ĐƠN VỊ -->
+                    <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] space-y-3">
+                        <div class="flex items-center justify-between border-b border-[#D9DEE5] pb-2">
+                            <div class="flex items-center gap-2 text-[#27496D]">
+                                <i class="fa-solid fa-building text-sm"></i>
+                                <h3 class="text-xs font-bold uppercase tracking-wider text-[#1F2937]">1. Thông tin khách hàng & Đơn vị</h3>
+                            </div>
+                            <span id="detail-pakd-badge" class="px-2.5 py-0.5 rounded-[4px] bg-[#E8F1FB] text-[#27496D] font-bold text-xs border border-[#B3CDE6]"></span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+                            <div>
+                                <span class="block text-[#6B7280] font-medium mb-0.5">Tên đơn vị / Đoàn khám:</span>
+                                <span id="detail-customer-name" class="font-bold text-[#1F2937] text-sm"></span>
+                            </div>
+                            <div>
+                                <span class="block text-[#6B7280] font-medium mb-0.5">Tên khách hàng / Người liên hệ:</span>
+                                <span id="detail-contact-person" class="font-bold text-[#1F2937] text-sm"></span>
+                            </div>
+                            <div>
+                                <span class="block text-[#6B7280] font-medium mb-0.5">Loại khách hàng:</span>
+                                <span id="detail-customer-type" class="inline-block px-2 py-0.5 rounded-[4px] bg-[#F4F5F7] text-[#374151] font-semibold border border-[#D9DEE5]"></span>
+                            </div>
+                            <div>
+                                <span class="block text-[#6B7280] font-medium mb-0.5">Tổng số lượng khách:</span>
+                                <span id="detail-estimated-count" class="font-bold text-[#2E7D32] text-sm"></span>
+                            </div>
+                            <div>
+                                <span class="block text-[#6B7280] font-medium mb-0.5">Số điện thoại liên hệ:</span>
+                                <span id="detail-contact-phone" class="font-semibold text-[#27496D]"></span>
+                            </div>
+                            <div>
+                                <span class="block text-[#6B7280] font-medium mb-0.5">Email liên hệ:</span>
+                                <span id="detail-contact-email" class="font-medium text-[#374151]"></span>
+                            </div>
+                            <div>
+                                <span class="block text-[#6B7280] font-medium mb-0.5">Phương án kinh doanh (PAKD):</span>
+                                <span id="detail-pakd-status" class="font-semibold text-[#1F2937]"></span>
+                            </div>
+                            <div>
+                                <span class="block text-[#6B7280] font-medium mb-0.5">Mã đối tượng / Khách hàng:</span>
+                                <span id="detail-customer-code" class="font-mono font-bold text-[#27496D]"></span>
+                            </div>
+                            <div>
+                                <span class="block text-[#6B7280] font-medium mb-0.5">CB phụ trách:</span>
+                                <span id="detail-person-in-charge" class="font-semibold text-[#1F2937]"></span>
+                            </div>
+                            <div>
+                                <span class="block text-[#6B7280] font-medium mb-0.5">Người tạo lịch:</span>
+                                <span id="detail-creator" class="font-semibold text-[#1F2937]"></span>
+                            </div>
+                            <div>
+                                <span class="block text-[#6B7280] font-medium mb-0.5">Thời gian tạo:</span>
+                                <span id="detail-created-at" class="font-semibold text-[#1F2937]"></span>
+                            </div>
+                            <div>
+                                <span class="block text-[#6B7280] font-medium mb-0.5">Thời gian gửi tổng hợp:</span>
+                                <span id="detail-sent-at" class="font-semibold text-[#27496D]"></span>
+                            </div>
+                        </div>
+
+                        <!-- Ghi chú chung & Yêu cầu riêng cấp Đơn vị -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs pt-2 border-t border-[#E6EAF0]">
+                            <div>
+                                <span class="block text-[#6B7280] font-medium mb-1">Ghi chú tư vấn (Chung):</span>
+                                <p id="detail-general-note" class="p-2.5 bg-[#F4F5F7] rounded-[4px] border border-[#D9DEE5] text-[#374151] italic font-medium min-h-[48px]"></p>
+                            </div>
+                            <div>
+                                <span class="block text-[#6B7280] font-medium mb-1">Lưu ý / Yêu cầu riêng:</span>
+                                <p id="detail-request-note" class="p-2.5 bg-[#FFF3E0] rounded-[4px] border border-[#FFCC80] text-[#ED6C02] font-medium min-h-[48px]"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- LEVEL 2: SECTION 2 - CÁC LỊCH KHÁM ĐƯỢC ĐẨY LÊN (3 BOX RIÊNG BIỆT) -->
+                    <div class="space-y-3">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3.5 rounded-[4px] border border-[#D9DEE5]">
+                            <div class="flex items-center gap-3">
+                                <div class="flex items-center gap-2 text-[#27496D]">
+                                    <i class="fa-solid fa-calendar-days text-sm"></i>
+                                    <h3 class="text-xs font-bold uppercase tracking-wider text-[#1F2937]">2. Các lịch khám được đẩy lên từ Lịch khám đơn vị</h3>
+                                </div>
+                                <span id="detail-selected-count-badge" class="px-2 py-0.5 rounded-[4px] bg-[#E8F1FB] text-[#27496D] font-bold text-xs border border-[#B3CDE6] hidden">
+                                    Đã chọn: <span id="detail-selected-count-num">0</span> lịch
+                                </span>
+                            </div>
+
+                            <div class="flex items-center gap-2 text-xs">
+                                <label class="inline-flex items-center gap-1.5 font-semibold text-[#374151] cursor-pointer mr-2 select-none">
+                                    <input type="checkbox" id="detail-select-all-checkbox" onchange="toggleSelectAllSubSchedules(this)" class="w-4 h-4 text-[#27496D] rounded-[2px] border-[#D9DEE5] cursor-pointer">
+                                    <span>Chọn tất cả</span>
+                                </label>
+                                <button type="button" id="btn-detail-return-selected" disabled onclick="returnSelectedSubSchedules()" class="btn-secondary text-xs opacity-50 cursor-not-allowed text-[#D32F2F] border-[#F5B5B5] hover:bg-[#FDECEC]">
+                                    <i class="fa-solid fa-rotate-left text-xs"></i>
+                                    <span>Trả lại lịch</span>
+                                </button>
+                                <button type="button" id="btn-detail-approve-selected" disabled onclick="approveSelectedSubSchedules()" class="btn-secondary text-xs opacity-50 cursor-not-allowed text-[#2E7D32] border-[#A5D6A7] hover:bg-[#E6F4EA]">
+                                    <i class="fa-solid fa-circle-check text-xs"></i>
+                                    <span>Duyệt lịch</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                            
+                            <!-- BOX 1: LỊCH TẠI VIỆN -->
+                            <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] space-y-3 flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-center justify-between border-b border-[#E6EAF0] pb-2.5">
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-7 h-7 rounded-[4px] bg-[#E8F1FB] text-[#27496D] flex items-center justify-center text-xs font-bold border border-[#B3CDE6]">
+                                                <i class="fa-solid fa-hospital"></i>
+                                            </span>
+                                            <div>
+                                                <h4 class="text-xs font-bold text-[#27496D] uppercase tracking-wide">LỊCH TẠI VIỆN</h4>
+                                                <p class="text-[11px] text-[#6B7280]">Khám tại các cơ sở bệnh viện / phòng khám</p>
+                                            </div>
+                                        </div>
+                                        <span id="box-count-tai-vien" class="badge-success">0 lịch</span>
+                                    </div>
+
+                                    <div id="box-container-tai-vien" class="space-y-2.5 pt-3 text-xs">
+                                        <!-- Sub-schedule summary cards rendered dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- BOX 2: LỊCH NGOẠI VIỆN -->
+                            <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] space-y-3 flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-center justify-between border-b border-[#E6EAF0] pb-2.5">
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-7 h-7 rounded-[4px] bg-[#FFF3E0] text-[#ED6C02] flex items-center justify-center text-xs font-bold border border-[#FFCC80]">
+                                                <i class="fa-solid fa-truck-medical"></i>
+                                            </span>
+                                            <div>
+                                                <h4 class="text-xs font-bold text-[#ED6C02] uppercase tracking-wide">LỊCH NGOẠI VIỆN</h4>
+                                                <p class="text-[11px] text-[#6B7280]">Khám lưu động tại trụ sở khách hàng</p>
+                                            </div>
+                                        </div>
+                                        <span id="box-count-ngoai-vien" class="badge-warning">0 lịch</span>
+                                    </div>
+
+                                    <div id="box-container-ngoai-vien" class="space-y-2.5 pt-3 text-xs">
+                                        <!-- Sub-schedule summary cards rendered dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- BOX 3: LỊCH PHƯỜNG -->
+                            <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] space-y-3 flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-center justify-between border-b border-[#E6EAF0] pb-2.5">
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-7 h-7 rounded-[4px] bg-[#F3E8FF] text-[#7E22CE] flex items-center justify-center text-xs font-bold border border-[#D8B4FE]">
+                                                <i class="fa-solid fa-building-user"></i>
+                                            </span>
+                                            <div>
+                                                <h4 class="text-xs font-bold text-[#7E22CE] uppercase tracking-wide">LỊCH PHƯỜNG</h4>
+                                                <p class="text-[11px] text-[#6B7280]">Khám y tế cộng đồng tại Trạm Y tế phường</p>
+                                            </div>
+                                        </div>
+                                        <span id="box-count-phuong" class="px-2 py-0.5 rounded-[4px] bg-[#F3E8FF] text-[#7E22CE] font-bold text-xs border border-[#D8B4FE]">0 lịch</span>
+                                    </div>
+
+                                    <div id="box-container-phuong" class="space-y-2.5 pt-3 text-xs">
+                                        <!-- Sub-schedule summary cards rendered dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- LEVEL 3: MODAL FULL DETAIL LỊCH CON -->
+    <div id="modal-sub-schedule-detail" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-[4px] max-w-3xl w-full shadow-xl overflow-hidden border border-[#D9DEE5] max-h-[92vh] flex flex-col font-sans">
+            <!-- Modal Header -->
+            <div class="px-5 h-[52px] border-b border-[#D9DEE5] flex items-center justify-between bg-[#27496D] text-white">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 rounded-[4px] bg-white/10 flex items-center justify-center text-white text-xs">
+                        <i class="fa-solid fa-file-invoice"></i>
+                    </div>
+                    <div>
+                        <h3 id="modal-sub-title" class="font-bold text-sm text-white leading-tight">Chi tiết lịch con</h3>
+                        <p id="modal-sub-code-type" class="text-[11px] text-slate-200 font-mono"></p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeSubScheduleDetailModal()" class="w-8 h-8 rounded-[4px] hover:bg-white/10 text-white flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+
+            <!-- Modal Content (Scrollable) -->
+            <div class="p-5 space-y-4 overflow-y-auto text-xs flex-1 bg-[#F4F5F7]">
+                
+                <!-- THÔNG TIN CHUNG LỊCH CON -->
+                <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] space-y-3">
+                    <div class="flex items-center justify-between border-b border-[#D9DEE5] pb-2">
+                        <h4 class="font-bold text-[#1F2937] uppercase tracking-wide text-xs">Thông tin chung đợt khám</h4>
+                        <span id="modal-sub-badge" class="px-2.5 py-0.5 rounded-[4px] font-bold text-xs border"></span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        <div>
+                            <span class="block text-[#6B7280] font-medium mb-0.5">Mã lịch khám:</span>
+                            <span id="modal-sub-code" class="font-mono font-bold text-[#27496D]"></span>
+                        </div>
+                        <div>
+                            <span class="block text-[#6B7280] font-medium mb-0.5">Ngày khám:</span>
+                            <span id="modal-sub-date" class="font-bold text-[#1F2937]"></span>
+                        </div>
+                        <div>
+                            <span class="block text-[#6B7280] font-medium mb-0.5">Buổi & Khung giờ:</span>
+                            <span id="modal-sub-session-time" class="font-semibold text-[#1F2937]"></span>
+                        </div>
+                        <div>
+                            <span class="block text-[#6B7280] font-medium mb-0.5">Cơ sở thực hiện:</span>
+                            <span id="modal-sub-facility" class="font-semibold text-[#1F2937]"></span>
+                        </div>
+                        <div>
+                            <span class="block text-[#6B7280] font-medium mb-0.5">Số lượng khách dự kiến:</span>
+                            <span id="modal-sub-guests" class="font-bold text-[#2E7D32]"></span>
+                        </div>
+                        <div>
+                            <span class="block text-[#6B7280] font-medium mb-0.5">CB phụ trách:</span>
+                            <span id="modal-sub-pic" class="font-semibold text-[#1F2937]"></span>
+                        </div>
+                        <div class="sm:col-span-2 lg:col-span-3">
+                            <span class="block text-[#6B7280] font-medium mb-0.5">Địa điểm khám cụ thể:</span>
+                            <span id="modal-sub-location" class="font-medium text-[#1F2937]"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DANH MỤC KHÁM (FULL TABLE) -->
+                <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] space-y-3">
+                    <div class="flex items-center justify-between border-b border-[#D9DEE5] pb-2">
+                        <h4 class="font-bold text-[#1F2937] uppercase tracking-wide text-xs flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-[#27496D]"></i>
+                            <span>Danh mục khám chi tiết</span>
+                        </h4>
+                        <span id="modal-sub-cat-count" class="badge-success">0 danh mục</span>
+                    </div>
+
+                    <div id="modal-sub-cat-table-container" class="overflow-x-auto rounded-[4px] border border-[#D9DEE5]">
+                        <!-- Dynamic categories table -->
+                    </div>
+                </div>
+
+                <!-- NHÂN SỰ DỰ KIẾN (FULL TABLE) -->
+                <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] space-y-3">
+                    <div class="flex items-center justify-between border-b border-[#D9DEE5] pb-2">
+                        <h4 class="font-bold text-[#1F2937] uppercase tracking-wide text-xs flex items-center gap-2">
+                            <i class="fa-solid fa-user-doctor text-[#ED6C02]"></i>
+                            <span>Cấu hình nhân sự dự kiến</span>
+                        </h4>
+                        <span id="modal-sub-staff-count" class="badge-warning">0 nhân sự</span>
+                    </div>
+
+                    <div id="modal-sub-staff-table-container" class="overflow-x-auto rounded-[4px] border border-[#D9DEE5]">
+                        <!-- Dynamic staff table -->
+                    </div>
+                </div>
+
+                <!-- GHI CHÚ TƯ VẤN & LƯU Ý LỊCH CON -->
+                <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] space-y-3">
+                    <h4 class="font-bold text-[#1F2937] uppercase tracking-wide text-xs">Ghi chú & Hướng dẫn triển khai</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                            <span class="block text-[#6B7280] font-medium mb-1">Ghi chú tư vấn:</span>
+                            <p id="modal-sub-general-note" class="p-2.5 bg-[#F4F5F7] rounded-[4px] border border-[#D9DEE5] text-[#374151] italic"></p>
+                        </div>
+                        <div>
+                            <span class="block text-[#6B7280] font-medium mb-1">Lưu ý / Yêu cầu riêng:</span>
+                            <p id="modal-sub-request-note" class="p-2.5 bg-[#FFF3E0] rounded-[4px] border border-[#FFCC80] text-[#ED6C02] font-medium"></p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-5 py-3 bg-white border-t border-[#D9DEE5] flex items-center justify-end">
+                <button type="button" onclick="closeSubScheduleDetailModal()" class="btn-secondary text-xs">
+                    Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL TRẢ LỊCH -->
+    <div id="modal-return" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-[4px] max-w-md w-full shadow-lg border border-[#D9DEE5] flex flex-col">
+            <div class="px-5 h-[52px] border-b border-[#D9DEE5] flex items-center justify-between bg-[#F4F5F7]">
+                <div class="flex items-center gap-2 text-[#D32F2F]">
+                    <i class="fa-solid fa-rotate-left text-sm"></i>
+                    <h3 class="font-semibold text-[#1F2937] text-sm">Xác nhận Trả về Cán bộ tạo lịch</h3>
+                </div>
+                <button type="button" onclick="closeReturnModal()" class="w-8 h-8 rounded-[4px] text-[#9CA3AF] hover:text-[#1F2937]">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+            <div class="p-5 space-y-3 text-xs">
+                <p class="text-[#4B5563]">Vui lòng nhập lý do cụ thể khi trả lại bản ghi lịch KSK cho cán bộ tạo lịch hiệu chỉnh:</p>
+                <div>
+                    <label class="sys-label">Lý do trả về <span class="text-[#D32F2F]">*</span></label>
+                    <textarea id="return-reason-input" rows="3" placeholder="Nhập lý do cụ thể..." class="w-full p-2.5 bg-white border border-[#D9DEE5] rounded-[4px] text-xs text-[#1F2937] focus:outline-none focus:border-[#D32F2F]"></textarea>
+                </div>
+            </div>
+            <div class="px-5 py-3 bg-[#F4F5F7] border-t border-[#D9DEE5] flex items-center justify-end gap-2">
+                <button type="button" onclick="closeReturnModal()" class="btn-secondary text-xs">Hủy bỏ</button>
+                <button type="button" onclick="confirmReturnSchedule()" class="btn-danger text-xs">Xác nhận trả về</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DRAWER LỊCH SỬ THAY ĐỔI -->
+    <div id="history-drawer-backdrop" onclick="closeHistoryDrawer()" class="fixed inset-0 bg-slate-900/30 backdrop-blur-xs z-50 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
+    <div id="history-drawer" class="fixed top-0 right-0 bottom-0 w-[460px] max-w-full bg-white shadow-lg z-50 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col font-sans border-l border-[#D9DEE5]">
+        <div class="px-5 h-[52px] bg-[#27496D] text-white flex items-center justify-between shadow-xs">
+            <div class="flex items-center gap-2.5">
+                <div class="w-7 h-7 rounded-[4px] bg-white/10 text-white flex items-center justify-center text-sm">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-sm text-white leading-tight">Lịch sử thay đổi</h3>
+                    <p id="drawer-schedule-code" class="text-[11px] text-slate-300 font-mono"></p>
+                </div>
+            </div>
+            <button type="button" onclick="closeHistoryDrawer()" class="w-8 h-8 rounded-[4px] hover:bg-white/10 text-white flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-xmark text-base"></i>
+            </button>
+        </div>
+
+        <div id="history-timeline-container" class="flex-1 overflow-y-auto p-5 space-y-4 bg-[#F4F5F7]">
+            <!-- Timeline items rendered dynamically -->
+        </div>
+
+        <div class="px-5 py-3 bg-white border-t border-[#D9DEE5] flex items-center justify-between text-xs text-[#6B7280]">
+            <span id="history-item-count" class="font-medium text-[#4B5563]"></span>
+            <button type="button" onclick="closeHistoryDrawer()" class="btn-secondary text-xs">Đóng</button>
+        </div>
+    </div>
+
+    <!-- MAIN JAVASCRIPT & DATA-STORE INTEGRATION -->
+    <script src="../../js/data-store.js"></script>
+    <script src="../../js/main.js"></script>
+    <script>
+        let currentId = null;
+        let currentItem = null;
+        let selectedSubScheduleIds = new Set();
+        let subScheduleMap = {
+            TAI_VIEN: [],
+            NGOAI_VIEN: [],
+            LICH_PHUONG: []
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            currentId = urlParams.get('id') ? parseInt(urlParams.get('id')) : null;
+
+            if (!currentId) {
+                alert('Không tìm thấy thông tin lịch KSK!');
+                window.location.href = '../tong-hop.html';
+                return;
+            }
+
+            currentItem = MWKDataStore.getKskScheduleById(currentId);
+            if (!currentItem) {
+                alert('Bản ghi lịch KSK không tồn tại!');
+                window.location.href = '../tong-hop.html';
+                return;
+            }
+
+            renderOverviewDetailView();
+        });
+
+        function formatDateDisplay(dStr) {
+            if (!dStr) return '-';
+            if (dStr.includes('T')) dStr = dStr.split('T')[0];
+            if (dStr.includes('-')) {
+                const p = dStr.split('-');
+                if (p.length === 3) return `${p[2]}/${p[1]}/${p[0]}`;
+            }
+            return dStr;
+        }
+
+        // --- LEVEL 1: RENDER OVERVIEW DETAILS (CLIENT & UNIT INFO ONLY, NO UNIT STATUS BADGE) ---
+        function renderOverviewDetailView() {
+            const codeStr = currentItem.code || currentItem.maLich || `LK-2026-${currentItem.id}`;
+            document.getElementById('detail-code').innerText = codeStr;
+            document.getElementById('detail-team-name').innerText = currentItem.teamName || currentItem.customerName || 'Tên đoàn khám';
+
+            const editLink = document.getElementById('btn-goto-edit');
+            if (editLink) editLink.href = `receive-edit.html?id=${currentItem.id}`;
+
+            // LEVEL 1 SECTION 1: UNIT & CLIENT INFO ONLY (ZERO STATUS BADGE HERE)
+            document.getElementById('detail-customer-name').innerText = currentItem.customerName || currentItem.teamName || '-';
+            document.getElementById('detail-contact-person').innerText = currentItem.contactPerson || '-';
+            document.getElementById('detail-customer-type').innerText = currentItem.customerType || 'Doanh nghiệp';
+            document.getElementById('detail-estimated-count').innerText = `${currentItem.estimatedCount || currentItem.soLuong || 0} khách`;
+            document.getElementById('detail-contact-phone').innerText = currentItem.contactPhone || 'Chưa cập nhật';
+            document.getElementById('detail-contact-email').innerText = currentItem.contactEmail || 'Chưa cập nhật';
+            document.getElementById('detail-pakd-status').innerText = currentItem.pakdStatus || currentItem.phuongAnKinhDoanh || 'Không có PAKD';
+            document.getElementById('detail-pakd-badge').innerText = currentItem.pakdStatus || 'Không có PAKD';
+            document.getElementById('detail-customer-code').innerText = currentItem.customerCode || currentItem.maDoiTuong || currentItem.code || '-';
+            document.getElementById('detail-person-in-charge').innerText = currentItem.personInCharge || currentItem.cbPhuTrach || 'Nguyễn Văn An';
+            document.getElementById('detail-creator').innerText = currentItem.personInCharge || currentItem.nguoiTao || 'Nguyễn Văn An (CB Tạo lịch)';
+            document.getElementById('detail-created-at').innerText = formatDateDisplay(currentItem.createdAt || currentItem.examDate);
+            document.getElementById('detail-sent-at').innerText = currentItem.daGuiTongHop ? formatDateDisplay(currentItem.ngayGuiTongHop || currentItem.createdAt) : 'Chưa gửi';
+
+            document.getElementById('detail-general-note').innerText = currentItem.generalNote || currentItem.tuVan || 'Không có ghi chú tư vấn.';
+            document.getElementById('detail-request-note').innerText = currentItem.requestNote || currentItem.luuY || 'Không có lưu ý yêu cầu riêng.';
+
+            // LEVEL 2 SECTION 2: CATEGORIZE SUB-SCHEDULES INTO 3 INDEPENDENT BOXES
+            categorizeSubSchedules();
+            renderLevel2Boxes();
+        }
+
+        function categorizeSubSchedules() {
+            subScheduleMap = {
+                TAI_VIEN: [],
+                NGOAI_VIEN: [],
+                LICH_PHUONG: []
+            };
+
+            if (currentItem.step2Data) {
+                const taiVien = currentItem.step2Data.taiVien || [];
+                const ngoaiVien = currentItem.step2Data.ngoaiVien || [];
+                const lichPhuong = currentItem.step2Data.lichPhuong || [];
+
+                taiVien.forEach((sub, i) => subScheduleMap.TAI_VIEN.push({ 
+                    ...sub, 
+                    subUniqueId: sub.id || sub.scheduleId || `${currentItem.id}_tv_${i}`,
+                    trangThai: sub.trangThai || sub.status || 'CHO_TONG_HOP',
+                    status: sub.status || (sub.trangThai === 'DA_DUYET_TONG_HOP' ? 'Đã duyệt' : (sub.trangThai === 'TRA_LAI' ? 'Trả lại' : 'Chờ tổng hợp')),
+                    typeLabel: 'Lịch tại viện', 
+                    badgeColor: 'bg-[#E8F1FB] text-[#27496D] border-[#B3CDE6]' 
+                }));
+
+                ngoaiVien.forEach((sub, i) => subScheduleMap.NGOAI_VIEN.push({ 
+                    ...sub, 
+                    subUniqueId: sub.id || sub.scheduleId || `${currentItem.id}_nv_${i}`,
+                    trangThai: sub.trangThai || sub.status || 'CHO_TONG_HOP',
+                    status: sub.status || (sub.trangThai === 'DA_DUYET_TONG_HOP' ? 'Đã duyệt' : (sub.trangThai === 'TRA_LAI' ? 'Trả lại' : 'Chờ tổng hợp')),
+                    typeLabel: 'Lịch ngoại viện', 
+                    badgeColor: 'bg-[#FFF3E0] text-[#ED6C02] border-[#FFCC80]' 
+                }));
+
+                lichPhuong.forEach((sub, i) => subScheduleMap.LICH_PHUONG.push({ 
+                    ...sub, 
+                    subUniqueId: sub.id || sub.scheduleId || `${currentItem.id}_lp_${i}`,
+                    trangThai: sub.trangThai || sub.status || 'CHO_TONG_HOP',
+                    status: sub.status || (sub.trangThai === 'DA_DUYET_TONG_HOP' ? 'Đã duyệt' : (sub.trangThai === 'TRA_LAI' ? 'Trả lại' : 'Chờ tổng hợp')),
+                    typeLabel: 'Lịch phường', 
+                    badgeColor: 'bg-[#F3E8FF] text-[#7E22CE] border-[#D8B4FE]' 
+                }));
+            }
+
+            if (subScheduleMap.TAI_VIEN.length === 0 && subScheduleMap.NGOAI_VIEN.length === 0 && subScheduleMap.LICH_PHUONG.length === 0) {
+                const loai = currentItem.loaiLich || currentItem.scheduleType || 'Lịch tại viện';
+                const subItem = {
+                    ...currentItem,
+                    subUniqueId: currentItem.id,
+                    maLich: currentItem.code || `LK-2026-${currentItem.id}`,
+                    ngayKham: currentItem.examDate,
+                    session: currentItem.session || 'Sáng',
+                    soLuongKhach: currentItem.estimatedCount || currentItem.soLuong || 0,
+                    facility: currentItem.facility || 'Medlatec Ba Đình',
+                    diaDiemKham: currentItem.examLocation || 'Tại cơ sở',
+                    trangThai: currentItem.trangThai || currentItem.status || 'CHO_TONG_HOP',
+                    status: currentItem.status || 'Chờ tổng hợp'
+                };
+
+                if (loai === 'Lịch tại viện' || loai === 'TAI_VIEN') {
+                    subItem.typeLabel = 'Lịch tại viện';
+                    subItem.badgeColor = 'bg-[#E8F1FB] text-[#27496D] border-[#B3CDE6]';
+                    subScheduleMap.TAI_VIEN.push(subItem);
+                } else if (loai === 'Lịch ngoại viện' || loai === 'NGOAI_VIEN') {
+                    subItem.typeLabel = 'Lịch ngoại viện';
+                    subItem.badgeColor = 'bg-[#FFF3E0] text-[#ED6C02] border-[#FFCC80]';
+                    subScheduleMap.NGOAI_VIEN.push(subItem);
+                } else {
+                    subItem.typeLabel = 'Lịch phường';
+                    subItem.badgeColor = 'bg-[#F3E8FF] text-[#7E22CE] border-[#D8B4FE]';
+                    subScheduleMap.LICH_PHUONG.push(subItem);
+                }
+            }
+        }
+
+        // --- LEVEL 2: RENDER SUMMARY CARDS IN 3 INDEPENDENT BOXES WITH STATUS BADGES & CHECKBOXES ---
+        function renderLevel2Boxes() {
+            renderBox('TAI_VIEN', 'box-container-tai-vien', 'box-count-tai-vien', 'Lịch tại viện');
+            renderBox('NGOAI_VIEN', 'box-container-ngoai-vien', 'box-count-ngoai-vien', 'Lịch ngoại viện');
+            renderBox('LICH_PHUONG', 'box-container-phuong', 'box-count-phuong', 'Lịch phường');
+            updateDetailActionBarState();
+        }
+
+        function renderBox(typeKey, containerId, countId, typeName) {
+            const container = document.getElementById(containerId);
+            const countElem = document.getElementById(countId);
+            if (!container) return;
+
+            const items = subScheduleMap[typeKey] || [];
+            if (countElem) countElem.innerText = `${items.length} lịch`;
+
+            if (items.length === 0) {
+                container.innerHTML = `
+                    <div class="py-6 px-3 text-center text-[#9CA3AF] italic text-xs bg-[#F4F5F7] rounded-[4px] border border-dashed border-[#D9DEE5]">
+                        Chưa có ${typeName.toLowerCase()} nào được đẩy lên
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = items.map((sub, idx) => {
+                const subId = String(sub.subUniqueId || sub.id || `${typeKey}_${idx}`);
+                const isChecked = selectedSubScheduleIds.has(subId);
+                const codeStr = sub.maLich || sub.code || `Lịch #${idx + 1}`;
+                const dateStr = formatDateDisplay(sub.ngayKham || sub.ngayKhamFormatted || currentItem.examDate);
+                const sessionStr = sub.session || sub.buoi || 'Sáng';
+                const guests = sub.soLuongKhach || sub.estimatedCount || sub.soLuong || 0;
+                const location = sub.diaDiemKham || sub.examLocation || sub.facility || 'Medlatec';
+
+                // INDEPENDENT STATUS BADGE FOR EACH SUB-SCHEDULE CARD
+                const st = sub.trangThai || sub.status || 'CHO_TONG_HOP';
+                let statusBadgeHtml = '';
+                let canSelect = false;
+
+                if (st === 'DA_DUYET_TONG_HOP' || st === 'Đã duyệt') {
+                    statusBadgeHtml = `<span class="px-2 py-0.5 rounded-[2px] bg-[#E6F4EA] text-[#2E7D32] border border-[#A5D6A7] font-bold text-[10px] flex items-center gap-1"><i class="fa-solid fa-circle-check text-[9px]"></i> ĐÃ DUYỆT</span>`;
+                    canSelect = false;
+                } else if (st === 'TRA_LAI' || st === 'TRA_CHINH_SUA' || st === 'Trả lại') {
+                    statusBadgeHtml = `<span class="px-2 py-0.5 rounded-[2px] bg-[#FDECEC] text-[#D32F2F] border border-[#F5B5B5] font-bold text-[10px] flex items-center gap-1"><i class="fa-solid fa-rotate-left text-[9px]"></i> TRẢ LẠI</span>`;
+                    canSelect = false;
+                } else if (st === 'DA_GOM_LICH_TUAN' || st === 'Đã gom lịch tuần') {
+                    statusBadgeHtml = `<span class="px-2 py-0.5 rounded-[2px] bg-[#E8F5E9] text-[#1B5E20] border border-[#C8E6C9] font-bold text-[10px] flex items-center gap-1"><i class="fa-solid fa-calendar-check text-[9px]"></i> ĐÃ GOM LỊCH TUẦN</span>`;
+                    canSelect = false;
+                } else if (st === 'CHO_DUYET' || st === 'Chờ duyệt') {
+                    statusBadgeHtml = `<span class="px-2 py-0.5 rounded-[2px] bg-[#FFF3E0] text-[#E65100] border border-[#FFE0B2] font-bold text-[10px] flex items-center gap-1"><i class="fa-solid fa-clock-rotate-left text-[9px]"></i> CHỜ CB DUYỆT</span>`;
+                    canSelect = false;
+                } else {
+                    // CHO_TONG_HOP / Chờ tổng hợp
+                    statusBadgeHtml = `<span class="px-2 py-0.5 rounded-[2px] bg-[#FFF8E1] text-[#B78103] border border-[#FFE082] font-bold text-[10px] flex items-center gap-1"><i class="fa-solid fa-hourglass-half text-[9px]"></i> CHỜ TỔNG HỢP</span>`;
+                    canSelect = true;
+                }
+
+                const reasonHtml = sub.lyDoTra ? `
+                    <div class="text-[11px] text-[#D32F2F] bg-[#FDECEC] p-1.5 rounded-[2px] border border-[#F5B5B5] mt-1 font-medium flex items-center gap-1">
+                        <i class="fa-solid fa-circle-info text-[10px]"></i>
+                        <span>Lý do trả: ${sub.lyDoTra}</span>
+                    </div>
+                ` : '';
+
+                const checkboxHtml = canSelect 
+                    ? `<input type="checkbox" value="${subId}" ${isChecked ? 'checked' : ''} onchange="toggleSubScheduleSelect('${subId}', this)" class="sub-schedule-checkbox w-4 h-4 text-[#27496D] rounded-[2px] border-[#D9DEE5] cursor-pointer">`
+                    : `<input type="checkbox" disabled class="w-4 h-4 text-[#9CA3AF] rounded-[2px] border-[#D9DEE5] cursor-not-allowed opacity-40">`;
+
+                return `
+                    <div class="bg-[#F4F5F7] hover:bg-[#F0F4F8] p-3 rounded-[4px] border border-[#D9DEE5] space-y-2 transition-colors">
+                        <div class="flex items-center justify-between gap-2 border-b border-[#E6EAF0] pb-2">
+                            <div class="flex items-center gap-2">
+                                ${checkboxHtml}
+                                <span class="font-mono font-bold text-[#27496D] text-xs">${codeStr}</span>
+                            </div>
+                            ${statusBadgeHtml}
+                        </div>
+                        <div class="text-[#374151] space-y-1 pt-1">
+                            <div class="flex items-center justify-between">
+                                <span>Ngày: <strong class="text-[#1F2937]">${dateStr} (${sessionStr})</strong></span>
+                                <span class="font-bold text-[#2E7D32]">${guests} khách</span>
+                            </div>
+                            <div class="truncate text-[11px]" title="${location}">
+                                Địa điểm: <span class="font-medium text-[#1F2937]">${location}</span>
+                            </div>
+                            ${reasonHtml}
+                        </div>
+                        <div class="pt-2 border-t border-[#D9DEE5] flex items-center justify-end">
+                            <button type="button" onclick="openSubScheduleDetailModal('${typeKey}', ${idx})" class="btn-secondary text-xs py-1 px-2.5 flex items-center gap-1.5 shadow-2xs">
+                                <i class="fa-regular fa-eye text-[#27496D] text-xs"></i>
+                                <span>Xem chi tiết</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleSubScheduleSelect(subId, checkbox) {
+            if (checkbox.checked) {
+                selectedSubScheduleIds.add(subId);
+            } else {
+                selectedSubScheduleIds.delete(subId);
+            }
+            updateDetailActionBarState();
+        }
+
+        function toggleSelectAllSubSchedules(masterCb) {
+            const isChecked = masterCb.checked;
+            const checkboxes = document.querySelectorAll('.sub-schedule-checkbox:not([disabled])');
+            checkboxes.forEach(cb => {
+                cb.checked = isChecked;
+                if (isChecked) {
+                    selectedSubScheduleIds.add(cb.value);
+                } else {
+                    selectedSubScheduleIds.delete(cb.value);
+                }
+            });
+            updateDetailActionBarState();
+        }
+
+        function updateDetailActionBarState() {
+            const badge = document.getElementById('detail-selected-count-badge');
+            const numElem = document.getElementById('detail-selected-count-num');
+            const btnApprove = document.getElementById('btn-detail-approve-selected');
+            const btnReturn = document.getElementById('btn-detail-return-selected');
+            const masterCb = document.getElementById('detail-select-all-checkbox');
+
+            const count = selectedSubScheduleIds.size;
+            if (numElem) numElem.innerText = count;
+
+            if (count > 0) {
+                if (badge) badge.classList.remove('hidden');
+                if (btnApprove) {
+                    btnApprove.disabled = false;
+                    btnApprove.className = 'btn-primary text-xs cursor-pointer bg-[#2E7D32] hover:bg-[#1B5E20] border-[#2E7D32] text-white';
+                }
+                if (btnReturn) {
+                    btnReturn.disabled = false;
+                    btnReturn.className = 'btn-danger text-xs cursor-pointer bg-[#D32F2F] hover:bg-[#C62828] text-white';
+                }
+            } else {
+                if (badge) badge.classList.add('hidden');
+                if (btnApprove) {
+                    btnApprove.disabled = true;
+                    btnApprove.className = 'btn-secondary text-xs opacity-50 cursor-not-allowed text-[#2E7D32] border-[#A5D6A7]';
+                }
+                if (btnReturn) {
+                    btnReturn.disabled = true;
+                    btnReturn.className = 'btn-secondary text-xs opacity-50 cursor-not-allowed text-[#D32F2F] border-[#F5B5B5]';
+                }
+            }
+
+            if (masterCb) {
+                const checkboxes = document.querySelectorAll('.sub-schedule-checkbox:not([disabled])');
+                if (checkboxes.length > 0) {
+                    masterCb.checked = Array.from(checkboxes).every(cb => cb.checked);
+                } else {
+                    masterCb.checked = false;
+                }
+            }
+        }
+
+        function approveSelectedSubSchedules() {
+            if (selectedSubScheduleIds.size === 0) {
+                const warnMsg = 'Vui lòng chọn ít nhất một lịch con để duyệt.';
+                if (window.showToast) window.showToast(warnMsg, 'error');
+                else alert(warnMsg);
+                return;
+            }
+
+            const count = selectedSubScheduleIds.size;
+            if (confirm(`Bạn có chắc chắn muốn duyệt ${count} lịch con đã chọn không?`)) {
+                if (currentItem.step2Data) {
+                    ['taiVien', 'ngoaiVien', 'lichPhuong'].forEach(key => {
+                        if (Array.isArray(currentItem.step2Data[key])) {
+                            currentItem.step2Data[key].forEach((sub, i) => {
+                                const subId = String(sub.id || sub.scheduleId || `${currentItem.id}_${key.substring(0,2)}_${i}`);
+                                if (selectedSubScheduleIds.has(subId)) {
+                                    sub.trangThai = 'DA_DUYET_TONG_HOP';
+                                    sub.status = 'Đã duyệt';
+                                    sub.ngayDuyetTongHop = new Date().toISOString();
+                                }
+                            });
+                        }
+                    });
+                }
+
+                if (selectedSubScheduleIds.has(String(currentItem.id))) {
+                    currentItem.status = 'Đã duyệt';
+                    currentItem.trangThai = 'DA_DUYET_TONG_HOP';
+                    currentItem.ngayDuyetTongHop = new Date().toISOString();
+                }
+
+                MWKDataStore.updateKskSchedule(currentId, {
+                    step2Data: currentItem.step2Data,
+                    status: currentItem.status,
+                    trangThai: currentItem.trangThai
+                }, 'Trần Thị Mai (Cán bộ Tổng hợp)');
+
+                selectedSubScheduleIds.clear();
+
+                if (window.showToast) {
+                    window.showToast(`Đã duyệt thành công ${count} lịch con! Các lịch đã được đưa vào Lịch tuần.`, 'success');
+                }
+
+                renderOverviewDetailView();
+            }
+        }
+
+        function returnSelectedSubSchedules() {
+            if (selectedSubScheduleIds.size === 0) {
+                const warnMsg = 'Vui lòng chọn ít nhất một lịch con để trả lại.';
+                if (window.showToast) window.showToast(warnMsg, 'error');
+                else alert(warnMsg);
+                return;
+            }
+            openReturnModal();
+        }
+
+        // --- LEVEL 3: MODAL FULL DETAIL LỊCH CON ---
+        function openSubScheduleDetailModal(typeKey, index) {
+            const items = subScheduleMap[typeKey] || [];
+            const sub = items[index];
+            if (!sub) return;
+
+            const subSt = sub.trangThai || sub.status || 'CHO_TONG_HOP';
+            let modalStatusHtml = '';
+            if (subSt === 'DA_DUYET_TONG_HOP' || subSt === 'Đã duyệt') {
+                modalStatusHtml = `<span class="px-2.5 py-0.5 rounded-[4px] bg-[#E6F4EA] text-[#2E7D32] border border-[#A5D6A7] font-bold text-xs"><i class="fa-solid fa-circle-check text-[10px] mr-1"></i>Đã duyệt</span>`;
+            } else if (subSt === 'TRA_LAI' || subSt === 'TRA_CHINH_SUA' || subSt === 'Trả lại') {
+                modalStatusHtml = `<span class="px-2.5 py-0.5 rounded-[4px] bg-[#FDECEC] text-[#D32F2F] border border-[#F5B5B5] font-bold text-xs"><i class="fa-solid fa-rotate-left text-[10px] mr-1"></i>Trả lại</span>`;
+            } else {
+                modalStatusHtml = `<span class="px-2.5 py-0.5 rounded-[4px] bg-[#FFF8E1] text-[#B78103] border border-[#FFE082] font-bold text-xs"><i class="fa-solid fa-hourglass-half text-[10px] mr-1"></i>Chờ tổng hợp</span>`;
+            }
+
+            document.getElementById('modal-sub-title').innerText = `Chi tiết ${sub.typeLabel || 'Lịch con'}`;
+            document.getElementById('modal-sub-code-type').innerText = `${sub.maLich || sub.code || 'LK-CON'} (${sub.typeLabel})`;
+            
+            const badgeElem = document.getElementById('modal-sub-badge');
+            badgeElem.innerHTML = `${sub.typeLabel} ${modalStatusHtml}`;
+            badgeElem.className = `inline-flex items-center gap-2 font-bold text-xs`;
+
+            document.getElementById('modal-sub-code').innerText = sub.maLich || sub.code || currentItem.code || '-';
+            document.getElementById('modal-sub-date').innerText = formatDateDisplay(sub.ngayKham || sub.ngayKhamFormatted || currentItem.examDate);
+            document.getElementById('modal-sub-session-time').innerText = `${sub.session || 'Sáng'} (${sub.startTime || '07:30'} - ${sub.endTime || '11:30'})`;
+            document.getElementById('modal-sub-facility').innerText = sub.facility || currentItem.facility || 'Medlatec Ba Đình';
+            document.getElementById('modal-sub-guests').innerText = `${sub.soLuongKhach || sub.estimatedCount || sub.soLuong || 0} khách`;
+            document.getElementById('modal-sub-pic').innerText = sub.personInCharge || currentItem.personInCharge || 'Nguyễn Văn An';
+            document.getElementById('modal-sub-location').innerText = sub.diaDiemKham || sub.examLocation || currentItem.examLocation || 'Tại cơ sở';
+
+            document.getElementById('modal-sub-general-note').innerText = sub.generalNote || sub.tuVan || currentItem.generalNote || 'Không có ghi chú tư vấn.';
+            document.getElementById('modal-sub-request-note').innerText = sub.requestNote || sub.luuY || currentItem.requestNote || 'Không có lưu ý riêng.';
+
+            // Render Full Category Table for this Sub-schedule
+            const catContainer = document.getElementById('modal-sub-cat-table-container');
+            const catCountElem = document.getElementById('modal-sub-cat-count');
+            const cats = sub.categories || sub.danhMucKham || currentItem.categories || ['Khám Nội tổng quát', 'Siêu âm ổ bụng', 'Xét nghiệm máu'];
+            if (catCountElem) catCountElem.innerText = `${cats.length} danh mục`;
+
+            if (cats.length === 0) {
+                catContainer.innerHTML = `<div class="p-3 text-center text-[#9CA3AF] italic text-xs">Chưa có danh mục khám</div>`;
+            } else {
+                let catRows = cats.map((c, i) => {
+                    const name = typeof c === 'object' ? (c.name || c.tenDanhMuc) : c;
+                    const qty = typeof c === 'object' ? (c.quantity || c.soLuong || 1) : 1;
+                    const note = typeof c === 'object' ? (c.note || c.ghiChu || '-') : '-';
+                    return `
+                        <tr class="border-b border-[#E6EAF0] hover:bg-[#F9FAFB]">
+                            <td class="p-2 text-center text-[#6B7280]">${i + 1}</td>
+                            <td class="p-2 font-bold text-[#1F2937]">${name}</td>
+                            <td class="p-2 text-right font-semibold text-[#27496D]">${qty}</td>
+                            <td class="p-2 text-[#4B5563]">${note}</td>
+                        </tr>
+                    `;
+                }).join('');
+
+                catContainer.innerHTML = `
+                    <table class="w-full text-xs text-left">
+                        <thead class="bg-[#F4F5F7] text-[#4B5563] font-bold border-b border-[#D9DEE5]">
+                            <tr>
+                                <th class="p-2 w-10 text-center">STT</th>
+                                <th class="p-2">Tên danh mục khám</th>
+                                <th class="p-2 text-right w-20">Số lượng</th>
+                                <th class="p-2">Ghi chú</th>
+                            </tr>
+                        </thead>
+                        <tbody>${catRows}</tbody>
+                    </table>
+                `;
+            }
+
+            // Render Full Staff Table for this Sub-schedule
+            const staffContainer = document.getElementById('modal-sub-staff-table-container');
+            const staffCountElem = document.getElementById('modal-sub-staff-count');
+            const staffList = sub.staff || sub.nhanSu || currentItem.staff || [{ role: 'Bác sĩ chính', count: 2, shift: 'Sáng' }, { role: 'Điều dưỡng', count: 3, shift: 'Sáng' }];
+            if (staffCountElem) staffCountElem.innerText = `${staffList.length} vị trí / nhóm`;
+
+            if (staffList.length === 0) {
+                staffContainer.innerHTML = `<div class="p-3 text-center text-[#9CA3AF] italic text-xs">Chưa có cấu hình nhân sự</div>`;
+            } else {
+                let staffRows = staffList.map((s, i) => {
+                    const role = typeof s === 'object' ? (s.role || s.name || s.chucDanh) : s;
+                    const count = typeof s === 'object' ? (s.count || s.soLuong || 1) : 1;
+                    const shift = typeof s === 'object' ? (s.shift || s.ca || 'Sáng') : 'Sáng';
+                    return `
+                        <tr class="border-b border-[#E6EAF0] hover:bg-[#F9FAFB]">
+                            <td class="p-2 text-center text-[#6B7280]">${i + 1}</td>
+                            <td class="p-2 font-bold text-[#1F2937]">${role}</td>
+                            <td class="p-2 text-right font-bold text-[#ED6C02]">${count}</td>
+                            <td class="p-2 text-center font-medium text-[#374151]">${shift}</td>
+                        </tr>
+                    `;
+                }).join('');
+
+                staffContainer.innerHTML = `
+                    <table class="w-full text-xs text-left">
+                        <thead class="bg-[#F4F5F7] text-[#4B5563] font-bold border-b border-[#D9DEE5]">
+                            <tr>
+                                <th class="p-2 w-10 text-center">STT</th>
+                                <th class="p-2">Vị trí / Vai trò</th>
+                                <th class="p-2 text-right w-20">Số lượng</th>
+                                <th class="p-2 text-center w-24">Ca làm việc</th>
+                            </tr>
+                        </thead>
+                        <tbody>${staffRows}</tbody>
+                    </table>
+                `;
+            }
+
+            const modal = document.getElementById('modal-sub-schedule-detail');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeSubScheduleDetailModal() {
+            const modal = document.getElementById('modal-sub-schedule-detail');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function approveSchedule() {
+            if (confirm(`Bạn có chắc chắn muốn duyệt lịch khám ${currentItem.code} không?`)) {
+                MWKDataStore.updateKskSchedule(currentId, {
+                    status: 'Đã duyệt',
+                    trangThai: 'DA_DUYET_TONG_HOP',
+                    ngayDuyetTongHop: new Date().toISOString(),
+                    nguoiTongHop: 'Trần Thị Mai (Cán bộ Tổng hợp)'
+                }, 'Trần Thị Mai (Cán bộ Tổng hợp)');
+
+                if (window.showToast) {
+                    window.showToast('Đã phê duyệt thành công lịch khám sức khỏe!', 'success');
+                }
+
+                setTimeout(() => {
+                    window.location.href = '../tong-hop.html';
+                }, 500);
+            }
+        }
+
+        function openReturnModal() {
+            const modal = document.getElementById('modal-return');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeReturnModal() {
+            const modal = document.getElementById('modal-return');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function confirmReturnSchedule() {
+            const reason = document.getElementById('return-reason-input').value.trim();
+            if (!reason) {
+                if (window.showToast) {
+                    window.showToast('Vui lòng nhập lý do trả lại lịch!', 'error');
+                } else {
+                    alert('Vui lòng nhập lý do trả lại lịch!');
+                }
+                return;
+            }
+
+            MWKDataStore.updateKskSchedule(currentId, {
+                status: 'Trả lại',
+                trangThai: 'TRA_CHINH_SUA',
+                daGuiTongHop: false,
+                lyDoTra: reason,
+                ngayTra: new Date().toISOString(),
+                nguoiTra: 'Trần Thị Mai (Cán bộ Tổng hợp)'
+            }, 'Trần Thị Mai (Cán bộ Tổng hợp)');
+
+            closeReturnModal();
+
+            if (window.showToast) {
+                window.showToast('Đã trả về lịch khám cho cán bộ tạo lịch thành công!', 'success');
+            }
+
+            setTimeout(() => {
+                window.location.href = '../tong-hop.html';
+            }, 500);
+        }
+
+        function openHistoryDrawer() {
+            const drawer = document.getElementById('history-drawer');
+            const backdrop = document.getElementById('history-drawer-backdrop');
+            const container = document.getElementById('history-timeline-container');
+            const codeElem = document.getElementById('drawer-schedule-code');
+
+            if (codeElem) codeElem.innerText = currentItem ? currentItem.code : '';
+            if (container) container.innerHTML = '';
+
+            const historyList = MWKDataStore.getKskScheduleHistory(currentId);
+            const countElem = document.getElementById('history-item-count');
+            if (countElem) countElem.innerText = `Tổng số ${historyList.length} lượt tác động / cập nhật`;
+
+            if (historyList.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-10 text-[#9CA3AF]">
+                        <i class="fa-solid fa-clock-rotate-left text-3xl mb-2 text-[#CBD5E1]"></i>
+                        <p class="text-xs">Chưa có lịch sử thay đổi nào được ghi nhận</p>
+                    </div>
+                `;
+            } else {
+                historyList.forEach((h, index) => {
+                    const isFirst = index === 0;
+                    const displayTime = h.timestamp || '';
+
+                    let changesHtml = '';
+                    if (Array.isArray(h.changes) && h.changes.length > 0) {
+                        changesHtml = `
+                            <div class="mt-2 pt-2 border-t border-[#F0F3F7] space-y-1 text-[11px]">
+                                ${h.changes.map(c => `
+                                    <div class="flex items-center gap-1.5 text-[#4B5563]">
+                                        <span class="font-semibold text-[#1F2937]">${c.field}:</span>
+                                        <span class="line-through text-[#9CA3AF]">${c.oldVal}</span>
+                                        <i class="fa-solid fa-arrow-right text-[9px] text-[#27496D]"></i>
+                                        <span class="font-bold text-[#27496D]">${c.newVal}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                    }
+
+                    const itemHtml = `
+                        <div class="relative pl-6 pb-4 border-l-2 ${isFirst ? 'border-[#27496D]' : 'border-[#D9DEE5]'} last:border-l-0 last:pb-0">
+                            <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full ${isFirst ? 'bg-[#27496D] ring-4 ring-[#E8F1FB]' : 'bg-[#9CA3AF]'} flex items-center justify-center text-white text-[8px]">
+                                <i class="fa-solid ${isFirst ? 'fa-check' : 'fa-circle'}"></i>
+                            </div>
+                            <div class="bg-white p-3 rounded-[4px] border border-[#D9DEE5] space-y-1">
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="font-bold text-[#1F2937]">${h.action || 'Hiệu chỉnh thông tin'}</span>
+                                    <span class="text-[11px] text-[#6B7280] font-mono">${displayTime}</span>
+                                </div>
+                                <p class="text-xs text-[#374151]">${h.details || 'Cập nhật bản ghi tiếp nhận lịch KSK'}</p>
+                                ${changesHtml}
+                                <div class="text-[11px] text-[#6B7280] pt-1 flex items-center gap-1">
+                                    <i class="fa-solid fa-user-gear text-[10px]"></i>
+                                    <span>Thực hiện bởi: <strong class="text-[#1F2937]">${h.actor || h.user || 'Trần Thị Mai (Cán bộ Tổng hợp)'}</strong></span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += itemHtml;
+                });
+            }
+
+            if (backdrop) {
+                backdrop.classList.remove('pointer-events-none', 'opacity-0');
+                backdrop.classList.add('opacity-100');
+            }
+            if (drawer) {
+                drawer.classList.remove('translate-x-full');
+            }
+        }
+
+        function closeHistoryDrawer() {
+            const drawer = document.getElementById('history-drawer');
+            const backdrop = document.getElementById('history-drawer-backdrop');
+
+            if (backdrop) {
+                backdrop.classList.remove('opacity-100');
+                backdrop.classList.add('opacity-0', 'pointer-events-none');
+            }
+            if (drawer) {
+                drawer.classList.add('translate-x-full');
+            }
+        }
+    </script>
+</body>
+</html>

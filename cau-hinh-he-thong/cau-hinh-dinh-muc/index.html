@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cấu hình định mức | MWK Điều phối KSK</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: { 
+                        primary: { DEFAULT: '#27496D', hover: '#1F3D5A' }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome v6 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="./index.css">
+    <link rel="stylesheet" href="./dinh-muc-kh-tai-vien/index.css">
+    <link rel="stylesheet" href="./dinh-muc-kham-ngoai-vien/index.css">
+    <link rel="stylesheet" href="./dinh-muc-kham-chuyen-khoa/index.css">
+    <link rel="stylesheet" href="./dinh-muc-nhan-su-kiem-nhiem/index.css">
+    <link rel="stylesheet" href="./nhan-su-dieu-phoi-bkh/index.css">
+    <link rel="shortcut icon" href="#">
+</head>
+<body data-depth="sub" data-active-nav="nav-dinh-muc-nhan-su" data-breadcrumb="Cấu hình định mức" data-custom-pagination="true" class="bg-[#F4F5F7] font-sans text-[#1F2937] antialiased h-screen overflow-hidden flex flex-col">
+
+    <div class="flex h-full w-full overflow-hidden">
+        <!-- SIDEBAR CONTAINER -->
+        <div id="sidebar-container" class="flex flex-shrink-0 h-full"></div>
+
+        <!-- MAIN CONTAINER -->
+        <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-[#F4F5F7]">
+            <!-- HEADER CONTAINER -->
+            <div id="header-container"></div>
+
+            <!-- MAIN CONTENT AREA -->
+            <main class="flex-1 overflow-y-auto p-5 space-y-4 flex flex-col min-h-0">
+                <!-- 1. TITLE SECTION -->
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-4 rounded-[4px] border border-[#D9DEE5] flex-shrink-0">
+                    <div>
+                        <h1 class="text-xl font-bold text-[#1F2937]">Cấu hình định mức</h1>
+                        <p class="text-xs text-[#6B7280] mt-0.5">Quản lý tập trung các loại định mức phục vụ khách hàng KSK tại hệ thống MEDLATEC</p>
+                    </div>
+                </div>
+
+                <!-- 2. TAB CONTROL BAR WITH FIXED RIGHT ACTION BUTTON -->
+                <div class="bg-white border-b border-[#D9DEE5] h-10 flex items-center justify-between gap-4 flex-shrink-0 px-4">
+                    <!-- Sub-Tabs Aligned Left -->
+                    <div class="flex items-center gap-4 overflow-x-auto h-full flex-1">
+                        <button type="button" onclick="switchTab('tai-vien')" id="tab-btn-tai-vien" class="tab-btn h-full border-b-2 border-[#27496D] text-[#27496D] text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer flex-shrink-0">
+                            <i class="fa-solid fa-hospital text-xs"></i>
+                            <span>Định mức KH tại viện</span>
+                        </button>
+                        <button type="button" onclick="switchTab('ngoai-vien')" id="tab-btn-ngoai-vien" class="tab-btn h-full border-b-2 border-transparent text-[#6B7280] hover:text-[#1F2937] text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer flex-shrink-0">
+                            <i class="fa-solid fa-truck-medical text-xs"></i>
+                            <span>Định mức khám ngoại viện</span>
+                        </button>
+                        <button type="button" onclick="switchTab('chuyen-khoa')" id="tab-btn-chuyen-khoa" class="tab-btn h-full border-b-2 border-transparent text-[#6B7280] hover:text-[#1F2937] text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer flex-shrink-0">
+                            <i class="fa-solid fa-user-doctor text-xs"></i>
+                            <span>Định mức khám chuyên khoa</span>
+                        </button>
+                        <button type="button" onclick="switchTab('kiem-nhiem')" id="tab-btn-kiem-nhiem" class="tab-btn h-full border-b-2 border-transparent text-[#6B7280] hover:text-[#1F2937] text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer flex-shrink-0">
+                            <i class="fa-solid fa-users-gear text-xs"></i>
+                            <span>Định mức nhân sự kiêm nhiệm</span>
+                        </button>
+                        <button type="button" onclick="switchTab('dieu-phoi-bkh')" id="tab-btn-dieu-phoi-bkh" class="tab-btn h-full border-b-2 border-transparent text-[#6B7280] hover:text-[#1F2937] text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer flex-shrink-0">
+                            <i class="fa-solid fa-sitemap text-xs"></i>
+                            <span>Nhân sự điều phối - BKH</span>
+                        </button>
+                    </div>
+
+                    <!-- Action Toolbar Fixed Right -->
+                    <div id="matrix-action-toolbar" class="flex items-center gap-2 flex-shrink-0">
+                        <button type="button" id="btn-matrix-update" onclick="handleMasterEditToggle(true)" class="btn-primary text-xs">
+                            <i class="fa-solid fa-pen-to-square text-xs"></i>
+                            <span>Cập nhật</span>
+                        </button>
+                        <div id="edit-mode-actions" class="hidden flex items-center gap-2">
+                            <button type="button" onclick="handleMasterEditToggle(false)" class="btn-secondary text-xs">
+                                Hủy
+                            </button>
+                            <button type="button" onclick="handleMasterSave()" class="btn-primary text-xs">
+                                <i class="fa-solid fa-floppy-disk text-xs"></i>
+                                <span>Lưu</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. TAB CONTENT CONTAINER -->
+                <div id="tab-content-container" class="flex-1 flex flex-col min-h-0 overflow-hidden">
+                    <!-- Dynamic Sub-Tab View Content -->
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- GLOBAL SCRIPTS -->
+    <script src="../../js/data-store.js"></script>
+    <script src="../../js/main.js"></script>
+    <script src="./dinh-muc-kh-tai-vien/index.js"></script>
+    <script src="./dinh-muc-kham-ngoai-vien/index.js"></script>
+    <script src="./dinh-muc-kham-chuyen-khoa/index.js"></script>
+    <script src="./dinh-muc-nhan-su-kiem-nhiem/index.js"></script>
+    <script src="./nhan-su-dieu-phoi-bkh/index.js"></script>
+    <script src="./index.js"></script>
+</body>
+</html>

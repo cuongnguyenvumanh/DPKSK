@@ -1,0 +1,29 @@
+/* SUB-TAB 2: ĐỊNH MỨC KHÁM NGOẠI VIỆN - ENTERPRISE MATRIX STYLES */
+.nv-matrix-table {
+    border-radius: 0 !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+}
+
+.nv-matrix-table td, .nv-matrix-table th {
+    border-right: 1px solid #D9DEE7 !important;
+    border-bottom: 1px solid #D9DEE7 !important;
+}
+
+.nv-matrix-table tbody tr:hover {
+    background-color: #F7F9FC !important;
+}
+
+/* STICKY COLUMNS & MULTI-TIER HEADER HIERARCHY */
+
+/* Level 50: Top-Left Corner Sticky Headers TH (Col 1..2) */
+.nv-sticky-corner-1-t1 { position: sticky !important; top: 0 !important; left: 0px !important; z-index: 50 !important; background-color: #32475B !important; color: #FFFFFF !important; }
+.nv-sticky-corner-2-t1 { position: sticky !important; top: 0 !important; left: 50px !important; z-index: 50 !important; background-color: #32475B !important; color: #FFFFFF !important; box-shadow: 2px 0 6px rgba(0, 0, 0, 0.12) !important; }
+
+/* Level 30: Tier 1 & Tier 2 Scrolling Headers TH */
+.nv-sticky-header-t1 { position: sticky !important; top: 0 !important; z-index: 30 !important; background-color: #32475B !important; color: #FFFFFF !important; }
+.nv-sticky-header-t2 { position: sticky !important; top: 35px !important; z-index: 30 !important; background-color: #2B3C4E !important; color: #FFFFFF !important; }
+
+/* Level 20: Body Sticky Left Columns TD */
+.nv-sticky-col-1 { position: sticky !important; left: 0px !important; z-index: 20 !important; width: 50px !important; min-width: 50px !important; max-width: 50px !important; background-color: #F8FAFC !important; vertical-align: middle !important; text-align: center !important; }
+.nv-sticky-col-2 { position: sticky !important; left: 50px !important; z-index: 20 !important; width: 240px !important; min-width: 240px !important; max-width: 240px !important; background-color: #F8FAFC !important; vertical-align: middle !important; box-shadow: 2px 0 6px rgba(0, 0, 0, 0.08) !important; }

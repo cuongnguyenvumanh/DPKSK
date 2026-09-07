@@ -1,0 +1,30 @@
+<!-- ================= UNIFIED HIS ENTERPRISE PAGINATION COMPONENT ================= -->
+<div class="p-3 border-t border-[#D9DEE5] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs bg-white">
+    <!-- Left: Hiển thị [20 ▼] bản ghi. 1-20 trong tổng 230 -->
+    <div class="flex items-center gap-2 text-[#4B5563]">
+        <span>Hiển thị</span>
+        <select id="pag-page-size-select" class="h-8 px-2 bg-white border border-[#D9DEE5] rounded-[4px] text-xs text-[#1F2937] font-medium focus:outline-none focus:border-[#27496D] cursor-pointer">
+            <option value="10">10</option>
+            <option value="20" selected>20</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+        </select>
+        <span>bản ghi.</span>
+        <span id="pagination-info" class="font-medium text-[#4B5563] ml-2">
+            <strong id="pag-start" class="text-[#1F2937] font-bold">1</strong>-<strong id="pag-end" class="text-[#1F2937] font-bold">20</strong> trong tổng <strong id="pag-total" class="text-[#1F2937] font-bold">230</strong>
+        </span>
+    </div>
+
+    <!-- Right: Page Navigation Buttons << < 1 [2] 3 ... 8 9 10 > >> -->
+    <div class="flex items-center gap-1" id="pagination-buttons">
+        <button id="pag-first-btn" class="h-8 w-8 flex items-center justify-center text-[#4B5563] hover:text-[#1F2937] hover:bg-[#F3F6FA] rounded-[4px] disabled:opacity-30 cursor-pointer transition-colors" title="Trang đầu"><i class="fa-solid fa-angles-left text-[11px]"></i></button>
+        <button id="pag-prev-btn" class="h-8 w-8 flex items-center justify-center text-[#4B5563] hover:text-[#1F2937] hover:bg-[#F3F6FA] rounded-[4px] disabled:opacity-30 cursor-pointer transition-colors" title="Trang trước"><i class="fa-solid fa-chevron-left text-[11px]"></i></button>
+        
+        <button class="h-8 min-w-[32px] px-2.5 text-[#374151] hover:bg-[#F3F6FA] font-medium rounded-[4px] cursor-pointer flex items-center justify-center">1</button>
+        <button class="h-8 min-w-[32px] px-2.5 bg-white border border-[#27496D] text-[#27496D] font-bold rounded-[4px] cursor-pointer flex items-center justify-center">2</button>
+        <button class="h-8 min-w-[32px] px-2.5 text-[#374151] hover:bg-[#F3F6FA] font-medium rounded-[4px] cursor-pointer flex items-center justify-center">3</button>
+
+        <button id="pag-next-btn" class="h-8 w-8 flex items-center justify-center text-[#4B5563] hover:text-[#1F2937] hover:bg-[#F3F6FA] rounded-[4px] cursor-pointer transition-colors" title="Trang sau"><i class="fa-solid fa-chevron-right text-[11px]"></i></button>
+        <button id="pag-last-btn" class="h-8 w-8 flex items-center justify-center text-[#4B5563] hover:text-[#1F2937] hover:bg-[#F3F6FA] rounded-[4px] cursor-pointer transition-colors" title="Trang cuối"><i class="fa-solid fa-angles-right text-[11px]"></i></button>
+    </div>
+</div>

@@ -1,0 +1,219 @@
+<!-- MODAL CHỈNH SỬA CẤU HÌNH DANH MỤC -->
+<div id="edit-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-[4px] shadow-lg border border-[#D9DEE5] w-full max-w-xl overflow-hidden flex flex-col">
+        <!-- Header -->
+        <div class="px-5 h-[52px] bg-[#27496D] text-white flex items-center justify-between">
+            <h3 class="font-semibold text-sm text-white flex items-center gap-2">
+                <i class="fa-solid fa-pen-to-square text-xs text-[#FFCC80]"></i> Chỉnh sửa cấu hình danh mục
+            </h3>
+            <button type="button" onclick="closeEditModal()" class="w-8 h-8 rounded-[4px] hover:bg-white/10 text-white flex items-center justify-center cursor-pointer"><i class="fa-solid fa-xmark text-sm"></i></button>
+        </div>
+
+        <!-- Form Body -->
+        <form id="edit-form" onsubmit="handleSaveEdit(event)" class="p-5 space-y-4 text-xs" novalidate>
+            <input type="hidden" id="edit-input-id" value="">
+
+            <!-- Tên danh mục -->
+            <div>
+                <label class="sys-label">Tên danh mục khám <span class="text-[#D32F2F]">*</span></label>
+                <input type="text" id="edit-input-name" placeholder="Nhập tên danh mục khám..." class="sys-input text-xs">
+            </div>
+
+            <!-- Vị trí thực hiện -->
+            <div>
+                <div class="flex items-center justify-between mb-1.5">
+                    <div>
+                        <label class="sys-label">Vị trí thực hiện <span class="text-[#D32F2F]">*</span></label>
+                    </div>
+                    <div class="space-x-2">
+                        <button type="button" onclick="selectAllEditLocations(true)" class="text-[11px] text-[#27496D] hover:underline cursor-pointer">Chọn tất cả</button>
+                        <span class="text-[#D9DEE5] text-xs">|</span>
+                        <button type="button" onclick="selectAllEditLocations(false)" class="text-[11px] text-[#6B7280] hover:underline cursor-pointer">Bỏ chọn</button>
+                    </div>
+                </div>
+                
+                <div id="edit-locations-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 p-3 bg-[#F4F5F7] rounded-[4px] border border-[#D9DEE5] max-h-48 overflow-y-auto">
+                    <!-- Render dynamic location checkboxes -->
+                </div>
+            </div>
+
+            <!-- Ghi chú -->
+            <div>
+                <label class="sys-label">Ghi chú</label>
+                <textarea id="edit-input-notes" rows="2" placeholder="Nhập ghi chú..." class="w-full p-2.5 bg-white border border-[#D9DEE5] rounded-[4px] text-xs text-[#1F2937] focus:outline-none focus:border-[#27496D]"></textarea>
+            </div>
+
+            <!-- Trạng thái -->
+            <div class="flex items-center justify-between pt-2 border-t border-[#E6EAF0]">
+                <span class="sys-label">Trạng thái hoạt động</span>
+                <label class="relative inline-flex items-center cursor-pointer select-none">
+                    <input type="checkbox" id="edit-input-status" class="sr-only peer">
+                    <div class="w-8 h-4 bg-[#D9DEE5] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-[#D9DEE5] after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-[#27496D]"></div>
+                    <span class="ml-2 text-xs font-bold text-[#2E7D32]" id="edit-status-label">ON (Đang sử dụng)</span>
+                </label>
+            </div>
+
+            <!-- Footer Buttons -->
+            <div class="pt-3 flex items-center justify-end gap-2 border-t border-[#E6EAF0]">
+                <button type="button" onclick="closeEditModal()" class="btn-secondary text-xs">Hủy bỏ</button>
+                <button type="submit" class="btn-primary text-xs">Lưu thay đổi</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL THOÁT TRANG CẢNH BÁO KHÔNG LƯU DỮ LIỆU KHI EDIT -->
+<div id="edit-exit-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center hidden select-none p-4">
+    <div class="bg-white rounded-[4px] shadow-lg border border-[#D9DEE5] w-full max-w-md overflow-hidden">
+        <div class="p-5 text-center">
+            <div class="w-10 h-10 bg-[#FFF3E0] text-[#ED6C02] rounded-full flex items-center justify-center mx-auto mb-3 text-lg border border-[#FFCC80]">
+                <i class="fa-solid fa-circle-question"></i>
+            </div>
+            <h3 class="text-sm font-bold text-[#1F2937] mb-2">Thoát trang</h3>
+            <p class="text-xs text-[#4B5563] mb-5 leading-relaxed">Khi Thoát trang, các thông tin đang nhập sẽ không được lưu. Bạn có chắc muốn thoát?</p>
+            <div class="flex items-center justify-center gap-2">
+                <button type="button" onclick="cancelEditExit()" class="btn-secondary text-xs w-28">Hủy</button>
+                <button type="button" onclick="confirmEditExit()" class="btn-primary text-xs w-28">Thoát</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let initialEditSnapshot = '';
+
+    function renderMasterEditLocationCheckboxes(selectedLocations = []) {
+        const grid = document.getElementById('edit-locations-grid');
+        if (!grid) return;
+
+        let activeFacilities = [];
+        if (window.MWKDataStore && typeof window.MWKDataStore.getActiveFacilities === 'function') {
+            activeFacilities = window.MWKDataStore.getActiveFacilities().map(f => f.name);
+        }
+
+        if (activeFacilities.length === 0) {
+            activeFacilities = ['Ba Đình', 'Cầu Giấy', 'Tại viện', 'Ngoại viện', 'Thanh Xuân', 'Tây Hồ', 'Vĩnh Phúc', 'Quảng Bình', 'Bắc Ninh', 'Nghệ An'];
+        }
+
+        const allLocations = Array.from(new Set([...activeFacilities, ...selectedLocations]));
+
+        grid.innerHTML = allLocations.map(loc => {
+            const isChecked = selectedLocations.includes(loc);
+            return `
+                <label class="flex items-center gap-2 text-xs font-medium text-[#1F2937] cursor-pointer select-none">
+                    <input type="checkbox" name="edit_location_cb" value="${loc}" ${isChecked ? 'checked' : ''} class="w-4 h-4 rounded-[2px] border-[#D9DEE5] text-[#27496D]"> ${loc}
+                </label>
+            `;
+        }).join('');
+    }
+
+    function getEditSnapshot() {
+        const name = document.getElementById('edit-input-name') ? document.getElementById('edit-input-name').value.trim() : '';
+        const notes = document.getElementById('edit-input-notes') ? document.getElementById('edit-input-notes').value.trim() : '';
+        const status = document.getElementById('edit-input-status') ? document.getElementById('edit-input-status').checked : true;
+        const checkboxes = Array.from(document.querySelectorAll('input[name="edit_location_cb"]:checked')).map(cb => cb.value).sort().join(',');
+        return `${name}|${notes}|${status}|${checkboxes}`;
+    }
+
+    function selectAllEditLocations(state) {
+        document.querySelectorAll('input[name="edit_location_cb"]').forEach(cb => cb.checked = state);
+    }
+
+    function openEditModal(id) {
+        if (window.MWKValidation) window.MWKValidation.clearFormErrors(document.getElementById('edit-form'));
+
+        if (typeof window.getCategoryById === 'function') {
+            const item = window.getCategoryById(id);
+            if (item) {
+                renderMasterEditLocationCheckboxes(item.locations || []);
+
+                document.getElementById('edit-input-id').value = item.id;
+                document.getElementById('edit-input-name').value = item.name;
+                document.getElementById('edit-input-notes').value = item.notes || '';
+                
+                const statusCb = document.getElementById('edit-input-status');
+                statusCb.checked = item.status;
+                
+                const label = document.getElementById('edit-status-label');
+                if (item.status) {
+                    label.innerText = 'ON (Đang sử dụng)';
+                    label.className = 'ml-2 text-xs font-bold text-[#2E7D32]';
+                } else {
+                    label.innerText = 'OFF (Ngừng sử dụng)';
+                    label.className = 'ml-2 text-xs font-bold text-[#D32F2F]';
+                }
+
+                document.getElementById('edit-modal').classList.remove('hidden');
+                initialEditSnapshot = getEditSnapshot();
+            }
+        }
+    }
+
+    function closeEditModal() {
+        if (getEditSnapshot() !== initialEditSnapshot) {
+            document.getElementById('edit-exit-modal').classList.remove('hidden');
+        } else {
+            document.getElementById('edit-modal').classList.add('hidden');
+        }
+    }
+
+    function cancelEditExit() { document.getElementById('edit-exit-modal').classList.add('hidden'); }
+    function confirmEditExit() {
+        document.getElementById('edit-exit-modal').classList.add('hidden');
+        document.getElementById('edit-modal').classList.add('hidden');
+    }
+
+    function handleSaveEdit(e) {
+        e.preventDefault();
+        const nameElem = document.getElementById('edit-input-name');
+        const gridElem = document.getElementById('edit-locations-grid');
+
+        let isValid = true;
+        let firstInvalid = null;
+
+        if (!window.MWKValidation.validateRequired(nameElem, 'Trường dữ liệu không được để trống.')) {
+            isValid = false;
+            if (!firstInvalid) firstInvalid = nameElem;
+        }
+
+        if (!window.MWKValidation.validateCheckboxGroup(gridElem, 'edit_location_cb', 'Vui lòng chọn ít nhất một giá trị.')) {
+            isValid = false;
+            if (!firstInvalid) firstInvalid = gridElem;
+        }
+
+        if (!isValid) {
+            if (firstInvalid && typeof firstInvalid.focus === 'function') firstInvalid.focus();
+            return;
+        }
+
+        const id = Number(document.getElementById('edit-input-id').value);
+        const name = nameElem.value.trim();
+        const notes = document.getElementById('edit-input-notes').value.trim();
+        const status = document.getElementById('edit-input-status').checked;
+        const locations = Array.from(document.querySelectorAll('input[name="edit_location_cb"]:checked')).map(cb => cb.value);
+
+        if (typeof window.updateCategory === 'function') {
+            window.updateCategory(id, { name, locations, notes, status });
+        }
+        document.getElementById('edit-modal').classList.add('hidden');
+        if (typeof window.showToast === 'function') window.showToast("Cập nhật thành công.", "success");
+    }
+
+    document.getElementById('edit-input-status').addEventListener('change', function() {
+        const label = document.getElementById('edit-status-label');
+        if (this.checked) {
+            label.innerText = 'ON (Đang sử dụng)';
+            label.className = 'ml-2 text-xs font-bold text-[#2E7D32]';
+        } else {
+            label.innerText = 'OFF (Ngừng sử dụng)';
+            label.className = 'ml-2 text-xs font-bold text-[#D32F2F]';
+        }
+    });
+
+    window.addEventListener('mwk_facilities_changed', function() {
+        if (!document.getElementById('edit-modal').classList.contains('hidden')) {
+            const currentSelected = Array.from(document.querySelectorAll('input[name="edit_location_cb"]:checked')).map(cb => cb.value);
+            renderMasterEditLocationCheckboxes(currentSelected);
+        }
+    });
+</script>

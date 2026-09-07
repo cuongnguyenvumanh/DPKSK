@@ -1,0 +1,56 @@
+<!-- SUB-TAB 5: NHÂN SỰ ĐIỀU PHỐI BKH VIEW TEMPLATE (ENTERPRISE MATRIX DESIGN) -->
+<div class="flex-1 flex flex-col min-h-0 overflow-hidden relative bg-[#F5F7FA]">
+    <!-- INNER SUB-TAB CONTROL BAR -->
+    <div class="bg-white border-b border-[#D9DEE7] px-4 py-2 flex items-center justify-between flex-shrink-0">
+        <div class="flex items-center gap-2">
+            <button type="button" id="bkh-inner-tab-doctor" onclick="switchInnerBkhTab('doctor')" class="px-4 py-1.5 rounded-[6px] text-xs font-bold transition-all cursor-pointer bg-[#0F6CBD] text-white shadow-xs">
+                <i class="fa-solid fa-user-doctor mr-1.5"></i>
+                <span>BS Chuyên khoa</span>
+            </button>
+            <button type="button" id="bkh-inner-tab-nurse" onclick="switchInnerBkhTab('nurse')" class="px-4 py-1.5 rounded-[6px] text-xs font-semibold transition-all cursor-pointer bg-[#E5E7EB] hover:bg-[#D1D5DB] text-[#374151]">
+                <i class="fa-solid fa-user-nurse mr-1.5"></i>
+                <span>Điều dưỡng / KTV</span>
+            </button>
+        </div>
+
+        <div id="bkh-add-row-action-container" class="hidden">
+            <button type="button" onclick="addNewBkhRow()" class="px-3.5 h-[32px] bg-[#0F6CBD] hover:bg-[#1E7FE5] text-white rounded-[6px] text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer">
+                <i class="fa-solid fa-plus text-[10px]"></i>
+                <span>Thêm dòng</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- RECTANGULAR MATRIX WRAPPER -->
+    <div class="border border-t-0 border-[#D9DEE7] bg-white shadow-none rounded-none flex-1 flex flex-col min-h-0 relative">
+        <div class="overflow-auto max-h-full custom-scrollbar flex-1">
+            <table class="w-full text-left text-xs border-collapse select-none bkh-matrix-table font-sans">
+                <thead class="uppercase font-semibold text-[11px]">
+                    <tr id="bkh-matrix-header-row">
+                        <!-- Dynamic Header Columns -->
+                    </tr>
+                </thead>
+                <tbody id="bkh-matrix-body-container" class="divide-y divide-[#E5E7EB] text-[#1F2937]">
+                    <!-- Dynamic Matrix Rows -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- MODAL XÓA DÒNG -->
+        <div id="delete-confirm-modal-bkh" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+            <div class="bg-white rounded-lg shadow-2xl max-w-sm w-full space-y-4 border border-[#D9DEE7] text-center overflow-hidden">
+                <div class="bg-[#2F3E4E] text-white py-3.5 px-4 font-bold text-sm flex items-center justify-between">
+                    <span>Xác nhận xóa</span>
+                    <i class="fa-solid fa-triangle-exclamation text-amber-400"></i>
+                </div>
+                <div class="px-6 py-2">
+                    <p id="bkh-delete-modal-msg" class="text-xs text-[#1F2937]">Bạn có chắc chắn muốn xóa dòng này khỏi hệ thống không?</p>
+                </div>
+                <div class="flex items-center justify-center gap-3 pb-5 px-6">
+                    <button type="button" onclick="hideBkhModal('delete-confirm-modal-bkh')" class="px-4 h-[36px] bg-[#E5E7EB] hover:bg-[#D1D5DB] text-[#374151] rounded-[6px] text-xs font-semibold transition-colors cursor-pointer">Hủy</button>
+                    <button type="button" onclick="confirmDeleteBkhRow()" class="px-4 h-[36px] bg-rose-600 hover:bg-rose-700 text-white rounded-[6px] text-xs font-bold shadow-xs transition-colors cursor-pointer">Xác nhận xóa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

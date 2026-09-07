@@ -1,0 +1,177 @@
+<!-- MODAL CHỈNH SỬA CẤU HÌNH PHỤ CẤP -->
+<div id="edit-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-[4px] shadow-lg border border-[#D9DEE5] w-full max-w-lg overflow-hidden flex flex-col">
+        <!-- Header -->
+        <div class="px-5 h-[52px] bg-[#27496D] text-white flex items-center justify-between">
+            <h3 class="font-semibold text-sm text-white flex items-center gap-2">
+                <i class="fa-solid fa-pen-to-square text-xs text-[#FFCC80]"></i> Chỉnh sửa Mức phụ cấp
+            </h3>
+            <button type="button" onclick="closeEditModal()" class="w-8 h-8 rounded-[4px] hover:bg-white/10 text-white flex items-center justify-center cursor-pointer"><i class="fa-solid fa-xmark text-sm"></i></button>
+        </div>
+
+        <!-- Form Body -->
+        <form id="edit-form" onsubmit="handleSaveEdit(event)" class="p-5 space-y-4 text-xs" novalidate>
+            <input type="hidden" id="edit-id" value="">
+
+            <div class="grid grid-cols-2 gap-3">
+                <!-- Loại phụ cấp -->
+                <div>
+                    <label class="sys-label">Loại phụ cấp <span class="text-[#D32F2F]">*</span></label>
+                    <select id="edit-type" class="sys-select text-xs">
+                        <option value="">-- Chọn loại phụ cấp --</option>
+                        <option value="Đến sớm">Đến sớm</option>
+                        <option value="Về muộn">Về muộn</option>
+                    </select>
+                </div>
+
+                <!-- Đối tượng áp dụng -->
+                <div>
+                    <label class="sys-label">Đối tượng áp dụng <span class="text-[#D32F2F]">*</span></label>
+                    <select id="edit-object" class="sys-select text-xs">
+                        <option value="">-- Chọn đối tượng --</option>
+                        <option value="CTV">CTV (Cộng tác viên)</option>
+                        <option value="CBNV">CBNV (Cán bộ nhân viên)</option>
+                        <option value="Bác sĩ / Y sĩ">Bác sĩ / Y sĩ</option>
+                        <option value="Toàn bộ nhân sự">Toàn bộ nhân sự</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <!-- Hình thức tính -->
+                <div>
+                    <label class="sys-label">Hình thức tính <span class="text-[#D32F2F]">*</span></label>
+                    <select id="edit-unit" onchange="handleEditUnitChange()" class="sys-select text-xs">
+                        <option value="Tiền/giờ">Tiền/giờ (VNĐ)</option>
+                        <option value="% lương">% lương</option>
+                    </select>
+                </div>
+
+                <!-- Giá trị -->
+                <div>
+                    <label class="sys-label">Giá trị <span class="text-[#D32F2F]">*</span></label>
+                    <div class="relative">
+                        <input type="number" id="edit-val" min="1" step="any" placeholder="Nhập giá trị..." class="sys-input text-xs font-mono pr-7">
+                        <span id="edit-val-unit" class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#9CA3AF] font-medium pointer-events-none">đ</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ghi chú -->
+            <div>
+                <label class="sys-label">Ghi chú / Quy định áp dụng</label>
+                <textarea id="edit-note" rows="2" placeholder="Nhập ghi chú..." class="w-full p-2.5 bg-white border border-[#D9DEE5] rounded-[4px] text-xs text-[#1F2937] focus:outline-none focus:border-[#27496D]"></textarea>
+            </div>
+
+            <!-- Footer Action Buttons -->
+            <div class="pt-3 flex items-center justify-end gap-2 border-t border-[#E6EAF0]">
+                <button type="button" onclick="closeEditModal()" class="btn-secondary text-xs">Hủy bỏ</button>
+                <button type="submit" class="btn-primary text-xs">Lưu thay đổi</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL THOÁT TRANG CẢNH BÁO KHÔNG LƯU DỮ LIỆU KHI EDIT -->
+<div id="edit-exit-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center hidden select-none p-4">
+    <div class="bg-white rounded-[4px] shadow-lg border border-[#D9DEE5] w-full max-w-md overflow-hidden">
+        <div class="p-5 text-center">
+            <div class="w-10 h-10 bg-[#FFF3E0] text-[#ED6C02] rounded-full flex items-center justify-center mx-auto mb-3 text-lg border border-[#FFCC80]">
+                <i class="fa-solid fa-circle-question"></i>
+            </div>
+            <h3 class="text-sm font-bold text-[#1F2937] mb-2">Thoát trang</h3>
+            <p class="text-xs text-[#4B5563] mb-5 leading-relaxed">Khi Thoát trang, các thông tin đang nhập sẽ không được lưu. Bạn có chắc muốn thoát?</p>
+            <div class="flex items-center justify-center gap-2">
+                <button type="button" onclick="cancelEditExit()" class="btn-secondary text-xs w-28">Hủy</button>
+                <button type="button" onclick="confirmEditExit()" class="btn-primary text-xs w-28">Thoát</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let initialEditSnapshot = '';
+
+    function handleEditUnitChange() {
+        const unit = document.getElementById('edit-unit').value;
+        const valUnitSpan = document.getElementById('edit-val-unit');
+        if (unit === '% lương') {
+            valUnitSpan.innerText = '%';
+        } else {
+            valUnitSpan.innerText = 'đ';
+        }
+    }
+
+    function getEditSnapshot() {
+        const type = document.getElementById('edit-type') ? document.getElementById('edit-type').value : '';
+        const obj = document.getElementById('edit-object') ? document.getElementById('edit-object').value : '';
+        const unit = document.getElementById('edit-unit') ? document.getElementById('edit-unit').value : '';
+        const val = document.getElementById('edit-val') ? document.getElementById('edit-val').value : '';
+        const note = document.getElementById('edit-note') ? document.getElementById('edit-note').value.trim() : '';
+        return `${type}|${obj}|${unit}|${val}|${note}`;
+    }
+
+    function openEditModal(id) {
+        if (window.MWKValidation) window.MWKValidation.clearFormErrors(document.getElementById('edit-form'));
+
+        if (typeof window.getAllowanceById === 'function') {
+            const item = window.getAllowanceById(id);
+            if (item) {
+                document.getElementById('edit-id').value = item.id;
+                document.getElementById('edit-type').value = item.type;
+                document.getElementById('edit-object').value = item.object || item.obj || 'CTV';
+                document.getElementById('edit-unit').value = item.unit;
+                document.getElementById('edit-val').value = item.rawValue || parseFloat((item.value || item.val).replace(/[^0-9.]/g, '')) || '';
+                document.getElementById('edit-note').value = item.note || '';
+                handleEditUnitChange();
+
+                document.getElementById('edit-modal').classList.remove('hidden');
+                initialEditSnapshot = getEditSnapshot();
+            }
+        }
+    }
+
+    function closeEditModal() {
+        if (getEditSnapshot() !== initialEditSnapshot) {
+            document.getElementById('edit-exit-modal').classList.remove('hidden');
+        } else {
+            document.getElementById('edit-modal').classList.add('hidden');
+        }
+    }
+
+    function cancelEditExit() { document.getElementById('edit-exit-modal').classList.add('hidden'); }
+    function confirmEditExit() {
+        document.getElementById('edit-exit-modal').classList.add('hidden');
+        document.getElementById('edit-modal').classList.add('hidden');
+    }
+
+    function handleSaveEdit(e) {
+        e.preventDefault();
+        const typeElem = document.getElementById('edit-type');
+        const objElem = document.getElementById('edit-object');
+        const valElem = document.getElementById('edit-val');
+
+        if (window.MWKValidation) window.MWKValidation.clearFormErrors(document.getElementById('edit-form'));
+
+        let isValid = true;
+
+        if (!window.MWKValidation.validateRequired(typeElem, 'Vui lòng chọn loại phụ cấp.')) isValid = false;
+        if (!window.MWKValidation.validateRequired(objElem, 'Vui lòng chọn đối tượng.')) isValid = false;
+        if (!window.MWKValidation.validateRequired(valElem, 'Trường dữ liệu không được để trống.')) isValid = false;
+
+        if (!isValid) return;
+
+        const id = Number(document.getElementById('edit-id').value);
+        const type = typeElem.value;
+        const targetRole = objElem.value;
+        const unit = document.getElementById('edit-unit').value;
+        const value = parseFloat(valElem.value) || 0;
+        const note = document.getElementById('edit-note').value.trim();
+
+        if (typeof window.updateAllowanceItem === 'function') {
+            window.updateAllowanceItem(id, { type, targetRole, unit, value, note });
+        }
+        document.getElementById('edit-modal').classList.add('hidden');
+        if (typeof window.showToast === 'function') window.showToast("Cập nhật thành công.", "success");
+    }
+</script>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MWK - Chi tiết Tổng hợp Lịch tuần</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { DEFAULT: '#27496D', hover: '#1F3D5A' }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome 6.4.0 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Main Style -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="shortcut icon" href="#">
+</head>
+<body class="bg-[#F4F5F7] font-sans text-[#1F2937] antialiased h-screen overflow-hidden flex flex-col" data-depth="sub" data-active-nav="nav-tong-hop-lich-ksk" data-breadcrumb="Chi tiết Tổng hợp Lịch tuần">
+
+    <div class="flex h-full w-full overflow-hidden">
+        <!-- SIDEBAR CONTAINER -->
+        <div id="sidebar-container" class="flex flex-shrink-0 h-full"></div>
+
+        <!-- MAIN WRAPPER -->
+        <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-[#F4F5F7]">
+            <!-- HEADER CONTAINER -->
+            <div id="header-container"></div>
+
+            <!-- MAIN CONTENT AREA -->
+            <main class="flex-1 overflow-y-auto p-5 space-y-4">
+                <!-- PAGE TITLE BAR & ACTIONS -->
+                <div class="flex items-center justify-between bg-white p-4 rounded-[4px] border border-[#D9DEE5]">
+                    <div class="flex items-center gap-3">
+                        <a href="../tong-hop.html" class="w-8 h-8 rounded-[4px] bg-white border border-[#D9DEE5] text-[#4B5563] hover:bg-[#F3F6FA] flex items-center justify-center transition-colors" title="Quay lại">
+                            <i class="fa-solid fa-arrow-left text-xs"></i>
+                        </a>
+                        <div>
+                            <h1 class="text-xl font-bold text-[#1F2937] flex items-center gap-2">
+                                <span>Chi tiết Tổng hợp Lịch tuần</span>
+                                <span id="display-week-badge" class="px-2.5 py-0.5 bg-[#27496D] text-white text-xs rounded-[4px] font-bold">Tuần --</span>
+                            </h1>
+                            <p class="text-xs text-[#6B7280] mt-0.5" id="display-subtitle">Cơ sở: -- | Khoảng thời gian: --</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button type="button" id="btn-detail-submit" onclick="submitCurrentWeeklyGroup()" class="btn-primary text-xs flex items-center gap-1.5">
+                            <i class="fa-solid fa-paper-plane text-xs"></i> Gửi CB Duyệt
+                        </button>
+                    </div>
+                </div>
+
+                <!-- OVERVIEW METRICS CARD -->
+                <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+                    <div>
+                        <span class="block text-[#6B7280] font-medium mb-0.5">Mã đợt lịch tuần:</span>
+                        <span id="detail-week-code" class="font-mono font-bold text-[#27496D] text-sm"></span>
+                    </div>
+                    <div>
+                        <span class="block text-[#6B7280] font-medium mb-0.5">Cơ sở thực hiện:</span>
+                        <span id="detail-facility-name" class="font-bold text-[#1F2937] text-sm"></span>
+                    </div>
+                    <div>
+                        <span class="block text-[#6B7280] font-medium mb-0.5">Tổng quy mô khách:</span>
+                        <span id="detail-total-guests" class="font-bold text-[#2E7D32] text-sm"></span>
+                    </div>
+                    <div>
+                        <span class="block text-[#6B7280] font-medium mb-0.5">Trạng thái:</span>
+                        <span id="detail-weekly-status" class="inline-block"></span>
+                    </div>
+                </div>
+
+                <!-- CARDS GRID: INDEPENDENT LỊCH TUẦN & LỊCH PHÁT SINH -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <!-- CARD 1: LỊCH TUẦN -->
+                    <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] space-y-3">
+                        <div class="flex items-center justify-between border-b border-[#E6EAF0] pb-2.5">
+                            <div class="flex items-center gap-2">
+                                <span class="w-7 h-7 rounded-[4px] bg-[#E8F1FB] text-[#27496D] flex items-center justify-center text-xs font-bold border border-[#B3CDE6]">
+                                    <i class="fa-regular fa-calendar-check"></i>
+                                </span>
+                                <div>
+                                    <h3 class="text-xs font-bold text-[#27496D] uppercase tracking-wide">LỊCH TUẦN</h3>
+                                    <p class="text-[11px] text-[#6B7280]">Các đoàn khám thuộc kế hoạch tuần chuẩn</p>
+                                </div>
+                            </div>
+                            <span id="count-lich-tuan" class="badge-success">0 đoàn</span>
+                        </div>
+
+                        <div id="container-lich-tuan" class="space-y-2 text-xs">
+                            <!-- Dynamic items -->
+                        </div>
+                    </div>
+
+                    <!-- CARD 2: LỊCH PHÁT SINH -->
+                    <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] space-y-3">
+                        <div class="flex items-center justify-between border-b border-[#E6EAF0] pb-2.5">
+                            <div class="flex items-center gap-2">
+                                <span class="w-7 h-7 rounded-[4px] bg-[#FFF3E0] text-[#ED6C02] flex items-center justify-center text-xs font-bold border border-[#FFCC80]">
+                                    <i class="fa-solid fa-bolt"></i>
+                                </span>
+                                <div>
+                                    <h3 class="text-xs font-bold text-[#ED6C02] uppercase tracking-wide">LỊCH PHÁT SINH</h3>
+                                    <p class="text-[11px] text-[#6B7280]">Các đoàn khám đột xuất / phát sinh bổ sung</p>
+                                </div>
+                            </div>
+                            <span id="count-lich-phat-sinh" class="badge-warning">0 đoàn</span>
+                        </div>
+
+                        <div id="container-lich-phat-sinh" class="space-y-2 text-xs">
+                            <!-- Dynamic items -->
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- MAIN JAVASCRIPT & DATA-STORE INTEGRATION -->
+    <script src="../../js/data-store.js"></script>
+    <script src="../../js/main.js"></script>
+    <script src="../utils/week-helper.js"></script>
+    <script>
+        let currentWeekId = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            currentWeekId = urlParams.get('weekId');
+            const weekNum = parseInt(urlParams.get('week') || '1');
+            const yearNum = parseInt(urlParams.get('year') || '2026');
+            const facilityName = urlParams.get('facility') ? decodeURIComponent(urlParams.get('facility')) : '';
+
+            const dateRange = MWKWeekHelper.getWeekDatesRange(weekNum, yearNum);
+
+            document.getElementById('display-week-badge').innerText = `Tuần ${weekNum} (${yearNum})`;
+            document.getElementById('display-subtitle').innerText = `Cơ sở thực hiện: ${facilityName || 'Medlatec Ba Đình'} | Khoảng thời gian: ${dateRange}`;
+
+            document.getElementById('detail-week-code').innerText = currentWeekId || `WEEK-${yearNum}-${weekNum}`;
+            document.getElementById('detail-facility-name').innerText = facilityName || 'Medlatec Ba Đình';
+
+            const weeklyGroups = MWKDataStore.getWeeklySchedules();
+            const groupRecord = weeklyGroups.find(w => w.weekId === currentWeekId || (w.tuan === weekNum && w.nam === yearNum));
+
+            const isSubmitted = groupRecord ? (groupRecord.trangThai === 'CHO_DUYET' || groupRecord.trangThai === 'DA_DUYET') : false;
+            document.getElementById('detail-weekly-status').innerHTML = isSubmitted 
+                ? `<span class="badge-warning"><i class="fa-solid fa-clock-rotate-left text-[10px]"></i> Đã gửi CB Duyệt</span>`
+                : `<span class="badge-success"><i class="fa-solid fa-check text-[10px]"></i> Đã tổng hợp</span>`;
+
+            const allSchedules = MWKDataStore.getKskSchedules();
+            let relevant = [];
+
+            if (groupRecord && (groupRecord.lichTuan || groupRecord.lichPhatSinh)) {
+                const tuanItems = groupRecord.lichTuan || [];
+                const phatSinhItems = groupRecord.lichPhatSinh || [];
+                relevant = [...tuanItems, ...phatSinhItems];
+            } else {
+                relevant = allSchedules.filter(item => {
+                    const { week, year } = MWKWeekHelper.getWeekNumber(item.examDate);
+                    const matchWeek = week === weekNum && year === yearNum;
+                    const matchFacility = !facilityName || item.facility === facilityName;
+                    return matchWeek && matchFacility;
+                });
+            }
+
+            const totalGuests = relevant.reduce((sum, i) => sum + (parseInt(i.estimatedCount || i.soLuong) || 0), 0);
+            document.getElementById('detail-total-guests').innerText = `${totalGuests} người khám (${relevant.length} lịch)`;
+
+            const splitData = MWKWeekHelper.splitWeeklyAndIncident(relevant);
+
+            renderDetailList(document.getElementById('container-lich-tuan'), document.getElementById('count-lich-tuan'), splitData.lichTuan, 'Lịch tuần');
+            renderDetailList(document.getElementById('container-lich-phat-sinh'), document.getElementById('count-lich-phat-sinh'), splitData.lichPhatSinh, 'Lịch phát sinh');
+        });
+
+        function renderDetailList(container, countElem, items, typeName) {
+            if (!container || !countElem) return;
+            countElem.innerText = `${items.length} đoàn`;
+            container.innerHTML = '';
+
+            if (items.length === 0) {
+                container.innerHTML = `
+                    <div class="py-5 text-center text-[#9CA3AF] italic text-xs bg-[#F4F5F7] rounded-[4px] border border-dashed border-[#D9DEE5]">
+                        Không có bản ghi ${typeName} nào trong đợt này
+                    </div>
+                `;
+                return;
+            }
+
+            items.forEach(item => {
+                let formattedDate = item.examDate || '-';
+                if (formattedDate.includes('-')) {
+                    const parts = formattedDate.split('-');
+                    if (parts.length === 3) formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+                }
+
+                const codeStr = item.code || item.maLich || `LK-2026-${item.id}`;
+
+                const div = document.createElement('div');
+                div.className = 'p-3 bg-[#F4F5F7] rounded-[4px] border border-[#D9DEE5] space-y-2';
+                div.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="font-mono font-bold text-[#27496D] text-xs">${codeStr}</span>
+                            <span class="px-1.5 py-0.5 bg-white border border-[#D9DEE5] rounded-[2px] text-[10px] font-semibold text-[#374151]">${item.session || 'Sáng'}</span>
+                        </div>
+                        <span class="font-bold text-[#2E7D32]">${item.estimatedCount || item.soLuong || 0} khách</span>
+                    </div>
+                    <div class="font-bold text-[#1F2937] text-xs">${item.teamName || item.customerName}</div>
+                    <div class="text-[11px] text-[#6B7280] flex items-center justify-between pt-1 border-t border-[#E6EAF0]">
+                        <span>Ngày khám: <strong class="text-[#1F2937]">${formattedDate}</strong></span>
+                        <a href="../receive/receive-detail.html?id=${item.id}" class="text-[#27496D] hover:underline font-semibold flex items-center gap-1" title="Xem chi tiết thông tin lịch đợt này">
+                            <i class="fa-regular fa-eye text-xs"></i> Xem chi tiết
+                        </a>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function submitCurrentWeeklyGroup() {
+            if (!currentWeekId) return;
+
+            MWKDataStore.updateWeeklySchedule(currentWeekId, {
+                trangThai: 'CHO_DUYET',
+                status: 'Chờ duyệt',
+                ngayGuiDuyet: new Date().toISOString(),
+                nguoiGuiDuyet: 'Trần Thị Mai (Cán bộ Tổng hợp)'
+            });
+
+            if (window.showToast) {
+                window.showToast('Đã gửi Lịch tuần lên Cán bộ duyệt thành công!', 'success');
+            } else {
+                alert('Đã gửi Lịch tuần lên Cán bộ duyệt thành công!');
+            }
+
+            setTimeout(() => {
+                window.location.href = '../tong-hop.html';
+            }, 500);
+        }
+    </script>
+</body>
+</html>
