@@ -1,6 +1,7 @@
 /**
  * BẢNG TỔNG HỢP LỊCH KHÁM - ENTERPRISE HIS DASHBOARD MODULE
- * High-performance UI rendering with dedicated mock data layer (09/2026).
+ * Master-Child Architecture Refactoring (09/2026).
+ * Master = Lịch khám đơn vị | Child = Lịch tại viện / Ngoại viện / Tại phường
  */
 
 (function () {
@@ -20,741 +21,752 @@
     const todayDate = new Date();
 
     // ==========================================================================
-    // 2. MOCK DATA LAYER (25–35 REALISTIC SCHEDULES FOR 09/2026)
+    // 1. MASTER UNITS & CHILD SCHEDULES DATA SEED (09/2026)
     // ==========================================================================
-    const mockSchedules = [
-        // --- Day 1 (2026-09-01): 1 schedule (TAI_VIEN) ---
+    const seedMasterUnits = [
+        // MASTER 1: FPT (CASE 2: 3 child schedules on SAME DATE 15/09/2026)
         {
-            scheduleId: "SCH-260901",
             unitId: "U-001",
-            unitName: "Công ty TNHH ABC",
-            scheduleType: "TAI_VIEN",
-            examDate: "2026-09-01",
-            quantity: 85,
-            facility: "Cơ sở Mỹ Đình",
-            location: "Bệnh viện Đa khoa MEDLATEC Mỹ Đình",
-            startTime: "07:30",
-            endTime: "11:30",
+            code: "LK-2026-001",
+            customerName: "Công ty CP Tập đoàn FPT",
             personInCharge: "Nguyễn Văn An",
-            status: "DA_DUYET"
+            facility: "Cơ sở Mỹ Đình",
+            childSchedules: [
+                {
+                    scheduleId: "SCH-FPT-01",
+                    scheduleType: "TAI_VIEN",
+                    examDate: "2026-09-15",
+                    quantity: 100,
+                    facility: "Cơ sở Mỹ Đình",
+                    location: "Bệnh viện Đa khoa MEDLATEC Mỹ Đình",
+                    startTime: "07:30",
+                    endTime: "11:30",
+                    personInCharge: "Nguyễn Văn An",
+                    status: "DA_DUYET"
+                },
+                {
+                    scheduleId: "SCH-FPT-02",
+                    scheduleType: "NGOAI_VIEN",
+                    examDate: "2026-09-15",
+                    quantity: 150,
+                    facility: "Cơ sở Cầu Giấy",
+                    location: "Tòa nhà FPT Cầu Giấy, Duy Tân, Hà Nội",
+                    startTime: "07:00",
+                    endTime: "12:00",
+                    personInCharge: "Trần Văn Bình",
+                    status: "DA_DUYET"
+                },
+                {
+                    scheduleId: "SCH-FPT-03",
+                    scheduleType: "LICH_PHUONG",
+                    examDate: "2026-09-15",
+                    quantity: 80,
+                    facility: "Cơ sở Mỹ Đình",
+                    location: "Trạm Y tế Phường Mỹ Đình 1",
+                    startTime: "08:00",
+                    endTime: "11:30",
+                    personInCharge: "Lê Hoàng Nam",
+                    status: "CHO_DUYET"
+                }
+            ]
         },
 
-        // --- Day 2 (2026-09-02): 2 schedules (NGOAI_VIEN & LICH_PHUONG) ---
+        // MASTER 2: Viettel (CASE 3: 3 child schedules on DIFFERENT DATES: 10/09, 15/09, 20/09)
         {
-            scheduleId: "SCH-260902-1",
             unitId: "U-002",
-            unitName: "Công ty Tập đoàn XYZ",
-            scheduleType: "NGOAI_VIEN",
-            examDate: "2026-09-02",
-            quantity: 120,
-            facility: "Cơ sở Cầu Giấy",
-            location: "Tòa nhà Keangnam, Cầu Giấy, Hà Nội",
-            startTime: "07:00",
-            endTime: "12:00",
-            personInCharge: "Trần Văn Bình",
-            status: "DA_DUYET"
+            code: "LK-2026-002",
+            customerName: "Tập đoàn Viettel",
+            personInCharge: "Phạm Minh Tuấn",
+            facility: "Cơ sở Thanh Xuân",
+            childSchedules: [
+                {
+                    scheduleId: "SCH-VTT-01",
+                    scheduleType: "TAI_VIEN",
+                    examDate: "2026-09-10",
+                    quantity: 100,
+                    facility: "Cơ sở Thanh Xuân",
+                    location: "Phòng khám Đa khoa MEDLATEC Thanh Xuân",
+                    startTime: "07:30",
+                    endTime: "11:30",
+                    personInCharge: "Phạm Minh Tuấn",
+                    status: "DA_DUYET"
+                },
+                {
+                    scheduleId: "SCH-VTT-02",
+                    scheduleType: "NGOAI_VIEN",
+                    examDate: "2026-09-15",
+                    quantity: 150,
+                    facility: "Cơ sở Thanh Xuân",
+                    location: "Tòa nhà Viettel Tower, Trần Hữu Dực",
+                    startTime: "07:00",
+                    endTime: "12:00",
+                    personInCharge: "Phạm Minh Tuấn",
+                    status: "DA_DUYET"
+                },
+                {
+                    scheduleId: "SCH-VTT-03",
+                    scheduleType: "LICH_PHUONG",
+                    examDate: "2026-09-20",
+                    quantity: 80,
+                    facility: "Cơ sở Thanh Xuân",
+                    location: "Trạm Y tế Phường Nhân Chính",
+                    startTime: "08:00",
+                    endTime: "11:30",
+                    personInCharge: "Lê Văn Cường",
+                    status: "CHO_DUYET"
+                }
+            ]
         },
+
+        // MASTER 3: BIDV (CASE 4: 5 child schedules on SAME DATE 16/09/2026)
         {
-            scheduleId: "SCH-260902-2",
             unitId: "U-003",
-            unitName: "UBND Phường Mỹ Đình 1",
-            scheduleType: "LICH_PHUONG",
-            examDate: "2026-09-02",
-            quantity: 90,
+            code: "LK-2026-003",
+            customerName: "Ngân hàng BIDV Hà Nội",
+            personInCharge: "Đỗ Hải Đăng",
             facility: "Cơ sở Mỹ Đình",
-            location: "Trạm Y tế Phường Mỹ Đình 1",
-            startTime: "08:00",
-            endTime: "11:30",
-            personInCharge: "Lê Hoàng Nam",
-            status: "CHO_DUYET"
+            childSchedules: [
+                {
+                    scheduleId: "SCH-BIDV-01",
+                    scheduleType: "TAI_VIEN",
+                    examDate: "2026-09-16",
+                    quantity: 120,
+                    facility: "Cơ sở Mỹ Đình",
+                    location: "MEDLATEC Mỹ Đình",
+                    startTime: "07:30",
+                    endTime: "11:30",
+                    personInCharge: "Đỗ Hải Đăng",
+                    status: "DA_DUYET"
+                },
+                {
+                    scheduleId: "SCH-BIDV-02",
+                    scheduleType: "TAI_VIEN",
+                    examDate: "2026-09-16",
+                    quantity: 100,
+                    facility: "Cơ sở Cầu Giấy",
+                    location: "MEDLATEC Cầu Giấy",
+                    startTime: "08:00",
+                    endTime: "11:30",
+                    personInCharge: "Nguyễn Văn An",
+                    status: "DA_DUYET"
+                },
+                {
+                    scheduleId: "SCH-BIDV-03",
+                    scheduleType: "NGOAI_VIEN",
+                    examDate: "2026-09-16",
+                    quantity: 150,
+                    facility: "Cơ sở Mỹ Đình",
+                    location: "Hội trường BIDV Tower, Nam Từ Liêm",
+                    startTime: "07:00",
+                    endTime: "12:00",
+                    personInCharge: "Trần Văn Bình",
+                    status: "DANG_THUC_HIEN"
+                },
+                {
+                    scheduleId: "SCH-BIDV-04",
+                    scheduleType: "NGOAI_VIEN",
+                    examDate: "2026-09-16",
+                    quantity: 90,
+                    facility: "Cơ sở Thanh Xuân",
+                    location: "Chi nhánh BIDV Thanh Xuân",
+                    startTime: "07:30",
+                    endTime: "11:30",
+                    personInCharge: "Phạm Minh Tuấn",
+                    status: "DANG_THUC_HIEN"
+                },
+                {
+                    scheduleId: "SCH-BIDV-05",
+                    scheduleType: "LICH_PHUONG",
+                    examDate: "2026-09-16",
+                    quantity: 90,
+                    facility: "Cơ sở Mỹ Đình",
+                    location: "Trạm Y tế Phường Cầu Diễn",
+                    startTime: "08:00",
+                    endTime: "11:30",
+                    personInCharge: "Lê Hoàng Nam",
+                    status: "CHO_DUYET"
+                }
+            ]
         },
 
-        // --- Day 3 (2026-09-03): 2 schedules (TAI_VIEN & NGOAI_VIEN) ---
+        // MASTER 4: Công ty TNHH ABC (CASE 1: Single child schedule)
         {
-            scheduleId: "SCH-260903-1",
             unitId: "U-004",
-            unitName: "Ngân hàng Vietcombank",
-            scheduleType: "TAI_VIEN",
-            examDate: "2026-09-03",
-            quantity: 140,
-            facility: "Cơ sở Cầu Giấy",
-            location: "Phòng khám Đa khoa MEDLATEC Cầu Giấy",
-            startTime: "07:30",
-            endTime: "11:30",
+            code: "LK-2026-004",
+            customerName: "Công ty TNHH ABC",
             personInCharge: "Nguyễn Văn An",
-            status: "DA_DUYET"
+            facility: "Cơ sở Mỹ Đình",
+            childSchedules: [
+                {
+                    scheduleId: "SCH-260901",
+                    scheduleType: "TAI_VIEN",
+                    examDate: "2026-09-01",
+                    quantity: 85,
+                    facility: "Cơ sở Mỹ Đình",
+                    location: "Bệnh viện Đa khoa MEDLATEC Mỹ Đình",
+                    startTime: "07:30",
+                    endTime: "11:30",
+                    personInCharge: "Nguyễn Văn An",
+                    status: "DA_DUYET"
+                }
+            ]
         },
+
+        // MASTER 5: Tổng Công ty Sông Đà (CASE 5: Master has 0 child schedules -> NOT rendered on calendar)
         {
-            scheduleId: "SCH-260903-2",
             unitId: "U-005",
-            unitName: "Công ty Dược phẩm Vimed",
-            scheduleType: "NGOAI_VIEN",
-            examDate: "2026-09-03",
-            quantity: 110,
-            facility: "Cơ sở Mỹ Đình",
-            location: "Nhà máy Dược phẩm Vimed, Mỹ Đình",
-            startTime: "08:00",
-            endTime: "12:00",
-            personInCharge: "Phạm Minh Tuấn",
-            status: "DANG_THUC_HIEN"
+            code: "LK-2026-005",
+            customerName: "Tổng Công ty Sông Đà (Lịch mới khởi tạo)",
+            personInCharge: "Trần Văn Bình",
+            facility: "Cơ sở Hà Đông",
+            childSchedules: [] // Empty child schedules
         },
 
-        // --- Day 4 (2026-09-04): 1 schedule (LICH_PHUONG) ---
+        // MASTER 6: Tập đoàn Vingroup
         {
-            scheduleId: "SCH-260904",
             unitId: "U-006",
-            unitName: "UBND Phường Dịch Vọng",
-            scheduleType: "LICH_PHUONG",
-            examDate: "2026-09-04",
-            quantity: 180,
-            facility: "Cơ sở Cầu Giấy",
-            location: "Nhà văn hóa Phường Dịch Vọng",
-            startTime: "07:00",
-            endTime: "11:30",
-            personInCharge: "Lê Văn Cường",
-            status: "CHO_DUYET"
+            code: "LK-2026-006",
+            customerName: "Tập đoàn VinGroup",
+            personInCharge: "Trần Văn Bình",
+            facility: "Cơ sở Mỹ Đình",
+            childSchedules: [
+                {
+                    scheduleId: "SCH-VIN-01",
+                    scheduleType: "TAI_VIEN",
+                    examDate: "2026-09-05",
+                    quantity: 160,
+                    facility: "Cơ sở Mỹ Đình",
+                    location: "MEDLATEC Mỹ Đình",
+                    startTime: "07:30",
+                    endTime: "11:30",
+                    personInCharge: "Trần Văn Bình",
+                    status: "HOAN_THANH"
+                },
+                {
+                    scheduleId: "SCH-VIN-02",
+                    scheduleType: "NGOAI_VIEN",
+                    examDate: "2026-09-05",
+                    quantity: 140,
+                    facility: "Cơ sở Mỹ Đình",
+                    location: "Tòa nhà Symphony, Vinhomes Riverside",
+                    startTime: "08:00",
+                    endTime: "12:00",
+                    personInCharge: "Trần Văn Bình",
+                    status: "DA_DUYET"
+                }
+            ]
         },
 
-        // --- Day 5 (2026-09-05): 2 schedules (TAI_VIEN & NGOAI_VIEN) ---
+        // MASTER 7: UBND Phường Mỹ Đình 1 & Tập đoàn XYZ
         {
-            scheduleId: "SCH-260905-1",
             unitId: "U-007",
-            unitName: "Trường THPT Chuyên KHTN",
-            scheduleType: "TAI_VIEN",
-            examDate: "2026-09-05",
-            quantity: 160,
-            facility: "Cơ sở Thanh Xuân",
-            location: "MEDLATEC Thanh Xuân",
-            startTime: "07:30",
-            endTime: "11:30",
-            personInCharge: "Đỗ Hải Đăng",
-            status: "HOAN_THANH"
+            code: "LK-2026-007",
+            customerName: "Công ty Tập đoàn XYZ",
+            personInCharge: "Trần Văn Bình",
+            facility: "Cơ sở Cầu Giấy",
+            childSchedules: [
+                {
+                    scheduleId: "SCH-260902-1",
+                    scheduleType: "NGOAI_VIEN",
+                    examDate: "2026-09-02",
+                    quantity: 120,
+                    facility: "Cơ sở Cầu Giấy",
+                    location: "Tòa nhà Keangnam, Cầu Giấy",
+                    startTime: "07:00",
+                    endTime: "12:00",
+                    personInCharge: "Trần Văn Bình",
+                    status: "DA_DUYET"
+                }
+            ]
         },
         {
-            scheduleId: "SCH-260905-2",
             unitId: "U-008",
-            unitName: "Công ty Công nghệ CMC",
-            scheduleType: "NGOAI_VIEN",
-            examDate: "2026-09-05",
-            quantity: 95,
+            code: "LK-2026-008",
+            customerName: "UBND Phường Mỹ Đình 1",
+            personInCharge: "Lê Hoàng Nam",
             facility: "Cơ sở Mỹ Đình",
-            location: "Tòa nhà CMC Tower, Duy Tân",
-            startTime: "08:00",
-            endTime: "12:00",
-            personInCharge: "Nguyễn Văn An",
-            status: "DA_DUYET"
+            childSchedules: [
+                {
+                    scheduleId: "SCH-260902-2",
+                    scheduleType: "LICH_PHUONG",
+                    examDate: "2026-09-02",
+                    quantity: 90,
+                    facility: "Cơ sở Mỹ Đình",
+                    location: "Trạm Y tế Phường Mỹ Đình 1",
+                    startTime: "08:00",
+                    endTime: "11:30",
+                    personInCharge: "Lê Hoàng Nam",
+                    status: "CHO_DUYET"
+                }
+            ]
         },
 
-        // --- Day 7 (2026-09-07): 2 schedules (TAI_VIEN & LICH_PHUONG) ---
+        // MASTER 9: Ngân hàng Vietcombank & Dược Vimed (03/09/2026)
         {
-            scheduleId: "SCH-260907-1",
             unitId: "U-009",
-            unitName: "Tổng Công ty Sông Đà",
-            scheduleType: "TAI_VIEN",
-            examDate: "2026-09-07",
-            quantity: 130,
-            facility: "Cơ sở Hà Đông",
-            location: "MEDLATEC Hà Đông",
-            startTime: "07:30",
-            endTime: "11:30",
-            personInCharge: "Trần Văn Bình",
-            status: "DA_DUYET"
+            code: "LK-2026-009",
+            customerName: "Ngân hàng Vietcombank",
+            personInCharge: "Nguyễn Văn An",
+            facility: "Cơ sở Cầu Giấy",
+            childSchedules: [
+                {
+                    scheduleId: "SCH-260903-1",
+                    scheduleType: "TAI_VIEN",
+                    examDate: "2026-09-03",
+                    quantity: 140,
+                    facility: "Cơ sở Cầu Giấy",
+                    location: "Phòng khám Đa khoa MEDLATEC Cầu Giấy",
+                    startTime: "07:30",
+                    endTime: "11:30",
+                    personInCharge: "Nguyễn Văn An",
+                    status: "DA_DUYET"
+                }
+            ]
         },
         {
-            scheduleId: "SCH-260907-2",
             unitId: "U-010",
-            unitName: "UBND Phường Mộ Lao",
-            scheduleType: "LICH_PHUONG",
-            examDate: "2026-09-07",
-            quantity: 80,
-            facility: "Cơ sở Hà Đông",
-            location: "Trạm Y tế Phường Mộ Lao",
-            startTime: "08:00",
-            endTime: "11:30",
-            personInCharge: "Lê Hoàng Nam",
-            status: "CHO_DUYET"
+            code: "LK-2026-010",
+            customerName: "Công ty Dược phẩm Vimed",
+            personInCharge: "Phạm Minh Tuấn",
+            facility: "Cơ sở Mỹ Đình",
+            childSchedules: [
+                {
+                    scheduleId: "SCH-260903-2",
+                    scheduleType: "NGOAI_VIEN",
+                    examDate: "2026-09-03",
+                    quantity: 110,
+                    facility: "Cơ sở Mỹ Đình",
+                    location: "Nhà máy Dược phẩm Vimed, Mỹ Đình",
+                    startTime: "08:00",
+                    endTime: "12:00",
+                    personInCharge: "Phạm Minh Tuấn",
+                    status: "DANG_THUC_HIEN"
+                }
+            ]
         },
 
-        // --- Day 8 (2026-09-08): 1 schedule (NGOAI_VIEN) ---
+        // MASTER 11: UBND Phường Dịch Vọng (04/09/2026)
         {
-            scheduleId: "SCH-260908",
             unitId: "U-011",
-            unitName: "Công ty Samsung R&D",
-            scheduleType: "NGOAI_VIEN",
-            examDate: "2026-09-08",
-            quantity: 210,
-            facility: "Cơ sở Mỹ Đình",
-            location: "Tòa nhà Samsung R&D, Mỹ Đình 2",
-            startTime: "07:00",
-            endTime: "12:00",
-            personInCharge: "Phạm Minh Tuấn",
-            status: "DANG_THUC_HIEN"
+            code: "LK-2026-011",
+            customerName: "UBND Phường Dịch Vọng",
+            personInCharge: "Lê Văn Cường",
+            facility: "Cơ sở Cầu Giấy",
+            childSchedules: [
+                {
+                    scheduleId: "SCH-260904",
+                    scheduleType: "LICH_PHUONG",
+                    examDate: "2026-09-04",
+                    quantity: 180,
+                    facility: "Cơ sở Cầu Giấy",
+                    location: "Nhà văn hóa Phường Dịch Vọng",
+                    startTime: "07:00",
+                    endTime: "11:30",
+                    personInCharge: "Lê Văn Cường",
+                    status: "CHO_DUYET"
+                }
+            ]
         },
 
-        // --- Day 9 (2026-09-09): 4 schedules (ALL 3 TYPES: 2 TAI_VIEN, 1 NGOAI_VIEN, 1 LICH_PHUONG) ---
+        // MASTER 12: UBND Phường Mộ Lao (07/09/2026)
         {
-            scheduleId: "SCH-260909-1",
             unitId: "U-012",
-            unitName: "Công ty CP phần mềm MISA",
-            scheduleType: "TAI_VIEN",
-            examDate: "2026-09-09",
-            quantity: 120,
-            facility: "Cơ sở Cầu Giấy",
-            location: "MEDLATEC Cầu Giấy",
-            startTime: "07:30",
-            endTime: "11:30",
-            personInCharge: "Nguyễn Văn An",
-            status: "DA_DUYET"
+            code: "LK-2026-012",
+            customerName: "UBND Phường Mộ Lao",
+            personInCharge: "Lê Hoàng Nam",
+            facility: "Cơ sở Hà Đông",
+            childSchedules: [
+                {
+                    scheduleId: "SCH-260907-2",
+                    scheduleType: "LICH_PHUONG",
+                    examDate: "2026-09-07",
+                    quantity: 80,
+                    facility: "Cơ sở Hà Đông",
+                    location: "Trạm Y tế Phường Mộ Lao",
+                    startTime: "08:00",
+                    endTime: "11:30",
+                    personInCharge: "Lê Hoàng Nam",
+                    status: "CHO_DUYET"
+                }
+            ]
         },
+
+        // MASTER 13: Samsung R&D (08/09/2026)
         {
-            scheduleId: "SCH-260909-2",
             unitId: "U-013",
-            unitName: "Công ty CP Chứng khoán SSI",
-            scheduleType: "TAI_VIEN",
-            examDate: "2026-09-09",
-            quantity: 80,
+            code: "LK-2026-013",
+            customerName: "Công ty Samsung R&D",
+            personInCharge: "Phạm Minh Tuấn",
             facility: "Cơ sở Mỹ Đình",
-            location: "MEDLATEC Mỹ Đình",
-            startTime: "08:00",
-            endTime: "11:30",
-            personInCharge: "Trần Văn Bình",
-            status: "DA_DUYET"
+            childSchedules: [
+                {
+                    scheduleId: "SCH-260908",
+                    scheduleType: "NGOAI_VIEN",
+                    examDate: "2026-09-08",
+                    quantity: 210,
+                    facility: "Cơ sở Mỹ Đình",
+                    location: "Tòa nhà Samsung R&D, Mỹ Đình 2",
+                    startTime: "07:00",
+                    endTime: "12:00",
+                    personInCharge: "Phạm Minh Tuấn",
+                    status: "DANG_THUC_HIEN"
+                }
+            ]
         },
+
+        // MASTER 14: Công ty MISA, SSI, TKV, Nhân Chính (09/09/2026)
         {
-            scheduleId: "SCH-260909-3",
             unitId: "U-014",
-            unitName: "Tập đoàn Than Khoáng sản TKV",
-            scheduleType: "NGOAI_VIEN",
-            examDate: "2026-09-09",
-            quantity: 150,
-            facility: "Cơ sở Thanh Xuân",
-            location: "Tòa nhà TKV, Lê Văn Lương",
-            startTime: "07:00",
-            endTime: "12:00",
-            personInCharge: "Đỗ Hải Đăng",
-            status: "DA_DUYET"
+            code: "LK-2026-014",
+            customerName: "Công ty CP phần mềm MISA",
+            personInCharge: "Nguyễn Văn An",
+            facility: "Cơ sở Cầu Giấy",
+            childSchedules: [
+                {
+                    scheduleId: "SCH-260909-1",
+                    scheduleType: "TAI_VIEN",
+                    examDate: "2026-09-09",
+                    quantity: 120,
+                    facility: "Cơ sở Cầu Giấy",
+                    location: "MEDLATEC Cầu Giấy",
+                    startTime: "07:30",
+                    endTime: "11:30",
+                    personInCharge: "Nguyễn Văn An",
+                    status: "DA_DUYET"
+                }
+            ]
         },
         {
-            scheduleId: "SCH-260909-4",
             unitId: "U-015",
-            unitName: "UBND Phường Nhân Chính",
-            scheduleType: "LICH_PHUONG",
-            examDate: "2026-09-09",
-            quantity: 100,
+            code: "LK-2026-015",
+            customerName: "Tập đoàn Than Khoáng sản TKV",
+            personInCharge: "Đỗ Hải Đăng",
             facility: "Cơ sở Thanh Xuân",
-            location: "Trạm Y tế Phường Nhân Chính",
-            startTime: "08:00",
-            endTime: "11:30",
-            personInCharge: "Lê Văn Cường",
-            status: "CHO_DUYET"
+            childSchedules: [
+                {
+                    scheduleId: "SCH-260909-3",
+                    scheduleType: "NGOAI_VIEN",
+                    examDate: "2026-09-09",
+                    quantity: 150,
+                    facility: "Cơ sở Thanh Xuân",
+                    location: "Tòa nhà TKV, Lê Văn Lương",
+                    startTime: "07:00",
+                    endTime: "12:00",
+                    personInCharge: "Đỗ Hải Đăng",
+                    status: "DA_DUYET"
+                }
+            ]
         },
 
-        // --- Day 10 (2026-09-10): 2 schedules (NGOAI_VIEN & LICH_PHUONG) ---
+        // MASTER 16: Honda & Canon (11/09/2026)
         {
-            scheduleId: "SCH-260910-1",
             unitId: "U-016",
-            unitName: "Ngân hàng BIDV Hà Nội",
-            scheduleType: "NGOAI_VIEN",
-            examDate: "2026-09-10",
-            quantity: 175,
+            code: "LK-2026-016",
+            customerName: "Công ty Honda Việt Nam",
+            personInCharge: "Nguyễn Văn An",
             facility: "Cơ sở Mỹ Đình",
-            location: "Hội trường BIDV Tower, Nam Từ Liêm",
-            startTime: "07:30",
-            endTime: "12:00",
-            personInCharge: "Phạm Minh Tuấn",
-            status: "DA_DUYET"
+            childSchedules: [
+                {
+                    scheduleId: "SCH-260911-1",
+                    scheduleType: "TAI_VIEN",
+                    examDate: "2026-09-11",
+                    quantity: 110,
+                    facility: "Cơ sở Mỹ Đình",
+                    location: "MEDLATEC Mỹ Đình",
+                    startTime: "07:30",
+                    endTime: "11:30",
+                    personInCharge: "Nguyễn Văn An",
+                    status: "HOAN_THANH"
+                }
+            ]
         },
         {
-            scheduleId: "SCH-260910-2",
             unitId: "U-017",
-            unitName: "UBND Phường Cầu Diễn",
-            scheduleType: "LICH_PHUONG",
-            examDate: "2026-09-10",
-            quantity: 90,
+            code: "LK-2026-017",
+            customerName: "Công ty Canon Việt Nam",
+            personInCharge: "Trần Văn Bình",
             facility: "Cơ sở Mỹ Đình",
-            location: "Trạm Y tế Phường Cầu Diễn",
-            startTime: "08:00",
-            endTime: "11:30",
-            personInCharge: "Lê Hoàng Nam",
-            status: "DA_DUYET"
+            childSchedules: [
+                {
+                    scheduleId: "SCH-260911-2",
+                    scheduleType: "NGOAI_VIEN",
+                    examDate: "2026-09-11",
+                    quantity: 160,
+                    facility: "Cơ sở Mỹ Đình",
+                    location: "KCN Bắc Thăng Long",
+                    startTime: "07:00",
+                    endTime: "12:00",
+                    personInCharge: "Trần Văn Bình",
+                    status: "HOAN_THANH"
+                }
+            ]
         },
 
-        // --- Day 11 (2026-09-11): 2 schedules (TAI_VIEN & NGOAI_VIEN) ---
+        // MASTER 18: VNPT & ĐH Quốc Gia (14/09/2026)
         {
-            scheduleId: "SCH-260911-1",
             unitId: "U-018",
-            unitName: "Công ty Honda Việt Nam",
-            scheduleType: "TAI_VIEN",
-            examDate: "2026-09-11",
-            quantity: 110,
-            facility: "Cơ sở Mỹ Đình",
-            location: "MEDLATEC Mỹ Đình",
-            startTime: "07:30",
-            endTime: "11:30",
-            personInCharge: "Nguyễn Văn An",
-            status: "HOAN_THANH"
+            code: "LK-2026-018",
+            customerName: "Công ty Viễn thông VNPT",
+            personInCharge: "Phạm Minh Tuấn",
+            facility: "Cơ sở Thanh Xuân",
+            childSchedules: [
+                {
+                    scheduleId: "SCH-260914-1",
+                    scheduleType: "NGOAI_VIEN",
+                    examDate: "2026-09-14",
+                    quantity: 190,
+                    facility: "Cơ sở Thanh Xuân",
+                    location: "Tòa nhà VNPT Tower, Nguyễn Trãi",
+                    startTime: "07:00",
+                    endTime: "12:00",
+                    personInCharge: "Phạm Minh Tuấn",
+                    status: "DA_DUYET"
+                }
+            ]
         },
+
+        // MASTER 19: Điện lực Hà Nội (18/09/2026)
         {
-            scheduleId: "SCH-260911-2",
             unitId: "U-019",
-            unitName: "Công ty Canon Việt Nam",
-            scheduleType: "NGOAI_VIEN",
-            examDate: "2026-09-11",
-            quantity: 160,
-            facility: "Cơ sở Mỹ Đình",
-            location: "KCN Bắc Thăng Long",
-            startTime: "07:00",
-            endTime: "12:00",
+            code: "LK-2026-019",
+            customerName: "Công ty Điện lực Hà Nội",
             personInCharge: "Trần Văn Bình",
-            status: "HOAN_THANH"
+            facility: "Cơ sở Mỹ Đình",
+            childSchedules: [
+                {
+                    scheduleId: "SCH-260918-2",
+                    scheduleType: "NGOAI_VIEN",
+                    examDate: "2026-09-18",
+                    quantity: 165,
+                    facility: "Cơ sở Mỹ Đình",
+                    location: "Hội trường EVN Hà Nội",
+                    startTime: "07:00",
+                    endTime: "12:00",
+                    personInCharge: "Trần Văn Bình",
+                    status: "DA_DUYET"
+                }
+            ]
         },
 
-        // --- Day 12 (2026-09-12): 1 schedule (TAI_VIEN) ---
+        // MASTER 20: Tập đoàn Hòa Phát (21/09/2026)
         {
-            scheduleId: "SCH-260912",
             unitId: "U-020",
-            unitName: "Bệnh viện Đa khoa Hồng Ngọc",
-            scheduleType: "TAI_VIEN",
-            examDate: "2026-09-12",
-            quantity: 75,
-            facility: "Cơ sở Cầu Giấy",
-            location: "MEDLATEC Cầu Giấy",
-            startTime: "08:00",
-            endTime: "11:30",
-            personInCharge: "Đỗ Hải Đăng",
-            status: "DA_DUYET"
+            code: "LK-2026-020",
+            customerName: "Tập đoàn Hòa Phát",
+            personInCharge: "Nguyễn Văn An",
+            facility: "Cơ sở Mỹ Đình",
+            childSchedules: [
+                {
+                    scheduleId: "SCH-260921-1",
+                    scheduleType: "NGOAI_VIEN",
+                    examDate: "2026-09-21",
+                    quantity: 220,
+                    facility: "Cơ sở Mỹ Đình",
+                    location: "Tòa nhà Hòa Phát, Mỹ Đình",
+                    startTime: "07:00",
+                    endTime: "12:00",
+                    personInCharge: "Nguyễn Văn An",
+                    status: "DA_DUYET"
+                }
+            ]
         },
 
-        // --- Day 14 (2026-09-14): 2 schedules (NGOAI_VIEN & TAI_VIEN) ---
+        // MASTER 21: Techcombank (23/09/2026)
         {
-            scheduleId: "SCH-260914-1",
             unitId: "U-021",
-            unitName: "Công ty Viễn thông VNPT",
-            scheduleType: "NGOAI_VIEN",
-            examDate: "2026-09-14",
-            quantity: 190,
-            facility: "Cơ sở Thanh Xuân",
-            location: "Tòa nhà VNPT Tower, Nguyễn Trãi",
-            startTime: "07:00",
-            endTime: "12:00",
+            code: "LK-2026-021",
+            customerName: "Ngân hàng Techcombank",
             personInCharge: "Phạm Minh Tuấn",
-            status: "DA_DUYET"
+            facility: "Cơ sở Mỹ Đình",
+            childSchedules: [
+                {
+                    scheduleId: "SCH-260923-1",
+                    scheduleType: "NGOAI_VIEN",
+                    examDate: "2026-09-23",
+                    quantity: 145,
+                    facility: "Cơ sở Mỹ Đình",
+                    location: "Tòa nhà Techcombank, Cầu Giấy",
+                    startTime: "07:30",
+                    endTime: "11:30",
+                    personInCharge: "Phạm Minh Tuấn",
+                    status: "DA_DUYET"
+                }
+            ]
         },
+
+        // MASTER 22: Geleximco (25/09/2026)
         {
-            scheduleId: "SCH-260914-2",
             unitId: "U-022",
-            unitName: "Trường Đại học Quốc Gia",
-            scheduleType: "TAI_VIEN",
-            examDate: "2026-09-14",
-            quantity: 105,
-            facility: "Cơ sở Cầu Giấy",
-            location: "MEDLATEC Cầu Giấy",
-            startTime: "07:30",
-            endTime: "11:30",
+            code: "LK-2026-022",
+            customerName: "Tập đoàn Geleximco",
             personInCharge: "Nguyễn Văn An",
-            status: "DA_DUYET"
+            facility: "Cơ sở Mỹ Đình",
+            childSchedules: [
+                {
+                    scheduleId: "SCH-260925-2",
+                    scheduleType: "NGOAI_VIEN",
+                    examDate: "2026-09-25",
+                    quantity: 150,
+                    facility: "Cơ sở Mỹ Đình",
+                    location: "Tòa nhà Geleximco, Hoàng Cầu",
+                    startTime: "07:00",
+                    endTime: "12:00",
+                    personInCharge: "Nguyễn Văn An",
+                    status: "DA_DUYET"
+                }
+            ]
         },
 
-        // --- Day 15 (2026-09-15): 1 schedule (TAI_VIEN) ---
+        // MASTER 23: Sơn Hà Group (28/09/2026)
         {
-            scheduleId: "SCH-260915",
             unitId: "U-023",
-            unitName: "Tập đoàn VinGroup",
-            scheduleType: "TAI_VIEN",
-            examDate: "2026-09-15",
-            quantity: 150,
-            facility: "Cơ sở Mỹ Đình",
-            location: "MEDLATEC Mỹ Đình",
-            startTime: "07:30",
-            endTime: "11:30",
-            personInCharge: "Trần Văn Bình",
-            status: "DA_DUYET"
-        },
-
-        // --- Day 16 (2026-09-16): 5 schedules (ALL 3 TYPES: 2 TAI_VIEN, 2 NGOAI_VIEN, 1 LICH_PHUONG -> Total 450) ---
-        {
-            scheduleId: "SCH-260916-1",
-            unitId: "U-024",
-            unitName: "Công ty ABC",
-            scheduleType: "TAI_VIEN",
-            examDate: "2026-09-16",
-            quantity: 80,
-            facility: "Cơ sở Mỹ Đình",
-            location: "MEDLATEC Mỹ Đình",
-            startTime: "07:30",
-            endTime: "11:30",
-            personInCharge: "Nguyễn Văn An",
-            status: "DA_DUYET"
-        },
-        {
-            scheduleId: "SCH-260916-2",
-            unitId: "U-025",
-            unitName: "Công ty XYZ",
-            scheduleType: "TAI_VIEN",
-            examDate: "2026-09-16",
-            quantity: 60,
-            facility: "Cơ sở Mỹ Đình",
-            location: "MEDLATEC Mỹ Đình",
-            startTime: "08:00",
-            endTime: "11:30",
-            personInCharge: "Nguyễn Văn An",
-            status: "DA_DUYET"
-        },
-        {
-            scheduleId: "SCH-260916-3",
-            unitId: "U-026",
-            unitName: "Công ty DEF",
-            scheduleType: "NGOAI_VIEN",
-            examDate: "2026-09-16",
-            quantity: 120,
-            facility: "Cơ sở Cầu Giấy",
-            location: "Tòa nhà DEF, Cầu Giấy",
-            startTime: "07:00",
-            endTime: "12:00",
-            personInCharge: "Trần Văn Bình",
-            status: "DANG_THUC_HIEN"
-        },
-        {
-            scheduleId: "SCH-260916-4",
-            unitId: "U-027",
-            unitName: "Công ty GHI",
-            scheduleType: "NGOAI_VIEN",
-            examDate: "2026-09-16",
-            quantity: 90,
-            facility: "Cơ sở Thanh Xuân",
-            location: "Tòa nhà GHI, Thanh Xuân",
-            startTime: "07:30",
-            endTime: "11:30",
+            code: "LK-2026-023",
+            customerName: "Công ty Sơn Hà Group",
             personInCharge: "Phạm Minh Tuấn",
-            status: "DANG_THUC_HIEN"
-        },
-        {
-            scheduleId: "SCH-260916-5",
-            unitId: "U-028",
-            unitName: "Phường Dịch Vọng",
-            scheduleType: "LICH_PHUONG",
-            examDate: "2026-09-16",
-            quantity: 100,
-            facility: "Cơ sở Cầu Giấy",
-            location: "Trạm Y tế Phường Dịch Vọng",
-            startTime: "08:00",
-            endTime: "11:30",
-            personInCharge: "Lê Văn Cường",
-            status: "CHO_DUYET"
-        },
-
-        // --- Day 17 (2026-09-17): 2 schedules (NGOAI_VIEN & LICH_PHUONG) ---
-        {
-            scheduleId: "SCH-260917-1",
-            unitId: "U-029",
-            unitName: "Công ty May 10",
-            scheduleType: "NGOAI_VIEN",
-            examDate: "2026-09-17",
-            quantity: 135,
             facility: "Cơ sở Hà Đông",
-            location: "Nhà máy May 10, Hà Đông",
-            startTime: "07:30",
-            endTime: "11:30",
-            personInCharge: "Đỗ Hải Đăng",
-            status: "DA_DUYET"
-        },
-        {
-            scheduleId: "SCH-260917-2",
-            unitId: "U-030",
-            unitName: "UBND Phường Văn Quán",
-            scheduleType: "LICH_PHUONG",
-            examDate: "2026-09-17",
-            quantity: 75,
-            facility: "Cơ sở Hà Đông",
-            location: "Trạm Y tế Phường Văn Quán",
-            startTime: "08:00",
-            endTime: "11:30",
-            personInCharge: "Lê Hoàng Nam",
-            status: "CHO_DUYET"
-        },
-
-        // --- Day 18 (2026-09-18): 2 schedules (TAI_VIEN & NGOAI_VIEN) ---
-        {
-            scheduleId: "SCH-260918-1",
-            unitId: "U-031",
-            unitName: "Công ty CP Bánh kẹo Tràng An",
-            scheduleType: "TAI_VIEN",
-            examDate: "2026-09-18",
-            quantity: 90,
-            facility: "Cơ sở Cầu Giấy",
-            location: "MEDLATEC Cầu Giấy",
-            startTime: "07:30",
-            endTime: "11:30",
-            personInCharge: "Nguyễn Văn An",
-            status: "DA_DUYET"
-        },
-        {
-            scheduleId: "SCH-260918-2",
-            unitId: "U-032",
-            unitName: "Công ty Điện lực Hà Nội",
-            scheduleType: "NGOAI_VIEN",
-            examDate: "2026-09-18",
-            quantity: 165,
-            facility: "Cơ sở Mỹ Đình",
-            location: "Hội trường EVN Hà Nội",
-            startTime: "07:00",
-            endTime: "12:00",
-            personInCharge: "Trần Văn Bình",
-            status: "DA_DUYET"
-        },
-
-        // --- Day 19 (2026-09-19): 1 schedule (TAI_VIEN) ---
-        {
-            scheduleId: "SCH-260919",
-            unitId: "U-033",
-            unitName: "Trường Đại học Bách Khoa",
-            scheduleType: "TAI_VIEN",
-            examDate: "2026-09-19",
-            quantity: 110,
-            facility: "Cơ sở Thanh Xuân",
-            location: "MEDLATEC Thanh Xuân",
-            startTime: "08:00",
-            endTime: "11:30",
-            personInCharge: "Phạm Minh Tuấn",
-            status: "DA_DUYET"
-        },
-
-        // --- Day 21 (2026-09-21): 2 schedules (NGOAI_VIEN & LICH_PHUONG) ---
-        {
-            scheduleId: "SCH-260921-1",
-            unitId: "U-034",
-            unitName: "Tập đoàn Hòa Phát",
-            scheduleType: "NGOAI_VIEN",
-            examDate: "2026-09-21",
-            quantity: 220,
-            facility: "Cơ sở Mỹ Đình",
-            location: "Tòa nhà Hòa Phát, Mỹ Đình",
-            startTime: "07:00",
-            endTime: "12:00",
-            personInCharge: "Nguyễn Văn An",
-            status: "DA_DUYET"
-        },
-        {
-            scheduleId: "SCH-260921-2",
-            unitId: "U-035",
-            unitName: "UBND Phường Trung Hòa",
-            scheduleType: "LICH_PHUONG",
-            examDate: "2026-09-21",
-            quantity: 85,
-            facility: "Cơ sở Cầu Giấy",
-            location: "Trạm Y tế Phường Trung Hòa",
-            startTime: "08:00",
-            endTime: "11:30",
-            personInCharge: "Lê Văn Cường",
-            status: "CHO_DUYET"
-        },
-
-        // --- Day 22 (2026-09-22): 1 schedule (TAI_VIEN) ---
-        {
-            scheduleId: "SCH-260922",
-            unitId: "U-036",
-            unitName: "Công ty Phần mềm FPT Software",
-            scheduleType: "TAI_VIEN",
-            examDate: "2026-09-22",
-            quantity: 130,
-            facility: "Cơ sở Cầu Giấy",
-            location: "MEDLATEC Cầu Giấy",
-            startTime: "07:30",
-            endTime: "11:30",
-            personInCharge: "Trần Văn Bình",
-            status: "DA_DUYET"
-        },
-
-        // --- Day 23 (2026-09-23): 2 schedules (NGOAI_VIEN & TAI_VIEN) ---
-        {
-            scheduleId: "SCH-260923-1",
-            unitId: "U-037",
-            unitName: "Ngân hàng Techcombank",
-            scheduleType: "NGOAI_VIEN",
-            examDate: "2026-09-23",
-            quantity: 145,
-            facility: "Cơ sở Mỹ Đình",
-            location: "Tòa nhà Techcombank, Cầu Giấy",
-            startTime: "07:30",
-            endTime: "11:30",
-            personInCharge: "Phạm Minh Tuấn",
-            status: "DA_DUYET"
-        },
-        {
-            scheduleId: "SCH-260923-2",
-            unitId: "U-038",
-            unitName: "Công ty Nhựa Tiền Phong",
-            scheduleType: "TAI_VIEN",
-            examDate: "2026-09-23",
-            quantity: 85,
-            facility: "Cơ sở Thanh Xuân",
-            location: "MEDLATEC Thanh Xuân",
-            startTime: "08:00",
-            endTime: "11:30",
-            personInCharge: "Đỗ Hải Đăng",
-            status: "DA_DUYET"
-        },
-
-        // --- Day 24 (2026-09-24): 4 schedules (ALL 3 TYPES: 1 TAI_VIEN, 2 NGOAI_VIEN, 1 LICH_PHUONG) ---
-        {
-            scheduleId: "SCH-260924-1",
-            unitId: "U-039",
-            unitName: "Trường Đại học Thăng Long",
-            scheduleType: "TAI_VIEN",
-            examDate: "2026-09-24",
-            quantity: 100,
-            facility: "Cơ sở Thanh Xuân",
-            location: "MEDLATEC Thanh Xuân",
-            startTime: "07:30",
-            endTime: "11:30",
-            personInCharge: "Nguyễn Văn An",
-            status: "DA_DUYET"
-        },
-        {
-            scheduleId: "SCH-260924-2",
-            unitId: "U-040",
-            unitName: "Công ty Xây dựng Coteccons",
-            scheduleType: "NGOAI_VIEN",
-            examDate: "2026-09-24",
-            quantity: 130,
-            facility: "Cơ sở Hà Đông",
-            location: "Công trường Coteccons, Hà Đông",
-            startTime: "07:00",
-            endTime: "12:00",
-            personInCharge: "Trần Văn Bình",
-            status: "DA_DUYET"
-        },
-        {
-            scheduleId: "SCH-260924-3",
-            unitId: "U-041",
-            unitName: "Công ty Thiết bị Y tế Nhật Bản",
-            scheduleType: "NGOAI_VIEN",
-            examDate: "2026-09-24",
-            quantity: 70,
-            facility: "Cơ sở Mỹ Đình",
-            location: "Tòa nhà Keangnam",
-            startTime: "08:00",
-            endTime: "11:30",
-            personInCharge: "Phạm Minh Tuấn",
-            status: "CHO_DUYET"
-        },
-        {
-            scheduleId: "SCH-260924-4",
-            unitId: "U-042",
-            unitName: "UBND Phường Hà Cầu",
-            scheduleType: "LICH_PHUONG",
-            examDate: "2026-09-24",
-            quantity: 90,
-            facility: "Cơ sở Hà Đông",
-            location: "Trạm Y tế Phường Hà Cầu",
-            startTime: "08:00",
-            endTime: "11:30",
-            personInCharge: "Lê Hoàng Nam",
-            status: "CHO_DUYET"
-        },
-
-        // --- Day 25 (2026-09-25): 2 schedules (TAI_VIEN & NGOAI_VIEN) ---
-        {
-            scheduleId: "SCH-260925-1",
-            unitId: "U-043",
-            unitName: "Công ty Thuốc lá Thăng Long",
-            scheduleType: "TAI_VIEN",
-            examDate: "2026-09-25",
-            quantity: 115,
-            facility: "Cơ sở Thanh Xuân",
-            location: "MEDLATEC Thanh Xuân",
-            startTime: "07:30",
-            endTime: "11:30",
-            personInCharge: "Đỗ Hải Đăng",
-            status: "DA_DUYET"
-        },
-        {
-            scheduleId: "SCH-260925-2",
-            unitId: "U-044",
-            unitName: "Tập đoàn Geleximco",
-            scheduleType: "NGOAI_VIEN",
-            examDate: "2026-09-25",
-            quantity: 150,
-            facility: "Cơ sở Mỹ Đình",
-            location: "Tòa nhà Geleximco, Hoàng Cầu",
-            startTime: "07:00",
-            endTime: "12:00",
-            personInCharge: "Nguyễn Văn An",
-            status: "DA_DUYET"
-        },
-
-        // --- Day 26 (2026-09-26): 1 schedule (TAI_VIEN) ---
-        {
-            scheduleId: "SCH-260926",
-            unitId: "U-045",
-            unitName: "Ngân hàng Agribank Chi nhánh Tây Hà Nội",
-            scheduleType: "TAI_VIEN",
-            examDate: "2026-09-26",
-            quantity: 95,
-            facility: "Cơ sở Mỹ Đình",
-            location: "MEDLATEC Mỹ Đình",
-            startTime: "08:00",
-            endTime: "11:30",
-            personInCharge: "Trần Văn Bình",
-            status: "DA_DUYET"
-        },
-
-        // --- Day 28 (2026-09-28): 2 schedules (NGOAI_VIEN & LICH_PHUONG) ---
-        {
-            scheduleId: "SCH-260928-1",
-            unitId: "U-046",
-            unitName: "Công ty Sơn Hà Group",
-            scheduleType: "NGOAI_VIEN",
-            examDate: "2026-09-28",
-            quantity: 140,
-            facility: "Cơ sở Hà Đông",
-            location: "Tòa nhà Sơn Hà, Hà Đông",
-            startTime: "07:30",
-            endTime: "11:30",
-            personInCharge: "Phạm Minh Tuấn",
-            status: "DA_DUYET"
-        },
-        {
-            scheduleId: "SCH-260928-2",
-            unitId: "U-047",
-            unitName: "UBND Phường La Khê",
-            scheduleType: "LICH_PHUONG",
-            examDate: "2026-09-28",
-            quantity: 95,
-            facility: "Cơ sở Hà Đông",
-            location: "Trạm Y tế Phường La Khê",
-            startTime: "08:00",
-            endTime: "11:30",
-            personInCharge: "Lê Hoàng Nam",
-            status: "CHO_DUYET"
-        },
-
-        // --- Day 29 (2026-09-29): 1 schedule (TAI_VIEN) ---
-        {
-            scheduleId: "SCH-260929",
-            unitId: "U-048",
-            unitName: "Công ty CP Giày Thụy Khuê",
-            scheduleType: "TAI_VIEN",
-            examDate: "2026-09-29",
-            quantity: 105,
-            facility: "Cơ sở Cầu Giấy",
-            location: "MEDLATEC Cầu Giấy",
-            startTime: "07:30",
-            endTime: "11:30",
-            personInCharge: "Nguyễn Văn An",
-            status: "DA_DUYET"
+            childSchedules: [
+                {
+                    scheduleId: "SCH-260928-1",
+                    scheduleType: "NGOAI_VIEN",
+                    examDate: "2026-09-28",
+                    quantity: 140,
+                    facility: "Cơ sở Hà Đông",
+                    location: "Tòa nhà Sơn Hà, Hà Đông",
+                    startTime: "07:30",
+                    endTime: "11:30",
+                    personInCharge: "Phạm Minh Tuấn",
+                    status: "DA_DUYET"
+                }
+            ]
         }
     ];
 
+    // Cache of extracted child schedule items
+    let allChildSchedulesCache = [];
+
     // ==========================================================================
-    // 25. DATA ACCESS LAYER (getSchedules)
+    // 2. DATA EXTRACTION LAYER (MASTER -> CHILD EXTRACTION)
     // ==========================================================================
+    
     /**
-     * Data abstraction function. Currently returns mockSchedules.
-     * Can easily be replaced by API / DataStore call without changing UI code.
+     * Extracts and combines child schedules from MWKDataStore and seedMasterUnits
      */
-    function getSchedules() {
-        return mockSchedules;
+    function extractAllChildSchedules() {
+        const childSchedules = [];
+
+        // 1. Fetch Master Records from MWKDataStore
+        let dataStoreMasters = [];
+        if (window.MWKDataStore && typeof window.MWKDataStore.getKskSchedules === 'function') {
+            try {
+                dataStoreMasters = window.MWKDataStore.getKskSchedules() || [];
+            } catch (e) {
+                console.error("Lỗi khi đọc dữ liệu từ MWKDataStore:", e);
+            }
+        }
+
+        // Helper to push extracted sub-schedules
+        const processMasterRecord = (master) => {
+            const unitId = String(master.id || master.unitId || master.code || master.maLich);
+            const unitName = master.customerName || master.teamName || master.unitName || "Đơn vị KSK";
+            const masterCode = master.code || master.maLich || unitId;
+            const defaultPic = master.personInCharge || master.contactPerson || "Cán bộ phụ trách";
+            const defaultFacility = master.facility || "Cơ sở MEDLATEC";
+
+            // If master object has direct childSchedules array (from seed)
+            if (Array.isArray(master.childSchedules)) {
+                master.childSchedules.forEach((sub, idx) => {
+                    childSchedules.push({
+                        id: sub.scheduleId || sub.id || `${unitId}-${idx}`,
+                        scheduleId: sub.scheduleId || sub.maLich || sub.id || `${unitId}-${idx + 1}`,
+                        unitId: unitId,
+                        unitName: unitName,
+                        masterCode: masterCode,
+                        scheduleType: sub.scheduleType || "TAI_VIEN",
+                        examDate: sub.examDate || sub.ngayKham || "2026-09-15",
+                        quantity: Number(sub.quantity || sub.soLuongKhach || sub.soLuong || 0),
+                        facility: sub.facility || defaultFacility,
+                        location: sub.location || sub.diaDiemKham || master.examLocation || "Địa điểm khám",
+                        startTime: sub.startTime || "07:30",
+                        endTime: sub.endTime || "11:30",
+                        session: sub.session || "Sáng",
+                        personInCharge: sub.personInCharge || defaultPic,
+                        status: sub.status || sub.trangThai || "CHO_TONG_HOP",
+                        rawSubObject: sub,
+                        rawMasterObject: master
+                    });
+                });
+            }
+
+            // If master object has step2Data (from MWKDataStore CRUD)
+            if (master.step2Data) {
+                const types = [
+                    { key: 'taiVien', scheduleType: 'TAI_VIEN' },
+                    { key: 'ngoaiVien', scheduleType: 'NGOAI_VIEN' },
+                    { key: 'lichPhuong', scheduleType: 'LICH_PHUONG' }
+                ];
+
+                types.forEach(({ key, scheduleType }) => {
+                    const subList = master.step2Data[key];
+                    if (Array.isArray(subList)) {
+                        subList.forEach((sub, idx) => {
+                            childSchedules.push({
+                                id: sub.id || sub.scheduleId || `${unitId}-${scheduleType}-${idx}`,
+                                scheduleId: sub.scheduleId || sub.maLich || sub.id || `${unitId}-${idx + 1}`,
+                                unitId: unitId,
+                                unitName: unitName,
+                                masterCode: masterCode,
+                                scheduleType: scheduleType,
+                                examDate: sub.ngayKham || sub.examDate || master.examDate || "2026-09-15",
+                                quantity: Number(sub.soLuongKhach || sub.quantity || sub.soLuong || 0),
+                                facility: sub.facility || defaultFacility,
+                                location: sub.diaDiemKham || sub.location || master.examLocation || "Địa điểm khám",
+                                startTime: sub.startTime || "07:30",
+                                endTime: sub.endTime || "11:30",
+                                session: sub.session || "Sáng",
+                                personInCharge: sub.personInCharge || defaultPic,
+                                status: sub.trangThai || sub.status || "CHO_TONG_HOP",
+                                rawSubObject: sub,
+                                rawMasterObject: master
+                            });
+                        });
+                    }
+                });
+            }
+        };
+
+        // Process seed master units first
+        seedMasterUnits.forEach(processMasterRecord);
+
+        // Process data store masters (ignoring duplicates if unitId exists)
+        const processedUnitIds = new Set(seedMasterUnits.map(m => String(m.unitId || m.id || m.code)));
+        dataStoreMasters.forEach(master => {
+            const masterId = String(master.id || master.code || master.maLich);
+            if (!processedUnitIds.has(masterId)) {
+                processMasterRecord(master);
+                processedUnitIds.add(masterId);
+            }
+        });
+
+        allChildSchedulesCache = childSchedules;
+        return childSchedules;
+    }
+
+    /**
+     * Get summary metrics for a specific unit
+     */
+    function getUnitScheduleSummary(unitId) {
+        const allChilds = allChildSchedulesCache.length > 0 ? allChildSchedulesCache : extractAllChildSchedules();
+        const unitSchedules = allChilds.filter(s => String(s.unitId) === String(unitId));
+
+        return {
+            unitId: unitId,
+            totalSchedules: unitSchedules.length,
+            totalQuantity: unitSchedules.reduce((sum, s) => sum + s.quantity, 0),
+            taiVienCount: unitSchedules.filter(s => s.scheduleType === 'TAI_VIEN').length,
+            ngoaiVienCount: unitSchedules.filter(s => s.scheduleType === 'NGOAI_VIEN').length,
+            phuongCount: unitSchedules.filter(s => s.scheduleType === 'LICH_PHUONG').length,
+            childSchedules: unitSchedules
+        };
     }
 
     // ==========================================================================
@@ -766,7 +778,6 @@
     });
 
     function initControls() {
-        // Dropdown & Search Event Listeners
         const monthSelect = document.getElementById('filter-month');
         if (monthSelect) {
             monthSelect.value = '2026-09';
@@ -774,13 +785,13 @@
     }
 
     // ==========================================================================
-    // 24. DECOMPOSED FUNCTIONS
+    // 3. FILTERING & SUMMARY CALCULATIONS
     // ==========================================================================
 
     /**
-     * Filter Schedules according to activeFilters
+     * Filters all extracted child schedules based on activeFilters
      */
-    function filterSchedules(allSchedules) {
+    function filterChildSchedules(allSchedules) {
         const [targetYear, targetMonth] = activeFilters.month.split('-').map(Number);
 
         return allSchedules.filter(item => {
@@ -806,13 +817,16 @@
                 if (!facStr.includes(targetFac)) return false;
             }
 
-            // Search Keyword Filter
+            // Search Keyword Filter (Searches Unit Name, Child Code, Master Code, Person In Charge)
             if (activeFilters.search) {
                 const unitStr = (item.unitName || '').toLowerCase();
-                const codeStr = (item.scheduleId || '').toLowerCase();
+                const childCodeStr = (item.scheduleId || '').toLowerCase();
+                const masterCodeStr = (item.masterCode || '').toLowerCase();
                 const picStr = (item.personInCharge || '').toLowerCase();
+                
                 if (!unitStr.includes(activeFilters.search) && 
-                    !codeStr.includes(activeFilters.search) && 
+                    !childCodeStr.includes(activeFilters.search) && 
+                    !masterCodeStr.includes(activeFilters.search) && 
                     !picStr.includes(activeFilters.search)) {
                     return false;
                 }
@@ -823,35 +837,30 @@
     }
 
     /**
-     * Calculate Summary Numbers from filtered schedules
+     * Calculate Summary Cards Statistics from filtered CHILD SCHEDULES
      */
-    function calculateMonthlySummary(schedules) {
-        const totalSchedules = schedules.length;
-        const totalPatients = schedules.reduce((sum, item) => sum + (parseInt(item.quantity) || 0), 0);
+    function calculateMonthlySummary(filteredChilds) {
+        const totalSchedules = filteredChilds.length;
+        const totalPatients = filteredChilds.reduce((sum, item) => sum + (parseInt(item.quantity) || 0), 0);
 
-        const taiVienPatients = schedules
-            .filter(item => item.scheduleType === 'TAI_VIEN')
-            .reduce((sum, item) => sum + (parseInt(item.quantity) || 0), 0);
-
-        const ngoaiVienPatients = schedules
-            .filter(item => item.scheduleType === 'NGOAI_VIEN')
-            .reduce((sum, item) => sum + (parseInt(item.quantity) || 0), 0);
-
-        const phuongPatients = schedules
-            .filter(item => item.scheduleType === 'LICH_PHUONG')
-            .reduce((sum, item) => sum + (parseInt(item.quantity) || 0), 0);
+        const taiVienChilds = filteredChilds.filter(item => item.scheduleType === 'TAI_VIEN');
+        const ngoaiVienChilds = filteredChilds.filter(item => item.scheduleType === 'NGOAI_VIEN');
+        const phuongChilds = filteredChilds.filter(item => item.scheduleType === 'LICH_PHUONG');
 
         return {
             totalSchedules,
             totalPatients,
-            taiVienPatients,
-            ngoaiVienPatients,
-            phuongPatients
+            taiVienPatients: taiVienChilds.reduce((sum, item) => sum + (parseInt(item.quantity) || 0), 0),
+            taiVienCount: taiVienChilds.length,
+            ngoaiVienPatients: ngoaiVienChilds.reduce((sum, item) => sum + (parseInt(item.quantity) || 0), 0),
+            ngoaiVienCount: ngoaiVienChilds.length,
+            phuongPatients: phuongChilds.reduce((sum, item) => sum + (parseInt(item.quantity) || 0), 0),
+            phuongCount: phuongChilds.length
         };
     }
 
     /**
-     * Render Summary Cards
+     * Render Top 5 Summary Cards
      */
     function renderSummary(summaryData) {
         const elemTotalSchedules = document.getElementById('summary-total-schedules');
@@ -867,10 +876,14 @@
         if (elemPhuong) elemPhuong.innerText = summaryData.phuongPatients.toLocaleString('vi-VN');
     }
 
+    // ==========================================================================
+    // 4. MONTH CALENDAR RENDERING (MASTER GROUP EVENT CARDS)
+    // ==========================================================================
+
     /**
-     * Render Calendar Grid & Cells
+     * Render Monthly Calendar Grid
      */
-    function renderCalendar(schedules) {
+    function renderCalendar(filteredChilds) {
         const container = document.getElementById('calendar-days-container');
         const emptyStateMsg = document.getElementById('empty-state-message');
         if (!container) return;
@@ -882,29 +895,26 @@
 
         // First day of current month
         const firstDayOfMonth = new Date(year, month, 1);
-        let dayOfWeek = firstDayOfMonth.getDay(); // 0 is Sunday, 1 is Monday...
-        // Convert to Monday start: Monday=0, Tuesday=1 ... Sunday=6
-        let firstDayIndex = (dayOfWeek + 6) % 7;
+        let dayOfWeek = firstDayOfMonth.getDay();
+        let firstDayIndex = (dayOfWeek + 6) % 7; // Monday = 0 ... Sunday = 6
 
-        // Total days in current month
+        // Total days in current month & previous month
         const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-        // Total days in previous month
         const prevMonthDays = new Date(year, month, 0).getDate();
 
-        // Group filtered schedules by Date (YYYY-MM-DD)
-        const scheduleMapByDate = {};
-        schedules.forEach(item => {
-            if (!scheduleMapByDate[item.examDate]) {
-                scheduleMapByDate[item.examDate] = [];
+        // Group filtered child schedules by Date (YYYY-MM-DD)
+        const childsByDateMap = {};
+        filteredChilds.forEach(item => {
+            if (!childsByDateMap[item.examDate]) {
+                childsByDateMap[item.examDate] = [];
             }
-            scheduleMapByDate[item.examDate].push(item);
+            childsByDateMap[item.examDate].push(item);
         });
 
         const todayStr = `${todayDate.getFullYear()}-${String(todayDate.getMonth() + 1).padStart(2, '0')}-${String(todayDate.getDate()).padStart(2, '0')}`;
 
-        // 19. Empty State Check
-        if (schedules.length === 0 && emptyStateMsg) {
+        // Empty State Check
+        if (filteredChilds.length === 0 && emptyStateMsg) {
             emptyStateMsg.classList.remove('hidden');
         } else if (emptyStateMsg) {
             emptyStateMsg.classList.add('hidden');
@@ -913,17 +923,17 @@
         // 1. Render Previous Month Padding Days
         for (let i = firstDayIndex - 1; i >= 0; i--) {
             const dayNum = prevMonthDays - i;
-            const cellElem = renderCalendarDay(dayNum, '', [], false, true);
+            const cellElem = renderCalendarDayCell(dayNum, '', [], false, true);
             container.appendChild(cellElem);
         }
 
         // 2. Render Current Month Days
         for (let day = 1; day <= daysInMonth; day++) {
             const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-            const daySchedules = scheduleMapByDate[dateStr] || [];
+            const dayChilds = childsByDateMap[dateStr] || [];
             const isToday = dateStr === todayStr;
 
-            const cellElem = renderCalendarDay(day, dateStr, daySchedules, isToday, false);
+            const cellElem = renderCalendarDayCell(day, dateStr, dayChilds, isToday, false);
             container.appendChild(cellElem);
         }
 
@@ -932,15 +942,15 @@
         const nextMonthPadding = (totalRendered <= 35) ? (35 - totalRendered) : (42 - totalRendered);
 
         for (let i = 1; i <= nextMonthPadding; i++) {
-            const cellElem = renderCalendarDay(i, '', [], false, true);
+            const cellElem = renderCalendarDayCell(i, '', [], false, true);
             container.appendChild(cellElem);
         }
     }
 
     /**
-     * Render Individual Calendar Day Cell
+     * Render Individual Calendar Day Cell containing Master Group Events
      */
-    function renderCalendarDay(dayNum, dateStr, daySchedules, isToday, isOtherMonth) {
+    function renderCalendarDayCell(dayNum, dateStr, dayChilds, isToday, isOtherMonth) {
         const cell = document.createElement('div');
         
         if (isOtherMonth) {
@@ -953,56 +963,58 @@
             return cell;
         }
 
-        cell.className = `calendar-day-cell p-2 flex flex-col justify-between cursor-pointer select-none relative ${isToday ? 'today-cell' : ''}`;
-
-        // Calculate Day Metrics
-        const totalGuests = daySchedules.reduce((sum, item) => sum + item.quantity, 0);
-        const taiVienGuests = daySchedules.filter(i => i.scheduleType === 'TAI_VIEN').reduce((sum, i) => sum + i.quantity, 0);
-        const ngoaiVienGuests = daySchedules.filter(i => i.scheduleType === 'NGOAI_VIEN').reduce((sum, i) => sum + i.quantity, 0);
-        const phuongGuests = daySchedules.filter(i => i.scheduleType === 'LICH_PHUONG').reduce((sum, i) => sum + i.quantity, 0);
+        cell.className = `calendar-day-cell p-1.5 flex flex-col justify-between cursor-pointer select-none relative ${isToday ? 'today-cell' : ''}`;
 
         let cellBodyContent = '';
 
-        if (daySchedules.length > 0) {
-            // Breakdown Metrics HTML
-            let breakdownHtml = '';
-            if (taiVienGuests > 0) {
-                breakdownHtml += `<div class="text-[10px] text-[#27496D] font-medium flex items-center justify-between"><span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full badge-dot-tai-vien inline-block shrink-0"></span>Tại viện</span><strong>${taiVienGuests}</strong></div>`;
-            }
-            if (ngoaiVienGuests > 0) {
-                breakdownHtml += `<div class="text-[10px] text-[#D97706] font-medium flex items-center justify-between"><span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full badge-dot-ngoai-vien inline-block shrink-0"></span>Ngoại viện</span><strong>${ngoaiVienGuests}</strong></div>`;
-            }
-            if (phuongGuests > 0) {
-                breakdownHtml += `<div class="text-[10px] text-[#7E22CE] font-medium flex items-center justify-between"><span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full badge-dot-phuong inline-block shrink-0"></span>Tại phường</span><strong>${phuongGuests}</strong></div>`;
-            }
+        if (dayChilds.length > 0) {
+            // Calculate Day Level Totals
+            const totalGuestsOnDay = dayChilds.reduce((sum, item) => sum + item.quantity, 0);
 
-            // Render first 2-3 unit names
-            const displayUnits = daySchedules.slice(0, 3);
-            const hiddenCount = daySchedules.length - displayUnits.length;
-
-            let unitsHtml = '';
-            displayUnits.forEach(sch => {
-                unitsHtml += renderScheduleEvent(sch);
+            // Group Child Schedules by Master (unitId)
+            const masterGroupsMap = {};
+            dayChilds.forEach(child => {
+                const uId = String(child.unitId || child.unitName);
+                if (!masterGroupsMap[uId]) {
+                    masterGroupsMap[uId] = {
+                        unitId: uId,
+                        unitName: child.unitName,
+                        masterCode: child.masterCode,
+                        date: dateStr,
+                        childSchedules: []
+                    };
+                }
+                masterGroupsMap[uId].childSchedules.push(child);
             });
 
-            if (hiddenCount > 0) {
-                unitsHtml += `
-                    <div class="text-[10px] text-[#27496D] font-bold mt-0.5 hover:underline">+ ${hiddenCount} lịch khác</div>
+            const masterGroupsList = Object.values(masterGroupsMap);
+            
+            // Render Master Group Cards (Max 2-3 visible, + hidden count)
+            const displayGroups = masterGroupsList.slice(0, 2);
+            const hiddenGroupsCount = masterGroupsList.length - displayGroups.length;
+
+            let masterCardsHtml = '';
+            displayGroups.forEach(group => {
+                masterCardsHtml += renderMasterGroupEventCard(group);
+            });
+
+            if (hiddenGroupsCount > 0) {
+                masterCardsHtml += `
+                    <div class="text-[10px] text-[#27496D] font-bold mt-1 text-center bg-[#E8F1FB] py-1 rounded-[3px] hover:underline">
+                        + ${hiddenGroupsCount} đơn vị khác
+                    </div>
                 `;
             }
 
             cellBodyContent = `
-                <div class="space-y-1.5">
-                    <div class="bg-[#F1F5F9] px-1.5 py-0.5 rounded-[3px] flex items-center justify-between">
-                        <span class="text-[10px] font-bold text-[#27496D]">Tổng ${totalGuests.toLocaleString('vi-VN')} người</span>
+                <div class="space-y-1">
+                    <div class="bg-[#F1F5F9] px-1.5 py-0.5 rounded-[3px] flex items-center justify-between border border-[#E2E8F0]">
+                        <span class="text-[10px] font-bold text-[#27496D]">Tổng ${totalGuestsOnDay.toLocaleString('vi-VN')} người</span>
+                        <span class="text-[9.5px] font-semibold text-[#6B7280]">${masterGroupsList.length} đơn vị</span>
                     </div>
 
-                    <div class="space-y-0.5">
-                        ${breakdownHtml}
-                    </div>
-
-                    <div class="pt-1 border-t border-[#F0F3F7] space-y-0.5 day-unit-list max-h-16 overflow-y-auto">
-                        ${unitsHtml}
+                    <div class="pt-0.5 space-y-1 day-unit-list max-h-[110px] overflow-y-auto pr-0.5">
+                        ${masterCardsHtml}
                     </div>
                 </div>
             `;
@@ -1013,54 +1025,94 @@
                 ${isToday ? '<span class="px-1.5 py-0.2 rounded-full bg-[#27496D] text-white text-[9px] font-bold uppercase tracking-wider">HÔM NAY</span>' : '<span></span>'}
                 <span class="text-xs font-extrabold ${isToday ? 'text-[#27496D]' : 'text-[#1F2937]'}">${dayNum}</span>
             </div>
-            <div class="flex-1">
+            <div class="flex-1 flex flex-col justify-start">
                 ${cellBodyContent}
             </div>
         `;
 
-        // Click event on day cell -> Open Day Drawer
+        // Click Event Handler on Day Cell / Master Group Card
         cell.addEventListener('click', function (e) {
-            const eventItem = e.target.closest('.event-item');
-            if (eventItem) {
+            const masterCardElem = e.target.closest('.master-group-card');
+            if (masterCardElem) {
                 e.stopPropagation();
-                const schId = eventItem.getAttribute('data-schedule-id');
-                const targetSch = daySchedules.find(s => String(s.scheduleId) === String(schId));
-                if (targetSch) {
-                    openScheduleDetail(targetSch);
-                }
+                const unitId = masterCardElem.getAttribute('data-unit-id');
+                const targetGroup = dayChilds.filter(s => String(s.unitId) === String(unitId));
+                openDayDrawer(dateStr, targetGroup, unitId);
                 return;
             }
 
-            openDayDrawer(dateStr, daySchedules);
+            openDayDrawer(dateStr, dayChilds, null);
         });
 
         return cell;
     }
 
     /**
-     * Render Schedule Event Pill
+     * Render ONE Master Group Event Card for a cell
      */
-    function renderScheduleEvent(sch) {
-        let dotClass = 'badge-dot-tai-vien';
-        if (sch.scheduleType === 'NGOAI_VIEN') dotClass = 'badge-dot-ngoai-vien';
-        else if (sch.scheduleType === 'LICH_PHUONG') dotClass = 'badge-dot-phuong';
+    function renderMasterGroupEventCard(group) {
+        const { unitId, unitName, childSchedules, date } = group;
+        const countOnDate = childSchedules.length;
+        const totalGuests = childSchedules.reduce((sum, s) => sum + s.quantity, 0);
+
+        const tvCount = childSchedules.filter(s => s.scheduleType === 'TAI_VIEN').length;
+        const nvCount = childSchedules.filter(s => s.scheduleType === 'NGOAI_VIEN').length;
+        const tpCount = childSchedules.filter(s => s.scheduleType === 'LICH_PHUONG').length;
+
+        let breakdownHtml = '';
+
+        if (countOnDate > 1) {
+            // Multi-child breakdown: 🏥 1 · 🚐 1 · 🏘 1
+            const badges = [];
+            if (tvCount > 0) badges.push(`<span class="inline-flex items-center gap-0.5 font-bold text-[#27496D]" title="${tvCount} Lịch tại viện"><span class="w-1.5 h-1.5 rounded-full badge-dot-tai-vien inline-block"></span>🏥 ${tvCount}</span>`);
+            if (nvCount > 0) badges.push(`<span class="inline-flex items-center gap-0.5 font-bold text-[#D97706]" title="${nvCount} Lịch ngoại viện"><span class="w-1.5 h-1.5 rounded-full badge-dot-ngoai-vien inline-block"></span>🚐 ${nvCount}</span>`);
+            if (tpCount > 0) badges.push(`<span class="inline-flex items-center gap-0.5 font-bold text-[#7E22CE]" title="${tpCount} Lịch tại phường"><span class="w-1.5 h-1.5 rounded-full badge-dot-phuong inline-block"></span>🏘 ${tpCount}</span>`);
+            breakdownHtml = badges.join('<span class="text-[#CBD5E1] mx-0.5">•</span>');
+        } else {
+            // Single child on this date
+            const sch = childSchedules[0];
+            let label = '🏥 Tại viện 1';
+            let colorClass = 'text-[#27496D]';
+            let dotClass = 'badge-dot-tai-vien';
+
+            if (sch.scheduleType === 'NGOAI_VIEN') {
+                label = '🚐 Ngoại viện 1';
+                colorClass = 'text-[#D97706]';
+                dotClass = 'badge-dot-ngoai-vien';
+            } else if (sch.scheduleType === 'LICH_PHUONG') {
+                label = '🏘 Tại phường 1';
+                colorClass = 'text-[#7E22CE]';
+                dotClass = 'badge-dot-phuong';
+            }
+
+            breakdownHtml = `<span class="inline-flex items-center gap-1 font-bold ${colorClass}"><span class="w-1.5 h-1.5 rounded-full ${dotClass} inline-block"></span>${label}</span>`;
+        }
 
         return `
-            <div class="event-item flex items-center justify-between text-[11px] text-[#1F2937] hover:text-[#27496D] font-semibold truncate cursor-pointer py-0.5 hover:bg-[#F3F6FA] px-1 rounded-[2px]" data-schedule-id="${sch.scheduleId}">
-                <span class="truncate flex items-center gap-1">
-                    <span class="w-1.5 h-1.5 rounded-full ${dotClass} inline-block shrink-0"></span>
-                    <span class="truncate">${escapeHtml(sch.unitName)}</span>
-                </span>
-                <span class="text-[10px] text-[#6B7280] font-normal ml-1 shrink-0">${sch.quantity}</span>
+            <div class="master-group-card bg-white hover:bg-[#F0F7FF] border border-[#CBD5E1] hover:border-[#27496D] p-1.5 rounded-[4px] shadow-2xs cursor-pointer transition-all space-y-1 text-xs select-none"
+                 data-unit-id="${escapeHtml(unitId)}" 
+                 data-date="${escapeHtml(date)}">
+                <div class="flex items-center justify-between font-bold text-[11px] text-[#1F2937] leading-tight">
+                    <span class="truncate text-[#27496D] flex items-center gap-1">
+                        <i class="fa-solid fa-building text-[10px] text-[#27496D] shrink-0"></i>
+                        <span class="truncate font-extrabold">${escapeHtml(unitName)}</span>
+                    </span>
+                </div>
+                <div class="flex items-center justify-between text-[10px] text-[#4B5563] font-medium">
+                    <span><strong class="text-[#15803D] font-bold">${totalGuests.toLocaleString('vi-VN')}</strong> khách</span>
+                    <span class="bg-[#E8F1FB] text-[#27496D] px-1 py-0.2 rounded-[2px] font-bold text-[9.5px]">${countOnDate} lịch</span>
+                </div>
+                <div class="flex items-center gap-1 text-[10px] pt-1 border-t border-[#F0F3F7] truncate">
+                    ${breakdownHtml}
+                </div>
             </div>
         `;
     }
 
     /**
-     * Render Main Dashboard Controller
+     * Main Dashboard Controller Renderer
      */
     function renderDashboard() {
-        // Update Month Header Label
         const [year, monthNum] = activeFilters.month.split('-').map(Number);
         currentYear = year;
         currentMonth = monthNum - 1;
@@ -1070,18 +1122,22 @@
             monthYearLabel.innerText = `THÁNG ${monthNum} / ${year}`;
         }
 
-        const allSchedules = getSchedules();
-        const filtered = filterSchedules(allSchedules);
-        const summaryData = calculateMonthlySummary(filtered);
+        const allChilds = extractAllChildSchedules();
+        const filteredChilds = filterChildSchedules(allChilds);
+        const summaryData = calculateMonthlySummary(filteredChilds);
 
         renderSummary(summaryData);
-        renderCalendar(filtered);
+        renderCalendar(filteredChilds);
     }
 
     // ==========================================================================
-    // 12. DAY DETAIL DRAWER (#day-detail-drawer)
+    // 5. DAY / GROUP DETAIL DRAWER (#day-detail-drawer)
     // ==========================================================================
-    function openDayDrawer(dateStr, daySchedules) {
+
+    /**
+     * Opens the slide-over drawer displaying grouped child schedules
+     */
+    function openDayDrawer(dateStr, dayChilds, targetUnitId) {
         const drawer = document.getElementById('day-detail-drawer');
         const backdrop = document.getElementById('day-detail-drawer-backdrop');
         const titleElem = document.getElementById('drawer-day-title');
@@ -1095,16 +1151,25 @@
             dateStr = `${y}-${m}-01`;
         }
 
-        // Format Date (DD/MM/YYYY)
         const dateParts = dateStr.split('-');
         const dateDisplay = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
-        
-        if (titleElem) titleElem.innerText = `LỊCH KHÁM NGÀY ${dateDisplay}`;
 
-        const totalGuests = daySchedules.reduce((sum, item) => sum + item.quantity, 0);
-        if (subtitleElem) subtitleElem.innerText = `Tổng: ${totalGuests.toLocaleString('vi-VN')} người • ${daySchedules.length} lịch`;
+        let displayChilds = dayChilds || [];
+        if (targetUnitId) {
+            displayChilds = dayChilds.filter(s => String(s.unitId) === String(targetUnitId));
+        }
 
-        renderDayDetail(contentElem, daySchedules);
+        // Determine Drawer Title
+        if (targetUnitId && displayChilds.length > 0) {
+            if (titleElem) titleElem.innerText = displayChilds[0].unitName;
+        } else {
+            if (titleElem) titleElem.innerText = `LỊCH KHÁM NGÀY ${dateDisplay}`;
+        }
+
+        const totalGuests = displayChilds.reduce((sum, item) => sum + item.quantity, 0);
+        if (subtitleElem) subtitleElem.innerText = `Tổng: ${totalGuests.toLocaleString('vi-VN')} khách • ${displayChilds.length} lịch con`;
+
+        renderDayDrawerContent(contentElem, displayChilds);
 
         if (backdrop) {
             backdrop.classList.remove('opacity-0', 'pointer-events-none');
@@ -1113,73 +1178,76 @@
         drawer.classList.remove('translate-x-full');
     }
 
-    function renderDayDetail(containerElem, daySchedules) {
-        if (daySchedules.length === 0) {
+    /**
+     * Renders grouped child schedule cards inside the Drawer
+     */
+    function renderDayDrawerContent(containerElem, childList) {
+        if (childList.length === 0) {
             containerElem.innerHTML = `
                 <div class="text-center py-12 text-[#9CA3AF] space-y-2">
                     <i class="fa-solid fa-calendar-xmark text-4xl"></i>
-                    <p class="text-xs font-medium">Không có lịch khám sức khỏe trong ngày này.</p>
+                    <p class="text-xs font-medium">Không có lịch khám sức khỏe nào trong ngày này.</p>
                 </div>
             `;
             return;
         }
 
-        // Group by 3 Types
-        const taiVienList = daySchedules.filter(i => i.scheduleType === 'TAI_VIEN');
-        const ngoaiVienList = daySchedules.filter(i => i.scheduleType === 'NGOAI_VIEN');
-        const phuongList = daySchedules.filter(i => i.scheduleType === 'LICH_PHUONG');
+        // Group child schedules into 3 categories
+        const taiVienList = childList.filter(i => i.scheduleType === 'TAI_VIEN');
+        const ngoaiVienList = childList.filter(i => i.scheduleType === 'NGOAI_VIEN');
+        const phuongList = childList.filter(i => i.scheduleType === 'LICH_PHUONG');
 
         let html = '';
 
-        // Section 1: TẠI VIỆN
+        // Section 1: LỊCH TẠI VIỆN
         if (taiVienList.length > 0) {
             const tvCount = taiVienList.reduce((s, i) => s + i.quantity, 0);
             html += `
                 <div class="bg-white rounded-[4px] border border-[#D9DEE5] overflow-hidden space-y-2 shadow-2xs">
                     <div class="bg-[#E8F1FB] px-3.5 py-2 border-b border-[#B4CBE5] flex items-center justify-between text-[#27496D]">
                         <span class="font-bold uppercase text-xs flex items-center gap-1.5">
-                            <span class="w-2.5 h-2.5 rounded-full bg-[#27496D]"></span> TẠI VIỆN
+                            <span class="w-2.5 h-2.5 rounded-full bg-[#27496D]"></span> LỊCH TẠI VIỆN
                         </span>
                         <span class="font-extrabold text-xs">${tvCount.toLocaleString('vi-VN')} người (${taiVienList.length} lịch)</span>
                     </div>
-                    <div class="p-3 space-y-2">
-                        ${renderDrawerGroupItems(taiVienList)}
+                    <div class="p-3 space-y-2.5">
+                        ${renderDrawerChildItems(taiVienList)}
                     </div>
                 </div>
             `;
         }
 
-        // Section 2: NGOẠI VIỆN
+        // Section 2: LỊCH NGOẠI VIỆN
         if (ngoaiVienList.length > 0) {
             const nvCount = ngoaiVienList.reduce((s, i) => s + i.quantity, 0);
             html += `
                 <div class="bg-white rounded-[4px] border border-[#D9DEE5] overflow-hidden space-y-2 shadow-2xs">
                     <div class="bg-[#FFF3E0] px-3.5 py-2 border-b border-[#FFE0B2] flex items-center justify-between text-[#E65100]">
                         <span class="font-bold uppercase text-xs flex items-center gap-1.5">
-                            <span class="w-2.5 h-2.5 rounded-full bg-[#ED6C02]"></span> NGOẠI VIỆN
+                            <span class="w-2.5 h-2.5 rounded-full bg-[#ED6C02]"></span> LỊCH NGOẠI VIỆN
                         </span>
                         <span class="font-extrabold text-xs">${nvCount.toLocaleString('vi-VN')} người (${ngoaiVienList.length} lịch)</span>
                     </div>
-                    <div class="p-3 space-y-2">
-                        ${renderDrawerGroupItems(ngoaiVienList)}
+                    <div class="p-3 space-y-2.5">
+                        ${renderDrawerChildItems(ngoaiVienList)}
                     </div>
                 </div>
             `;
         }
 
-        // Section 3: TẠI PHƯỜNG
+        // Section 3: LỊCH TẠI PHƯỜNG
         if (phuongList.length > 0) {
             const tpCount = phuongList.reduce((s, i) => s + i.quantity, 0);
             html += `
                 <div class="bg-white rounded-[4px] border border-[#D9DEE5] overflow-hidden space-y-2 shadow-2xs">
                     <div class="bg-[#F3E8FF] px-3.5 py-2 border-b border-[#E9D5FF] flex items-center justify-between text-[#6B21A8]">
                         <span class="font-bold uppercase text-xs flex items-center gap-1.5">
-                            <span class="w-2.5 h-2.5 rounded-full bg-[#7E22CE]"></span> TẠI PHƯỜNG
+                            <span class="w-2.5 h-2.5 rounded-full bg-[#7E22CE]"></span> LỊCH TẠI PHƯỜNG
                         </span>
                         <span class="font-extrabold text-xs">${tpCount.toLocaleString('vi-VN')} người (${phuongList.length} lịch)</span>
                     </div>
-                    <div class="p-3 space-y-2">
-                        ${renderDrawerGroupItems(phuongList)}
+                    <div class="p-3 space-y-2.5">
+                        ${renderDrawerChildItems(phuongList)}
                     </div>
                 </div>
             `;
@@ -1187,12 +1255,13 @@
 
         containerElem.innerHTML = html;
 
-        // Bind clicks on schedule items in drawer
-        const drawerItems = containerElem.querySelectorAll('.drawer-schedule-item');
-        drawerItems.forEach(elem => {
-            elem.addEventListener('click', function () {
+        // Bind [ Xem chi tiết ] button clicks
+        const detailButtons = containerElem.querySelectorAll('.btn-view-child-detail');
+        detailButtons.forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
                 const schId = this.getAttribute('data-id');
-                const schObj = daySchedules.find(s => String(s.scheduleId) === String(schId));
+                const schObj = childList.find(s => String(s.scheduleId) === String(schId) || String(s.id) === String(schId));
                 if (schObj) {
                     openScheduleDetail(schObj);
                 }
@@ -1200,23 +1269,40 @@
         });
     }
 
-    function renderDrawerGroupItems(items) {
-        return items.map(sch => `
-            <div class="drawer-schedule-item p-2.5 bg-[#F8FAFC] border border-[#D9DEE5] hover:border-[#27496D] rounded-[4px] transition-all cursor-pointer space-y-1" data-id="${sch.scheduleId}">
-                <div class="flex items-center justify-between">
-                    <span class="font-bold text-[#1F2937] text-xs hover:text-[#27496D]">${escapeHtml(sch.unitName)}</span>
-                    <span class="font-bold text-[#15803D] text-xs">${sch.quantity.toLocaleString('vi-VN')} người</span>
+    /**
+     * Generates HTML for individual child schedule cards in the Drawer
+     */
+    function renderDrawerChildItems(items) {
+        return items.map(sch => {
+            const dParts = (sch.examDate || '').split('-');
+            const dateStr = dParts.length === 3 ? `${dParts[2]}/${dParts[1]}/${dParts[0]}` : sch.examDate;
+
+            return `
+                <div class="drawer-schedule-item p-3 bg-[#F8FAFC] border border-[#D9DEE5] hover:border-[#27496D] rounded-[4px] transition-all space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-[#1F2937] text-xs">Mã lịch con: <strong class="font-mono text-[#27496D] font-extrabold">${escapeHtml(sch.scheduleId)}</strong></span>
+                        <span class="font-bold text-[#15803D] text-xs bg-[#E6F4EA] px-2 py-0.5 rounded-[3px]">${sch.quantity.toLocaleString('vi-VN')} khách</span>
+                    </div>
+                    <div class="text-[11px] font-semibold text-[#1F2937]">
+                        <i class="fa-solid fa-building text-[10px] mr-1 text-[#27496D]"></i>Đơn vị: ${escapeHtml(sch.unitName)}
+                    </div>
+                    <div class="flex items-center justify-between text-[11px] text-[#6B7280]">
+                        <span><i class="fa-solid fa-calendar-day text-[10px] mr-1 text-[#27496D]"></i>${dateStr} (${sch.startTime} – ${sch.endTime})</span>
+                        <span><i class="fa-solid fa-hospital text-[10px] mr-1 text-[#27496D]"></i>${escapeHtml(sch.facility)}</span>
+                    </div>
+                    <div class="text-[11px] text-[#4B5563]">
+                        <i class="fa-solid fa-location-dot text-[10px] mr-1 text-[#27496D]"></i>${escapeHtml(sch.location)}
+                    </div>
+                    <div class="flex items-center justify-between pt-2 border-t border-[#E2E8F0] text-[11px]">
+                        <span class="text-[#6B7280]">CB: <strong class="text-[#1F2937]">${escapeHtml(sch.personInCharge)}</strong></span>
+                        <button type="button" data-id="${escapeHtml(sch.scheduleId)}" class="btn-view-child-detail btn-primary text-xs px-3 h-[30px] flex-btn-center font-semibold cursor-pointer">
+                            <i class="fa-solid fa-eye text-[11px]"></i>
+                            <span>Xem chi tiết</span>
+                        </button>
+                    </div>
                 </div>
-                <div class="flex items-center justify-between text-[11px] text-[#6B7280]">
-                    <span><i class="fa-solid fa-clock text-[10px] mr-1 text-[#27496D]"></i>${sch.startTime} – ${sch.endTime}</span>
-                    <span><i class="fa-solid fa-hospital text-[10px] mr-1 text-[#27496D]"></i>${escapeHtml(sch.facility)}</span>
-                </div>
-                <div class="flex items-center justify-between text-[10px] text-[#9CA3AF] pt-1 border-t border-[#E2E8F0]">
-                    <span>Mã: <strong class="font-mono text-[#4B5563]">${escapeHtml(sch.scheduleId)}</strong></span>
-                    <span>CB: <strong class="text-[#4B5563]">${escapeHtml(sch.personInCharge)}</strong></span>
-                </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
     }
 
     function closeDayDrawer() {
@@ -1233,19 +1319,23 @@
     }
 
     // ==========================================================================
-    // 13. SCHEDULE DETAIL MODAL (#modal-schedule-detail)
+    // 6. CHILD SCHEDULE DETAIL MODAL (#modal-schedule-detail)
     // ==========================================================================
+
+    /**
+     * Opens the Schedule Detail Modal with full metadata of the CHILD SCHEDULE
+     */
     function openScheduleDetail(sch) {
         const modal = document.getElementById('modal-schedule-detail');
         if (!modal || !sch) return;
 
-        renderScheduleDetail(sch);
+        renderScheduleDetailModal(sch);
 
         modal.classList.remove('hidden');
         modal.classList.add('flex');
     }
 
-    function renderScheduleDetail(sch) {
+    function renderScheduleDetailModal(sch) {
         const badgeElem = document.getElementById('modal-type-badge');
         const unitNameElem = document.getElementById('modal-unit-name');
         const codeElem = document.getElementById('modal-schedule-code');
@@ -1263,7 +1353,7 @@
         const statusElem = document.getElementById('modal-status-badge');
 
         if (unitNameElem) unitNameElem.innerText = sch.unitName || 'Đơn vị KSK';
-        if (codeElem) codeElem.innerText = `Mã lịch: ${sch.scheduleId || '--'}`;
+        if (codeElem) codeElem.innerText = `Mã lịch con: ${sch.scheduleId || '--'}`;
 
         if (detailCodeElem) detailCodeElem.innerText = sch.scheduleId || '--';
         if (detailUnitElem) detailUnitElem.innerText = sch.unitName || '--';
@@ -1280,25 +1370,25 @@
         if (locationElem) locationElem.innerText = sch.location || '--';
         if (picElem) picElem.innerText = sch.personInCharge || '--';
 
-        // Type Badge Style & Label
+        // Type Badge Label & Styles
         let typeLabelText = 'Tại viện';
+        let badgeClass = 'type-tag-tai-vien';
         if (sch.scheduleType === 'NGOAI_VIEN') {
             typeLabelText = 'Ngoại viện';
+            badgeClass = 'type-tag-ngoai-vien';
         } else if (sch.scheduleType === 'LICH_PHUONG') {
             typeLabelText = 'Tại phường';
+            badgeClass = 'type-tag-phuong';
         }
+
         if (detailTypeElem) detailTypeElem.innerText = typeLabelText;
 
         if (badgeElem) {
-            let badgeClass = 'type-tag-tai-vien';
-            if (sch.scheduleType === 'NGOAI_VIEN') badgeClass = 'type-tag-ngoai-vien';
-            else if (sch.scheduleType === 'LICH_PHUONG') badgeClass = 'type-tag-phuong';
-
             badgeElem.className = `px-2 py-0.5 rounded-[3px] text-[10px] font-bold ${badgeClass}`;
             badgeElem.innerText = typeLabelText;
         }
 
-        // Status Badge Style
+        // Status Badge Formatting
         if (statusElem) {
             const st = sch.status || 'CHO_DUYET';
             let stText = 'Chờ duyệt';
@@ -1329,7 +1419,7 @@
     }
 
     // ==========================================================================
-    // NAVIGATION & FILTER ACTIONS
+    // 7. NAVIGATION & FILTER ACTION HANDLERS
     // ==========================================================================
     function goToPreviousMonth() {
         const [y, m] = activeFilters.month.split('-').map(Number);
@@ -1395,7 +1485,6 @@
         renderDashboard();
     }
 
-    // Filter Change Event Handlers
     function onFilterMonthChange(val) {
         activeFilters.month = val || '2026-09';
         renderDashboard();
@@ -1441,4 +1530,5 @@
     window.closeDayDrawer = closeDayDrawer;
     window.openScheduleDetail = openScheduleDetail;
     window.closeScheduleDetail = closeScheduleDetail;
+    window.getUnitScheduleSummary = getUnitScheduleSummary;
 })();

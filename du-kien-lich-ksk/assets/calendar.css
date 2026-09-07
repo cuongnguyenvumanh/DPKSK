@@ -1,8 +1,42 @@
 /* ==========================================================================
    PLANNING CALENDAR (DỰ KIẾN LỊCH KSK) - REFINED UI & GRID STYLES
+   Enterprise HIS Standard Layout Architecture
    ========================================================================== */
 
-/* Calendar Cell Base */
+/* 1. TABLE GRID LAYOUT & EQUAL 7 COLUMNS ALIGNMENT */
+.calendar-table-month,
+#month-view-container table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.calendar-table-month th,
+#month-view-container table th,
+.calendar-table-month td,
+#month-view-container table td {
+    width: 14.2857% !important;
+    max-width: 14.2857% !important;
+    box-sizing: border-box;
+}
+
+.calendar-table-week,
+#week-view-container table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.calendar-table-week th.day-col-header,
+#week-view-container table th.day-col-header,
+.calendar-table-week td.calendar-cell,
+#week-view-container table td.calendar-cell {
+    width: calc((100% - 96px) / 7) !important;
+    max-width: calc((100% - 96px) / 7) !important;
+    box-sizing: border-box;
+}
+
+/* 2. CALENDAR CELL BASE & UNIFORM SIZING */
 .calendar-cell {
     min-height: 120px;
     vertical-align: top;
@@ -17,7 +51,20 @@
     background-color: #F0F7FF !important;
 }
 
-/* Event Card Modern Left Accent Style */
+/* Month Cell Day Header & Height */
+.month-day-cell {
+    height: 145px !important;
+    vertical-align: top !important;
+    box-sizing: border-box;
+    padding: 6px !important;
+}
+
+.month-day-cell.other-month {
+    background-color: #FAFAFA !important;
+    opacity: 0.6;
+}
+
+/* 3. EVENT CARD MODERN STYLE & HIERARCHY */
 .event-card {
     transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
@@ -25,8 +72,13 @@
 }
 
 .event-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 14px rgba(39, 73, 109, 0.15);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(39, 73, 109, 0.15);
+}
+
+.master-group-card {
+    position: relative;
+    overflow: hidden;
 }
 
 .event-card-tai-vien {
@@ -53,15 +105,7 @@
     border-bottom: 1px solid #E9D5FF;
 }
 
-.event-card-phat-sinh {
-    background-color: #FEF2F2;
-    border-left: 4px solid #D32F2F;
-    border-top: 1px solid #FCA5A5;
-    border-right: 1px solid #FCA5A5;
-    border-bottom: 1px solid #FCA5A5;
-}
-
-/* Empty Cell Add Button */
+/* 4. EMPTY CELL ADD PLACEHOLDER & BUTTONS */
 .cell-add-placeholder {
     border: 1.5px dashed #CBD5E1;
     border-radius: 4px;
@@ -86,17 +130,7 @@
     box-shadow: 0 1px 3px rgba(39, 73, 109, 0.2);
 }
 
-/* Month Cell Day Header */
-.month-day-cell {
-    min-height: 110px;
-}
-
-.month-day-cell.other-month {
-    background-color: #F8FAFC;
-    opacity: 0.55;
-}
-
-/* Custom Scrollbar for Calendar Grid */
+/* 5. CUSTOM SCROLLBAR FOR CALENDAR GRID */
 .calendar-grid-scroll::-webkit-scrollbar {
     height: 6px;
     width: 6px;
@@ -114,3 +148,4 @@
 .calendar-grid-scroll::-webkit-scrollbar-thumb:hover {
     background: #94A3B8;
 }
+

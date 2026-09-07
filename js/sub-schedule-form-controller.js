@@ -45,16 +45,6 @@
             if (nameElem) nameElem.innerText = customerName;
             if (codeElem) codeElem.innerText = customerCode;
             if (guestsElem) guestsElem.innerText = estimatedCount;
-
-            const tenDonViElem = document.getElementById('tenDonVi');
-            if (tenDonViElem && !tenDonViElem.value) {
-                tenDonViElem.value = customerName;
-            }
-
-            const guestCountElem = document.getElementById('guestCount');
-            if (guestCountElem && !guestCountElem.value) {
-                guestCountElem.value = estimatedCount;
-            }
         },
 
         setupInitialData: function() {
@@ -121,26 +111,10 @@
             existingData.unitId = params.get('customerCode') || params.get('unitId') || this.editId || 'KAD019962025';
 
             // Set categories, staff, equipment, locations arrays
-            this.categories = existingData.danhMucThucHien || [
-                { stt: 1, name: 'Khám Nội tổng quát', quantity: 180, note: 'Khám lâm sàng sinh hiệu' },
-                { stt: 2, name: 'Lấy máu xét nghiệm', quantity: 180, note: 'Nhịn ăn sáng' },
-                { stt: 3, name: 'Siêu âm ổ bụng tổng quát', quantity: 180, note: 'Nhịn ăn sáng' }
-            ];
-
-            this.staff = existingData.duKienNhanLuc || [
-                { stt: 1, role: 'Bác sĩ khám chính', count: 2, shift: 'Cả ngày', note: 'Khoa Nội' },
-                { stt: 2, role: 'Điều dưỡng lấy mẫu', count: 3, shift: 'Sáng', note: 'Kíp xét nghiệm' },
-                { stt: 3, role: 'KTV Siêu âm', count: 2, shift: 'Cả ngày', note: 'Phòng CĐHA' }
-            ];
-
-            this.equipment = existingData.duKienTrangThietBi || [
-                { stt: 1, name: 'Máy siêu âm màu 4D', quantity: 2, note: 'Kiểm tra trước ca' },
-                { stt: 2, name: 'Bộ dụng cụ lấy mẫu xét nghiệm', quantity: 180, note: 'Vật tư đóng gói sẵn' }
-            ];
-
-            this.locations = existingData.diaDiemToChuc || [
-                { stt: 1, tenDiem: existingData.facility || 'Địa điểm chính', diaChi: 'Số 10 Phạm Văn Bạch, Cầu Giấy, Hà Nội', gioCoMat: '07:00', gioKetThuc: '17:00', ghiChu: 'Trụ sở công ty' }
-            ];
+            this.categories = existingData.danhMucThucHien || [];
+            this.staff = existingData.duKienNhanLuc || [];
+            this.equipment = existingData.duKienTrangThietBi || [];
+            this.locations = existingData.diaDiemToChuc || [];
 
             // Fill form fields
             if (window.SubScheduleHelper) {
@@ -149,9 +123,9 @@
 
             // Initialize WorkTypeTagInput component
             if (window.WorkTypeTagInput) {
-                const initialWorkTypes = (existingData && Array.isArray(existingData.loaiHinhCongViec) && existingData.loaiHinhCongViec.length > 0)
+                const initialWorkTypes = (existingData && Array.isArray(existingData.loaiHinhCongViec))
                     ? existingData.loaiHinhCongViec
-                    : (this.typeCode === 'LICH_PHUONG' ? ['Khám sức khỏe phường', 'Lấy mẫu xét nghiệm'] : ['Khám sức khỏe', 'Lấy mẫu xét nghiệm']);
+                    : [];
                 window.WorkTypeTagInput.init(initialWorkTypes, this.typeCode);
             }
         },
@@ -167,6 +141,49 @@
             this.renderStaffTable();
             this.renderEquipmentTable();
             this.renderLocationTable();
+        },
+
+        // Confirmation Modal Helper
+        showConfirmModal: function(message, onConfirm) {
+            let modal = document.getElementById('sub-schedule-confirm-modal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'sub-schedule-confirm-modal';
+                modal.className = 'fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-xs p-4 hidden';
+                modal.innerHTML = `
+                    <div class="bg-white rounded-[8px] shadow-2xl border border-[#D9DEE5] max-w-sm w-full p-5 space-y-4 animate-in fade-in zoom-in-95 duration-150">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-[#FEE2E2] text-[#D32F2F] flex items-center justify-center text-base shrink-0 font-bold">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-bold text-[#1F2937]">Xác nhận xóa dữ liệu</h3>
+                                <p id="sub-schedule-confirm-msg" class="text-xs text-[#6B7280] mt-0.5 leading-relaxed">Bạn có chắc chắn muốn xóa dữ liệu này không?</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-end gap-2 pt-2 border-t border-[#E6EAF0]">
+                            <button type="button" id="sub-schedule-confirm-cancel" class="px-3.5 py-1.5 rounded-[4px] border border-[#D9DEE5] bg-white text-[#4B5563] hover:bg-[#F4F5F7] text-xs font-semibold">Hủy</button>
+                            <button type="button" id="sub-schedule-confirm-ok" class="px-3.5 py-1.5 rounded-[4px] bg-[#D32F2F] hover:bg-[#9A0007] text-white text-xs font-semibold border-none shadow-xs">Xóa</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            }
+
+            const msgElem = document.getElementById('sub-schedule-confirm-msg');
+            const cancelBtn = document.getElementById('sub-schedule-confirm-cancel');
+            const okBtn = document.getElementById('sub-schedule-confirm-ok');
+
+            if (msgElem) msgElem.innerText = message || 'Bạn có chắc chắn muốn xóa dữ liệu này không?';
+
+            const closeModal = () => modal.classList.add('hidden');
+            cancelBtn.onclick = closeModal;
+            okBtn.onclick = () => {
+                closeModal();
+                if (typeof onConfirm === 'function') onConfirm();
+            };
+
+            modal.classList.remove('hidden');
         },
 
         // 1. Category Table
@@ -190,9 +207,14 @@
                         <input type="text" value="${item.note || ''}" class="cat-input-note sys-input text-xs h-8" placeholder="Ghi chú...">
                     </td>
                     <td class="py-2 px-3 text-center">
-                        <button type="button" onclick="SubScheduleController.deleteCategoryRow(${index})" class="text-[#D32F2F] hover:text-[#9A0007] p-1">
-                            <i class="fa-solid fa-trash-can text-xs"></i>
-                        </button>
+                        <div class="flex items-center justify-center gap-1.5">
+                            <button type="button" onclick="SubScheduleController.editCategoryRow(${index})" class="w-7 h-7 rounded-[4px] bg-[#E8F1FB] text-[#27496D] hover:bg-[#D4E4F7] flex items-center justify-center transition-colors" title="Chỉnh sửa">
+                                <i class="fa-solid fa-pen-to-square text-xs"></i>
+                            </button>
+                            <button type="button" onclick="SubScheduleController.confirmDeleteCategoryRow(${index})" class="w-7 h-7 rounded-[4px] bg-[#FEE2E2] text-[#D32F2F] hover:bg-[#FCA5A5] flex items-center justify-center transition-colors" title="Xóa">
+                                <i class="fa-solid fa-trash-can text-xs"></i>
+                            </button>
+                        </div>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -204,6 +226,22 @@
             this.categories.push({ stt: this.categories.length + 1, name: 'Khám chuyên khoa mới', quantity: guestCount, note: '' });
             this.renderCategoryTable();
             this.updateSummaryBar();
+        },
+
+        editCategoryRow: function(index) {
+            const trs = document.querySelectorAll('#table-category-body tr');
+            if (trs && trs[index]) {
+                const input = trs[index].querySelector('input, select');
+                if (input) {
+                    input.focus();
+                    trs[index].classList.add('bg-[#FEF9C3]', 'transition-colors');
+                    setTimeout(() => trs[index].classList.remove('bg-[#FEF9C3]'), 1200);
+                }
+            }
+        },
+
+        confirmDeleteCategoryRow: function(index) {
+            this.showConfirmModal('Bạn có chắc chắn muốn xóa danh mục thực hiện này không?', () => this.deleteCategoryRow(index));
         },
 
         deleteCategoryRow: function(index) {
@@ -247,9 +285,14 @@
                         <input type="text" value="${item.note || ''}" class="staff-input-note sys-input text-xs h-8" placeholder="Ghi chú...">
                     </td>
                     <td class="py-2 px-3 text-center">
-                        <button type="button" onclick="SubScheduleController.deleteStaffRow(${index})" class="text-[#D32F2F] hover:text-[#9A0007] p-1">
-                            <i class="fa-solid fa-trash-can text-xs"></i>
-                        </button>
+                        <div class="flex items-center justify-center gap-1.5">
+                            <button type="button" onclick="SubScheduleController.editStaffRow(${index})" class="w-7 h-7 rounded-[4px] bg-[#E8F1FB] text-[#27496D] hover:bg-[#D4E4F7] flex items-center justify-center transition-colors" title="Chỉnh sửa">
+                                <i class="fa-solid fa-pen-to-square text-xs"></i>
+                            </button>
+                            <button type="button" onclick="SubScheduleController.confirmDeleteStaffRow(${index})" class="w-7 h-7 rounded-[4px] bg-[#FEE2E2] text-[#D32F2F] hover:bg-[#FCA5A5] flex items-center justify-center transition-colors" title="Xóa">
+                                <i class="fa-solid fa-trash-can text-xs"></i>
+                            </button>
+                        </div>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -260,6 +303,22 @@
             this.staff.push({ stt: this.staff.length + 1, role: 'Cán bộ Tiếp đón & Hướng dẫn', count: 2, shift: 'Cả ngày', note: '' });
             this.renderStaffTable();
             this.updateSummaryBar();
+        },
+
+        editStaffRow: function(index) {
+            const trs = document.querySelectorAll('#table-staff-body tr');
+            if (trs && trs[index]) {
+                const select = trs[index].querySelector('select, input');
+                if (select) {
+                    select.focus();
+                    trs[index].classList.add('bg-[#FEF9C3]', 'transition-colors');
+                    setTimeout(() => trs[index].classList.remove('bg-[#FEF9C3]'), 1200);
+                }
+            }
+        },
+
+        confirmDeleteStaffRow: function(index) {
+            this.showConfirmModal('Bạn có chắc chắn muốn xóa vị trí nhân lực này không?', () => this.deleteStaffRow(index));
         },
 
         deleteStaffRow: function(index) {
@@ -289,9 +348,14 @@
                         <input type="text" value="${item.note || ''}" class="equip-input-note sys-input text-xs h-8" placeholder="Tình trạng / Ghi chú...">
                     </td>
                     <td class="py-2 px-3 text-center">
-                        <button type="button" onclick="SubScheduleController.deleteEquipmentRow(${index})" class="text-[#D32F2F] hover:text-[#9A0007] p-1">
-                            <i class="fa-solid fa-trash-can text-xs"></i>
-                        </button>
+                        <div class="flex items-center justify-center gap-1.5">
+                            <button type="button" onclick="SubScheduleController.editEquipmentRow(${index})" class="w-7 h-7 rounded-[4px] bg-[#E8F1FB] text-[#27496D] hover:bg-[#D4E4F7] flex items-center justify-center transition-colors" title="Chỉnh sửa">
+                                <i class="fa-solid fa-pen-to-square text-xs"></i>
+                            </button>
+                            <button type="button" onclick="SubScheduleController.confirmDeleteEquipmentRow(${index})" class="w-7 h-7 rounded-[4px] bg-[#FEE2E2] text-[#D32F2F] hover:bg-[#FCA5A5] flex items-center justify-center transition-colors" title="Xóa">
+                                <i class="fa-solid fa-trash-can text-xs"></i>
+                            </button>
+                        </div>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -301,6 +365,22 @@
         addEquipmentRow: function() {
             this.equipment.push({ stt: this.equipment.length + 1, name: 'Bộ dụng cụ chuyên khoa bổ sung', quantity: 1, note: '' });
             this.renderEquipmentTable();
+        },
+
+        editEquipmentRow: function(index) {
+            const trs = document.querySelectorAll('#table-equipment-body tr');
+            if (trs && trs[index]) {
+                const input = trs[index].querySelector('input, select');
+                if (input) {
+                    input.focus();
+                    trs[index].classList.add('bg-[#FEF9C3]', 'transition-colors');
+                    setTimeout(() => trs[index].classList.remove('bg-[#FEF9C3]'), 1200);
+                }
+            }
+        },
+
+        confirmDeleteEquipmentRow: function(index) {
+            this.showConfirmModal('Bạn có chắc chắn muốn xóa thiết bị/máy móc này không?', () => this.deleteEquipmentRow(index));
         },
 
         deleteEquipmentRow: function(index) {
@@ -332,9 +412,14 @@
                         <input type="time" value="${item.gioKetThuc || '17:00'}" class="input-loc-gioketthuc sys-input text-xs h-8 text-center">
                     </td>
                     <td class="py-2 px-3 text-center">
-                        <button type="button" onclick="SubScheduleController.deleteLocationRow(${index})" class="text-[#D32F2F] hover:text-[#9A0007] p-1">
-                            <i class="fa-solid fa-trash-can text-xs"></i>
-                        </button>
+                        <div class="flex items-center justify-center gap-1.5">
+                            <button type="button" onclick="SubScheduleController.editLocationRow(${index})" class="w-7 h-7 rounded-[4px] bg-[#E8F1FB] text-[#27496D] hover:bg-[#D4E4F7] flex items-center justify-center transition-colors" title="Chỉnh sửa">
+                                <i class="fa-solid fa-pen-to-square text-xs"></i>
+                            </button>
+                            <button type="button" onclick="SubScheduleController.confirmDeleteLocationRow(${index})" class="w-7 h-7 rounded-[4px] bg-[#FEE2E2] text-[#D32F2F] hover:bg-[#FCA5A5] flex items-center justify-center transition-colors" title="Xóa">
+                                <i class="fa-solid fa-trash-can text-xs"></i>
+                            </button>
+                        </div>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -344,6 +429,22 @@
         addLocationRow: function() {
             this.locations.push({ stt: this.locations.length + 1, tenDiem: 'Điểm khám phụ / Đợt 2', diaChi: '', gioCoMat: '07:30', gioKetThuc: '17:00', ghiChu: '' });
             this.renderLocationTable();
+        },
+
+        editLocationRow: function(index) {
+            const trs = document.querySelectorAll('#table-locations-body tr');
+            if (trs && trs[index]) {
+                const input = trs[index].querySelector('input, select');
+                if (input) {
+                    input.focus();
+                    trs[index].classList.add('bg-[#FEF9C3]', 'transition-colors');
+                    setTimeout(() => trs[index].classList.remove('bg-[#FEF9C3]'), 1200);
+                }
+            }
+        },
+
+        confirmDeleteLocationRow: function(index) {
+            this.showConfirmModal('Bạn có chắc chắn muốn xóa điểm tổ chức này không?', () => this.deleteLocationRow(index));
         },
 
         deleteLocationRow: function(index) {

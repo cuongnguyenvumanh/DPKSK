@@ -134,16 +134,16 @@
             const today = new Date().toISOString().split('T')[0];
             const cfg = window.ScheduleFormConfig ? window.ScheduleFormConfig.CONFIG[scheduleType] : {};
 
-            const guestCount = parseInt(document.getElementById('guestCount')?.value) || 180;
+            const guestCount = parseInt(document.getElementById('guestCount')?.value) || 0;
             const countNam = parseInt(document.getElementById('soLuongNam')?.value) || 0;
             const countNu = parseInt(document.getElementById('soLuongNu')?.value) || 0;
 
-            const examDate = document.getElementById('examDate')?.value || today;
-            const tenDonVi = document.getElementById('tenDonVi')?.value.trim() || 'Công ty CP Tập đoàn FPT';
-            const facility = document.getElementById('facility')?.value.trim() || cfg.defaultFacility || 'Medlatec Ba Đình';
+            const examDate = document.getElementById('examDate')?.value || '';
+            const tenDonVi = document.getElementById('tenDonVi')?.value.trim() || '';
+            const facility = document.getElementById('facility')?.value.trim() || '';
 
             // Collect Work Types as ARRAY of strings
-            const loaiHinhCongViec = window.WorkTypeTagInput ? window.WorkTypeTagInput.getTags() : ['Khám sức khỏe'];
+            const loaiHinhCongViec = window.WorkTypeTagInput ? window.WorkTypeTagInput.getTags() : [];
 
             // Collect Consulting Form
             const hinhThucTuVan = document.querySelector('input[name="hinhThucTuVan"]:checked')?.value || 'TRUC_TIEP';
@@ -157,16 +157,16 @@
             const duKienTrangThietBi = this.collectEquipmentRows();
 
             // Vehicle Proposal
-            const coXe = document.getElementById('toggle-co-xe')?.checked || (cfg.hasXe || false);
+            const coXe = document.getElementById('toggle-co-xe')?.checked || false;
             const deXuatXe = {
                 coXe: coXe,
-                loaiXe: document.getElementById('xe-loai-xe')?.value || 'Xe 16 chỗ',
-                soLuongXe: parseInt(document.getElementById('xe-so-luong')?.value) || 1,
-                diemDon: document.getElementById('xe-diem-don')?.value.trim() || 'Bệnh viện MEDLATEC Ba Đình',
-                diemDua: document.getElementById('xe-diem-dua')?.value.trim() || facility,
-                gioXuatPhat: document.getElementById('xe-gio-xuat-phat')?.value || '06:30',
-                gioCoMat: document.getElementById('xe-gio-co-mat')?.value || '07:00',
-                gioKetThuc: document.getElementById('xe-gio-ket-thuc')?.value || '17:30',
+                loaiXe: document.getElementById('xe-loai-xe')?.value || '',
+                soLuongXe: parseInt(document.getElementById('xe-so-luong')?.value) || 0,
+                diemDon: document.getElementById('xe-diem-don')?.value.trim() || '',
+                diemDua: document.getElementById('xe-diem-dua')?.value.trim() || '',
+                gioXuatPhat: document.getElementById('xe-gio-xuat-phat')?.value || '',
+                gioCoMat: document.getElementById('xe-gio-co-mat')?.value || '',
+                gioKetThuc: document.getElementById('xe-gio-ket-thuc')?.value || '',
                 ghiChu: document.getElementById('xe-ghi-chu')?.value.trim() || ''
             };
 
@@ -177,11 +177,10 @@
                 loaiLich: cfg.typeLabel || 'Lịch khám',
 
                 // Section 1
-                ngayDienLich: document.getElementById('ngayDienLich')?.value || today,
-                phongKinhDoanh: document.getElementById('phongKinhDoanh')?.value || 'TTKD Hà Nội',
-                canBoKinhDoanhPhuTrach: document.getElementById('canBoKinhDoanhPhuTrach')?.value || 'BS. Nguyễn Văn An (NV0042)',
-                tinhTrangHopDongPAKD: document.getElementById('tinhTrangHopDongPAKD')?.value || 'Đã ký hợp đồng + PAKD đã duyệt',
-                duyetBGD: document.getElementById('duyetBGD')?.value || 'Đã duyệt',
+                ngayDienLich: document.getElementById('ngayDienLich')?.value || '',
+                phongKinhDoanh: document.getElementById('phongKinhDoanh')?.value || '',
+                canBoKinhDoanhPhuTrach: document.getElementById('canBoKinhDoanhPhuTrach')?.value || '',
+                tinhTrangHopDongPAKD: document.getElementById('tinhTrangHopDongPAKD')?.value || '',
 
                 // Section 2
                 examDate: examDate,
@@ -190,15 +189,15 @@
                 caSang: document.getElementById('check-shift-sang')?.checked || false,
                 caChieu: document.getElementById('check-shift-chieu')?.checked || false,
                 gioSang: {
-                    batDau: document.getElementById('time-sang-start')?.value || '07:30',
-                    ketThuc: document.getElementById('time-sang-end')?.value || '11:00'
+                    batDau: document.getElementById('time-sang-start')?.value || '',
+                    ketThuc: document.getElementById('time-sang-end')?.value || ''
                 },
                 gioChieu: {
-                    batDau: document.getElementById('time-chieu-start')?.value || '13:30',
-                    ketThuc: document.getElementById('time-chieu-end')?.value || '17:30'
+                    batDau: document.getElementById('time-chieu-start')?.value || '',
+                    ketThuc: document.getElementById('time-chieu-end')?.value || ''
                 },
-                gioXeXuatPhat: document.getElementById('gioXeXuatPhat')?.value || '06:30',
-                gioCoMat: document.getElementById('gioCoMat')?.value || '07:00',
+                gioXeXuatPhat: document.getElementById('gioXeXuatPhat')?.value || '',
+                gioCoMat: document.getElementById('gioCoMat')?.value || '',
                 ghiChuThoiGian: document.getElementById('ghiChuThoiGian')?.value.trim() || '',
 
                 // Section 3
@@ -208,7 +207,7 @@
 
                 // Section 4
                 tenDonVi: tenDonVi,
-                tinhThanh: document.getElementById('province')?.value || 'Hà Nội',
+                tinhThanh: document.getElementById('province')?.value || '',
                 facility: facility,
                 diaDiemKham: facility,
                 diaDiemToChuc: diaDiemToChuc,
@@ -231,7 +230,7 @@
                 deXuatXe: deXuatXe,
 
                 // Section 10
-                gioChuyenMau: document.getElementById('gioChuyenMau')?.value || '14:30',
+                gioChuyenMau: document.getElementById('gioChuyenMau')?.value || '',
                 duTruBanhSua: parseInt(document.getElementById('duTruBanhSua')?.value) || 0,
                 luuY: document.getElementById('notes')?.value.trim() || '',
                 notes: document.getElementById('notes')?.value.trim() || '',
@@ -251,16 +250,13 @@
                 trs.forEach((tr, index) => {
                     const ten = tr.querySelector('.input-loc-ten')?.value.trim() || defaultFacility;
                     const diaChi = tr.querySelector('.input-loc-diachi')?.value.trim() || '';
-                    const gioCoMat = tr.querySelector('.input-loc-giocomat')?.value || '07:00';
-                    const gioKetThuc = tr.querySelector('.input-loc-gioketthuc')?.value || '17:00';
+                    const gioCoMat = tr.querySelector('.input-loc-giocomat')?.value || '';
+                    const gioKetThuc = tr.querySelector('.input-loc-gioketthuc')?.value || '';
                     const ghiChu = tr.querySelector('.input-loc-ghichu')?.value.trim() || '';
                     if (ten) {
                         rows.push({ stt: index + 1, tenDiem: ten, diaChi, gioCoMat, gioKetThuc, ghiChu });
                     }
                 });
-            }
-            if (rows.length === 0) {
-                rows.push({ stt: 1, tenDiem: defaultFacility, diaChi: '', gioCoMat: '07:00', gioKetThuc: '17:00', ghiChu: 'Điểm khám chính' });
             }
             return rows;
         },
@@ -334,7 +330,6 @@
             if (data.phongKinhDoanh && document.getElementById('phongKinhDoanh')) document.getElementById('phongKinhDoanh').value = data.phongKinhDoanh;
             if (data.canBoKinhDoanhPhuTrach && document.getElementById('canBoKinhDoanhPhuTrach')) document.getElementById('canBoKinhDoanhPhuTrach').value = data.canBoKinhDoanhPhuTrach;
             if (data.tinhTrangHopDongPAKD && document.getElementById('tinhTrangHopDongPAKD')) document.getElementById('tinhTrangHopDongPAKD').value = data.tinhTrangHopDongPAKD;
-            if (data.duyetBGD && document.getElementById('duyetBGD')) document.getElementById('duyetBGD').value = data.duyetBGD;
 
             // Section 2
             if ((data.examDate || data.ngayKham) && document.getElementById('examDate')) document.getElementById('examDate').value = data.examDate || data.ngayKham;

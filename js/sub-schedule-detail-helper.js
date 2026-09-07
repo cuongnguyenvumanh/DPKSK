@@ -107,10 +107,9 @@
                         </div>
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-3 text-xs">
                             <div><span class="text-[#6B7280]">Ngày điền lịch:</span> <strong class="text-[#1F2937] block font-bold">${data.ngayDienLich || '---'}</strong></div>
-                            <div><span class="text-[#6B7280]">Phòng Kinh doanh:</span> <strong class="text-[#1F2937] block font-bold">${data.phongKinhDoanh || 'TTKD Hà Nội'}</strong></div>
+                            <div><span class="text-[#6B7280]">Phòng Kinh doanh:</span> <strong class="text-[#1F2937] block font-bold">${data.phongKinhDoanh || '---'}</strong></div>
                             <div><span class="text-[#6B7280]">CBKD phụ trách:</span> <strong class="text-[#27496D] block font-bold">${data.canBoKinhDoanhPhuTrach || '---'}</strong></div>
-                            <div><span class="text-[#6B7280]">Tình trạng hợp đồng / PAKD:</span> <strong class="text-[#27496D] block font-bold">${data.tinhTrangHopDongPAKD || 'Đã ký hợp đồng + PAKD đã duyệt'}</strong></div>
-                            <div><span class="text-[#6B7280]">Duyệt của BGĐ:</span> <span class="badge-success font-semibold px-2 py-0.5 text-[11px]">${data.duyetBGD || 'Đã duyệt'}</span></div>
+                            <div><span class="text-[#6B7280]">Tình trạng hợp đồng / PAKD:</span> <strong class="text-[#27496D] block font-bold">${data.tinhTrangHopDongPAKD || '---'}</strong></div>
                             <div><span class="text-[#6B7280]">Sử dụng hình ảnh truyền thông:</span> <strong class="text-[#1F2937] block">${data.truyenThong ? 'Có' : 'Không'}</strong></div>
                         </div>
                     </div>

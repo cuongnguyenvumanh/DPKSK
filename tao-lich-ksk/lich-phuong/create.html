@@ -93,7 +93,7 @@
                                     </div>
                                     <h2 class="text-sm font-bold text-[#1F2937]">1. Thông tin lịch & Kinh doanh</h2>
                                 </div>
-                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
                                     <div>
                                         <label class="sys-label">Ngày điền lịch <span class="text-[#D32F2F]">*</span></label>
                                         <input type="date" id="ngayDienLich" class="sys-input text-xs h-9 font-medium">
@@ -102,7 +102,8 @@
                                     <div>
                                         <label class="sys-label">Phòng Kinh doanh - TTKD toàn quốc <span class="text-[#D32F2F]">*</span></label>
                                         <select id="phongKinhDoanh" class="sys-select text-xs h-9">
-                                            <option value="TTKD Hà Nội" selected>TTKD Hà Nội</option>
+                                            <option value="" selected>Chọn phòng kinh doanh</option>
+                                            <option value="TTKD Hà Nội">TTKD Hà Nội</option>
                                             <option value="TTKD Miền Bắc">TTKD Miền Bắc</option>
                                             <option value="Phòng KSK Cá nhân & Trường học">Phòng KSK Cá nhân & Trường học</option>
                                         </select>
@@ -111,7 +112,8 @@
                                     <div>
                                         <label class="sys-label">Cán bộ kinh doanh phụ trách HĐ <span class="text-[#D32F2F]">*</span></label>
                                         <select id="canBoKinhDoanhPhuTrach" class="sys-select text-xs h-9">
-                                            <option value="BS. Nguyễn Văn An (NV0042)" selected>BS. Nguyễn Văn An (NV0042)</option>
+                                            <option value="" selected>Chọn cán bộ kinh doanh phụ trách</option>
+                                            <option value="BS. Nguyễn Văn An (NV0042)">BS. Nguyễn Văn An (NV0042)</option>
                                             <option value="Phạm Quốc Huy (NV0154)">Phạm Quốc Huy (NV0154)</option>
                                         </select>
                                         <span id="err-canBoKinhDoanhPhuTrach" class="text-[11px] text-[#D32F2F] hidden mt-1"></span>
@@ -119,19 +121,12 @@
                                     <div>
                                         <label class="sys-label">Tình trạng hợp đồng / PAKD <span class="text-[#D32F2F]">*</span></label>
                                         <select id="tinhTrangHopDongPAKD" class="sys-select text-xs h-9">
-                                            <option value="Đã ký hợp đồng + PAKD đã duyệt" selected>Đã ký hợp đồng + PAKD đã duyệt</option>
+                                            <option value="" selected>Chọn tình trạng hợp đồng / PAKD</option>
+                                            <option value="Đã ký hợp đồng + PAKD đã duyệt">Đã ký hợp đồng + PAKD đã duyệt</option>
                                             <option value="Đã ký hợp đồng + PAKD chưa duyệt">Đã ký hợp đồng + PAKD chưa duyệt</option>
                                             <option value="Chưa ký hợp đồng">Chưa ký hợp đồng</option>
                                         </select>
                                         <span id="err-tinhTrangHopDongPAKD" class="text-[11px] text-[#D32F2F] hidden mt-1"></span>
-                                    </div>
-                                    <div>
-                                        <label class="sys-label">Duyệt của BGĐ</label>
-                                        <select id="duyetBGD" class="sys-select text-xs h-9">
-                                            <option value="Chưa duyệt">Chưa duyệt</option>
-                                            <option value="Đã duyệt" selected>Đã duyệt</option>
-                                            <option value="Không yêu cầu">Không yêu cầu</option>
-                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -155,24 +150,24 @@
                                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                                             <div class="bg-[#F8FAFC] border border-[#D9DEE5] rounded-[4px] p-2 flex items-center justify-between gap-2">
                                                 <label class="flex items-center gap-1.5 cursor-pointer font-semibold select-none shrink-0">
-                                                    <input type="checkbox" id="check-shift-sang" checked class="w-4 h-4 text-[#7E22CE] rounded-[2px]">
+                                                    <input type="checkbox" id="check-shift-sang" class="w-4 h-4 text-[#7E22CE] rounded-[2px]">
                                                     <span>Ca Sáng</span>
                                                 </label>
                                                 <div class="flex items-center gap-1">
-                                                    <input type="time" id="time-sang-start" value="07:30" class="sys-input text-xs h-7 text-center font-bold w-20">
+                                                    <input type="time" id="time-sang-start" value="" class="sys-input text-xs h-7 text-center font-bold w-20">
                                                     <span>-</span>
-                                                    <input type="time" id="time-sang-end" value="11:00" class="sys-input text-xs h-7 text-center font-bold w-20">
+                                                    <input type="time" id="time-sang-end" value="" class="sys-input text-xs h-7 text-center font-bold w-20">
                                                 </div>
                                             </div>
                                             <div class="bg-[#F8FAFC] border border-[#D9DEE5] rounded-[4px] p-2 flex items-center justify-between gap-2">
                                                 <label class="flex items-center gap-1.5 cursor-pointer font-semibold select-none shrink-0">
-                                                    <input type="checkbox" id="check-shift-chieu" checked class="w-4 h-4 text-[#7E22CE] rounded-[2px]">
+                                                    <input type="checkbox" id="check-shift-chieu" class="w-4 h-4 text-[#7E22CE] rounded-[2px]">
                                                     <span>Ca Chiều</span>
                                                 </label>
                                                 <div class="flex items-center gap-1">
-                                                    <input type="time" id="time-chieu-start" value="13:30" class="sys-input text-xs h-7 text-center font-bold w-20">
+                                                    <input type="time" id="time-chieu-start" value="" class="sys-input text-xs h-7 text-center font-bold w-20">
                                                     <span>-</span>
-                                                    <input type="time" id="time-chieu-end" value="17:30" class="sys-input text-xs h-7 text-center font-bold w-20">
+                                                    <input type="time" id="time-chieu-end" value="" class="sys-input text-xs h-7 text-center font-bold w-20">
                                                 </div>
                                             </div>
                                         </div>
@@ -181,7 +176,7 @@
                                     
                                     <div>
                                         <label class="sys-label">Thời gian có mặt tại Điểm khám</label>
-                                        <input type="time" id="gioCoMat" value="07:00" class="sys-input text-xs h-9">
+                                        <input type="time" id="gioCoMat" value="" class="sys-input text-xs h-9">
                                     </div>
                                     <div>
                                         <label class="sys-label">Ghi chú thời gian triển khai</label>
@@ -256,14 +251,15 @@
                                     <div>
                                         <label class="sys-label">Tỉnh / Thành phố</label>
                                         <select id="province" class="sys-select text-xs h-9">
-                                            <option value="Hà Nội" selected>Hà Nội</option>
+                                            <option value="" selected>Chọn tỉnh / thành phố</option>
+                                            <option value="Hà Nội">Hà Nội</option>
                                             <option value="Vĩnh Phúc">Vĩnh Phúc</option>
                                             <option value="Bắc Ninh">Bắc Ninh</option>
                                         </select>
                                     </div>
                                     <div class="md:col-span-2">
                                         <label class="sys-label">Trạm Y tế Phường / Địa điểm tổ chức <span class="text-[#D32F2F]">*</span></label>
-                                        <input type="text" id="facility" value="Trạm Y tế Phường Cống Vị" class="sys-input text-xs h-9 font-medium">
+                                        <input type="text" id="facility" value="" placeholder="Nhập Trạm Y tế Phường / Địa điểm tổ chức" class="sys-input text-xs h-9 font-medium">
                                     </div>
                                 </div>
 
@@ -284,7 +280,7 @@
                                                     <th class="py-2 px-3">Địa chỉ</th>
                                                     <th class="py-2 px-3 text-center w-24">Giờ có mặt</th>
                                                     <th class="py-2 px-3 text-center w-24">Giờ kết thúc</th>
-                                                    <th class="py-2 px-3 text-center w-14">Xóa</th>
+                                                    <th class="py-2 px-3 text-center w-24">Thao tác</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="table-locations-body" class="divide-y divide-[#E6EAF0] text-xs"></tbody>
@@ -304,16 +300,16 @@
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
                                     <div>
                                         <label class="sys-label">Tổng số lượng dự kiến <span class="text-[#D32F2F]">*</span></label>
-                                        <input type="number" id="guestCount" min="1" value="180" class="sys-input text-xs h-9 font-bold text-[#7E22CE]">
+                                        <input type="number" id="guestCount" min="1" value="" placeholder="Nhập số lượng khách dự kiến" class="sys-input text-xs h-9 font-bold text-[#7E22CE]">
                                         <span id="err-guestCount" class="text-[11px] text-[#D32F2F] hidden mt-1"></span>
                                     </div>
                                     <div>
                                         <label class="sys-label">Số lượng Nam</label>
-                                        <input type="number" id="soLuongNam" min="0" value="100" class="sys-input text-xs h-9">
+                                        <input type="number" id="soLuongNam" min="0" value="" placeholder="Nhập số lượng Nam" class="sys-input text-xs h-9">
                                     </div>
                                     <div>
                                         <label class="sys-label">Số lượng Nữ</label>
-                                        <input type="number" id="soLuongNu" min="0" value="80" class="sys-input text-xs h-9">
+                                        <input type="number" id="soLuongNu" min="0" value="" placeholder="Nhập số lượng Nữ" class="sys-input text-xs h-9">
                                     </div>
                                 </div>
                                 <span id="err-soLuongGender" class="text-[11px] text-[#D32F2F] hidden mt-1 block"></span>
@@ -340,7 +336,7 @@
                                                 <th class="py-2 px-3">Danh mục / dịch vụ</th>
                                                 <th class="py-2 px-3 text-center w-28">SL dự kiến</th>
                                                 <th class="py-2 px-3">Ghi chú</th>
-                                                <th class="py-2 px-3 text-center w-14">Xóa</th>
+                                                <th class="py-2 px-3 text-center w-24">Thao tác</th>
                                             </tr>
                                         </thead>
                                         <tbody id="table-category-body" class="divide-y divide-[#E6EAF0] text-xs"></tbody>
@@ -370,7 +366,7 @@
                                                 <th class="py-2 px-3 text-center w-24">Số lượng</th>
                                                 <th class="py-2 px-3 text-center w-28">Ca làm việc</th>
                                                 <th class="py-2 px-3">Ghi chú</th>
-                                                <th class="py-2 px-3 text-center w-14">Xóa</th>
+                                                <th class="py-2 px-3 text-center w-24">Thao tác</th>
                                             </tr>
                                         </thead>
                                         <tbody id="table-staff-body" class="divide-y divide-[#E6EAF0] text-xs"></tbody>
@@ -399,7 +395,7 @@
                                                 <th class="py-2 px-3">Thiết bị / Máy móc</th>
                                                 <th class="py-2 px-3 text-center w-24">Số lượng</th>
                                                 <th class="py-2 px-3">Ghi chú</th>
-                                                <th class="py-2 px-3 text-center w-14">Xóa</th>
+                                                <th class="py-2 px-3 text-center w-24">Thao tác</th>
                                             </tr>
                                         </thead>
                                         <tbody id="table-equipment-body" class="divide-y divide-[#E6EAF0] text-xs"></tbody>
@@ -417,29 +413,30 @@
                                         <h2 class="text-sm font-bold text-[#1F2937]">9. Đề xuất xe & Vận chuyển</h2>
                                     </div>
                                     <label class="flex items-center gap-2 cursor-pointer font-bold text-xs text-[#7E22CE]">
-                                        <input type="checkbox" id="toggle-co-xe" checked onchange="document.getElementById('xe-detail-panel').classList.toggle('hidden', !this.checked)" class="w-4 h-4 text-[#7E22CE] rounded-[2px]">
+                                        <input type="checkbox" id="toggle-co-xe" onchange="document.getElementById('xe-detail-panel').classList.toggle('hidden', !this.checked)" class="w-4 h-4 text-[#7E22CE] rounded-[2px]">
                                         <span>Có đề xuất xe</span>
                                     </label>
                                 </div>
-                                <div id="xe-detail-panel" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs pt-1">
+                                <div id="xe-detail-panel" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs hidden pt-1">
                                     <div>
                                         <label class="sys-label">Loại xe</label>
                                         <select id="xe-loai-xe" class="sys-select text-xs h-9">
-                                            <option value="Xe 16 chỗ" selected>Xe 16 chỗ</option>
+                                            <option value="" selected>Chọn loại xe</option>
+                                            <option value="Xe 16 chỗ">Xe 16 chỗ</option>
                                             <option value="Xe 29 chỗ">Xe 29 chỗ</option>
                                         </select>
                                     </div>
                                     <div>
                                         <label class="sys-label">Số lượng xe</label>
-                                        <input type="number" id="xe-so-luong" min="1" value="1" class="sys-input text-xs h-9">
+                                        <input type="number" id="xe-so-luong" min="1" value="" placeholder="Nhập số lượng xe" class="sys-input text-xs h-9">
                                     </div>
                                     <div>
                                         <label class="sys-label">Điểm đón</label>
-                                        <input type="text" id="xe-diem-don" value="Bệnh viện MEDLATEC Ba Đình" class="sys-input text-xs h-9">
+                                        <input type="text" id="xe-diem-don" value="" placeholder="Nhập điểm đón" class="sys-input text-xs h-9">
                                     </div>
                                     <div>
                                         <label class="sys-label">Điểm đưa</label>
-                                        <input type="text" id="xe-diem-dua" value="Trạm Y tế Phường Cống Vị" class="sys-input text-xs h-9">
+                                        <input type="text" id="xe-diem-dua" value="" placeholder="Nhập điểm đưa" class="sys-input text-xs h-9">
                                     </div>
                                 </div>
                             </div>
@@ -455,11 +452,11 @@
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
                                     <div>
                                         <label class="sys-label">Giờ chuyển mẫu về</label>
-                                        <input type="time" id="gioChuyenMau" value="14:30" class="sys-input text-xs h-9">
+                                        <input type="time" id="gioChuyenMau" value="" class="sys-input text-xs h-9">
                                     </div>
                                     <div>
                                         <label class="sys-label">Dự trù bánh sữa (Số xuất)</label>
-                                        <input type="number" id="duTruBanhSua" min="0" value="180" class="sys-input text-xs h-9 font-bold text-[#7E22CE]">
+                                        <input type="number" id="duTruBanhSua" min="0" value="" placeholder="Nhập số suất bánh sữa" class="sys-input text-xs h-9 font-bold text-[#7E22CE]">
                                     </div>
                                     <div class="md:col-span-3">
                                         <label class="sys-label">Lưu ý & Hướng dẫn triển khai (SĐT CB phụ trách trạm, vị trí cắm điện...)</label>

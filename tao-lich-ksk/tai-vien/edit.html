@@ -93,7 +93,7 @@
                                     </div>
                                     <h2 class="text-sm font-bold text-[#1F2937]">1. Thông tin lịch & Kinh doanh</h2>
                                 </div>
-                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
                                     <div>
                                         <label class="sys-label">Ngày điền lịch <span class="text-[#D32F2F]">*</span></label>
                                         <input type="date" id="ngayDienLich" class="sys-input text-xs h-9 font-medium">
@@ -101,6 +101,7 @@
                                     <div>
                                         <label class="sys-label">Phòng Kinh doanh - TTKD toàn quốc <span class="text-[#D32F2F]">*</span></label>
                                         <select id="phongKinhDoanh" class="sys-select text-xs h-9">
+                                            <option value="">Chọn phòng kinh doanh</option>
                                             <option value="TTKD Hà Nội">TTKD Hà Nội</option>
                                             <option value="TTKD Miền Bắc">TTKD Miền Bắc</option>
                                         </select>
@@ -108,6 +109,7 @@
                                     <div>
                                         <label class="sys-label">Cán bộ kinh doanh phụ trách HĐ <span class="text-[#D32F2F]">*</span></label>
                                         <select id="canBoKinhDoanhPhuTrach" class="sys-select text-xs h-9">
+                                            <option value="">Chọn cán bộ kinh doanh phụ trách</option>
                                             <option value="BS. Nguyễn Văn An (NV0042)">BS. Nguyễn Văn An (NV0042)</option>
                                             <option value="Lê Hoàng Nam (NV0105)">Lê Hoàng Nam (NV0105)</option>
                                         </select>
@@ -115,15 +117,9 @@
                                     <div>
                                         <label class="sys-label">Tình trạng hợp đồng / PAKD <span class="text-[#D32F2F]">*</span></label>
                                         <select id="tinhTrangHopDongPAKD" class="sys-select text-xs h-9">
+                                            <option value="">Chọn tình trạng hợp đồng / PAKD</option>
                                             <option value="Đã ký hợp đồng + PAKD đã duyệt">Đã ký hợp đồng + PAKD đã duyệt</option>
                                             <option value="Đã ký hợp đồng + PAKD chưa duyệt">Đã ký hợp đồng + PAKD chưa duyệt</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label class="sys-label">Duyệt của BGĐ</label>
-                                        <select id="duyetBGD" class="sys-select text-xs h-9">
-                                            <option value="Chưa duyệt">Chưa duyệt</option>
-                                            <option value="Đã duyệt">Đã duyệt</option>
                                         </select>
                                     </div>
                                 </div>
@@ -268,7 +264,7 @@
                                                     <th class="py-2 px-3">Tầng / Địa chỉ</th>
                                                     <th class="py-2 px-3 text-center w-24">Giờ đón</th>
                                                     <th class="py-2 px-3 text-center w-24">Giờ kết thúc</th>
-                                                    <th class="py-2 px-3 text-center w-14">Xóa</th>
+                                                    <th class="py-2 px-3 text-center w-24">Thao tác</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="table-locations-body" class="divide-y divide-[#E6EAF0] text-xs"></tbody>
@@ -322,7 +318,7 @@
                                                 <th class="py-2 px-3">Danh mục / dịch vụ</th>
                                                 <th class="py-2 px-3 text-center w-28">SL dự kiến</th>
                                                 <th class="py-2 px-3">Ghi chú</th>
-                                                <th class="py-2 px-3 text-center w-14">Xóa</th>
+                                                <th class="py-2 px-3 text-center w-24">Thao tác</th>
                                             </tr>
                                         </thead>
                                         <tbody id="table-category-body" class="divide-y divide-[#E6EAF0] text-xs"></tbody>
@@ -352,7 +348,7 @@
                                                 <th class="py-2 px-3 text-center w-24">Số lượng</th>
                                                 <th class="py-2 px-3 text-center w-28">Ca làm việc</th>
                                                 <th class="py-2 px-3">Ghi chú</th>
-                                                <th class="py-2 px-3 text-center w-14">Xóa</th>
+                                                <th class="py-2 px-3 text-center w-24">Thao tác</th>
                                             </tr>
                                         </thead>
                                         <tbody id="table-staff-body" class="divide-y divide-[#E6EAF0] text-xs"></tbody>
@@ -381,7 +377,7 @@
                                                 <th class="py-2 px-3">Thiết bị / Máy móc</th>
                                                 <th class="py-2 px-3 text-center w-24">Số lượng</th>
                                                 <th class="py-2 px-3">Ghi chú</th>
-                                                <th class="py-2 px-3 text-center w-14">Xóa</th>
+                                                <th class="py-2 px-3 text-center w-24">Thao tác</th>
                                             </tr>
                                         </thead>
                                         <tbody id="table-equipment-body" class="divide-y divide-[#E6EAF0] text-xs"></tbody>

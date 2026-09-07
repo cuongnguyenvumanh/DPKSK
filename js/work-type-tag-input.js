@@ -14,28 +14,26 @@
          * Supports: workTypes (array/string), loaiHinhCongViec (array/string), workType (string)
          */
         extractWorkTypes: function(data) {
-            if (!data) return ['Khám sức khỏe'];
+            if (!data) return [];
 
             // If passed direct array
             if (Array.isArray(data)) {
-                const cleaned = data.map(t => String(t).trim()).filter(Boolean);
-                return cleaned.length > 0 ? cleaned : ['Khám sức khỏe'];
+                return data.map(t => String(t).trim()).filter(Boolean);
             }
 
             // If passed direct string
             if (typeof data === 'string' && data.trim()) {
-                const parts = data.split(',').map(t => t.trim()).filter(Boolean);
-                return parts.length > 0 ? parts : [data.trim()];
+                return data.split(',').map(t => t.trim()).filter(Boolean);
             }
 
             // If passed schedule object
             if (typeof data === 'object') {
                 // 1. workTypes array
-                if (Array.isArray(data.workTypes) && data.workTypes.length > 0) {
+                if (Array.isArray(data.workTypes)) {
                     return data.workTypes.map(t => String(t).trim()).filter(Boolean);
                 }
                 // 2. loaiHinhCongViec array
-                if (Array.isArray(data.loaiHinhCongViec) && data.loaiHinhCongViec.length > 0) {
+                if (Array.isArray(data.loaiHinhCongViec)) {
                     return data.loaiHinhCongViec.map(t => String(t).trim()).filter(Boolean);
                 }
                 // 3. Legacy workTypes string
@@ -52,7 +50,7 @@
                 }
             }
 
-            return ['Khám sức khỏe'];
+            return [];
         },
 
         init: function(initialData = [], typeCode = 'NGOAI_VIEN') {
