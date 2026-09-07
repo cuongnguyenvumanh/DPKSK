@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Không tìm thấy trang | MEDLATEC Điều phối KSK</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #F4F5F7;
+            color: #1F2937;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .card {
+            background: #ffffff;
+            border: 1px solid #D9DEE5;
+            border-radius: 8px;
+            padding: 40px 36px;
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        }
+        .error-code {
+            font-size: 64px;
+            font-weight: 800;
+            color: #27496D;
+            line-height: 1;
+            margin-bottom: 12px;
+        }
+        h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 8px;
+        }
+        p {
+            font-size: 14px;
+            color: #6B7280;
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+        .btn-home {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #27496D;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 10px 22px;
+            border-radius: 6px;
+            transition: background-color 0.2s ease;
+        }
+        .btn-home:hover {
+            background-color: #1F3D5A;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="error-code">404</div>
+        <h1>Không tìm thấy trang yêu cầu</h1>
+        <p>Đường dẫn bạn vừa truy cập không tồn tại hoặc đã được thay đổi. Vui lòng quay lại trang chủ.</p>
+        <a id="home-link" class="btn-home" href="index.html">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>Về trang chủ</span>
+        </a>
+    </div>
+
+    <script>
+        // Tự tính đường dẫn về trang chủ theo URL repo
+        const pathname = window.location.pathname;
+        const repoNameMatch = pathname.match(/^\/([^/]+)/);
+        if (repoNameMatch && window.location.hostname.endsWith('github.io')) {
+            document.getElementById('home-link').href = '/' + repoNameMatch[1] + '/index.html';
+        }
+    </script>
+</body>
+</html>
