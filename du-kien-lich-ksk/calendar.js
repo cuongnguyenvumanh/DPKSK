@@ -570,6 +570,7 @@ function loadSchedulesData() {
         const masterCode = master.code || master.maLich || unitId;
         const defaultPic = master.personInCharge || master.cbPhuTrach || master.contactPerson || "Nguyễn Văn An";
         const defaultFacility = master.facility || master.coSo || "MEDLATEC Ba Đình";
+        let addedCount = 0;
 
         // 1. From seed childSchedules array
         if (Array.isArray(master.childSchedules)) {
@@ -603,6 +604,7 @@ function loadSchedulesData() {
                     rawSubObject: sub,
                     rawMasterObject: master
                 });
+                addedCount++;
             });
         }
 
@@ -642,8 +644,41 @@ function loadSchedulesData() {
                             rawSubObject: sub,
                             rawMasterObject: master
                         });
+                        addedCount++;
                     });
                 }
+            });
+        }
+
+        // 3. Fallback for master unit without childSchedules or step2Data
+        if (addedCount === 0) {
+            let typeLabel = master.loaiLich || "Lịch tại viện";
+            let schType = "TAI_VIEN";
+            if (typeLabel.includes("ngoại viện")) schType = "NGOAI_VIEN";
+            else if (typeLabel.includes("phường")) schType = "LICH_PHUONG";
+
+            childSchedules.push({
+                id: `${unitId}-main`,
+                scheduleId: masterCode,
+                unitId: unitId,
+                tenDonVi: unitName,
+                customerCode: masterCode,
+                loaiLich: typeLabel,
+                scheduleType: schType,
+                tuNgay: master.tuNgay || master.examDate || "2026-09-15",
+                denNgay: master.denNgay || master.tuNgay || master.examDate || "2026-09-15",
+                examDate: master.tuNgay || master.examDate || "2026-09-15",
+                ngayKham: master.tuNgay || master.examDate || "2026-09-15",
+                ca: "Sang",
+                gioBatDau: "07:30",
+                gioKetThuc: "11:30",
+                soLuongKhach: Number(master.estimatedCount || master.soLuong || 0),
+                tongNhanSu: Number(master.tongNhanSu || 10),
+                coSo: master.facility || defaultFacility,
+                diaDiemKham: master.examLocation || master.address || "Địa điểm khám",
+                cbPhuTrach: defaultPic,
+                trangThai: master.status || "Dự kiến",
+                rawMasterObject: master
             });
         }
     };
@@ -1334,173 +1369,508 @@ function renderFooterBar(activeList) {
 }
 
 // ==========================================
-// 6. CREATE PLANNED SCHEDULE MODAL FLOW
+// 6. QUICK PLANNING DRAWER & SUB-SCHEDULES CONTROLLER
 // ==========================================
+
+let editingMasterId = null;
+let currentDraftSubSchedules = [];
+let editingSubId = null;
+let currentMiniSubScheduleType = 'TAI_VIEN';
+let workTypesList = ['Khám sức khỏe', 'Lấy mẫu'];
+
+function bindWorkTypeTagEvents() {
+    const input = document.getElementById('work-type-input');
+    if (!input) return;
+    input.onkeydown = function(e) {
+        if (e.key === 'Enter' || e.key === ',') {
+            e.preventDefault();
+            const val = input.value.trim();
+            if (val && !workTypesList.includes(val)) {
+                workTypesList.push(val);
+                renderWorkTypes();
+                input.value = '';
+            }
+        }
+    };
+}
+
+function renderWorkTypes() {
+    const container = document.getElementById('work-types-list');
+    if (!container) return;
+    container.innerHTML = workTypesList.map((tag, idx) => `
+        <span class="inline-flex items-center gap-1 bg-[#E8F1FB] text-[#27496D] px-2 py-0.5 rounded-[3px] text-xs font-bold border border-[#B4CBE5]">
+            ${escapeHtml(tag)}
+            <button type="button" onclick="removeWorkTypeTag(${idx})" class="hover:text-red-600 font-bold ml-0.5">&times;</button>
+        </span>
+    `).join('');
+}
+
+function removeWorkTypeTag(index) {
+    workTypesList.splice(index, 1);
+    renderWorkTypes();
+}
 
 function openCreatePlannedModalForDate(dateStr, event) {
     if (event) {
         event.stopPropagation();
     }
 
-    const modal = document.getElementById('modal-create-planned-schedule');
-    if (!modal) return;
+    editingMasterId = null;
+    editingSubId = null;
+    currentDraftSubSchedules = [];
+    workTypesList = ['Khám sức khỏe', 'Lấy mẫu'];
 
-    // Pre-fill date input
-    const inputDate = document.getElementById('create-ngay-kham');
-    if (inputDate) {
-        inputDate.value = dateStr;
+    const titleElem = document.getElementById('planned-drawer-title');
+    if (titleElem) titleElem.innerText = 'Tạo dự kiến lịch KSK';
+
+    const autoCode = 'KAD' + String(Date.now()).slice(-6);
+    const codeBadge = document.getElementById('planned-master-code-badge');
+    if (codeBadge) codeBadge.innerText = autoCode;
+    const inputCode = document.getElementById('create-ma-doi-tuong');
+    if (inputCode) inputCode.value = autoCode;
+
+    const tenElem = document.getElementById('create-ten-don-vi');
+    if (tenElem) tenElem.value = '';
+
+    const tuElem = document.getElementById('create-tu-ngay');
+    const denElem = document.getElementById('create-den-ngay');
+    const targetDate = dateStr || new Date().toISOString().split('T')[0];
+    if (tuElem) tuElem.value = targetDate;
+    if (denElem) denElem.value = targetDate;
+
+    const cbElem = document.getElementById('create-cb-phu-trach');
+    if (cbElem) cbElem.value = 'Nguyễn Văn An';
+
+    const noteElem = document.getElementById('create-ghi-chu');
+    if (noteElem) noteElem.value = '';
+
+    renderWorkTypes();
+    bindWorkTypeTagEvents();
+    closeMiniSubForm();
+    renderPlannedSubSchedulesList();
+
+    showDrawer();
+}
+
+function openEditPlannedScheduleModal(unitId) {
+    closeDayDetailsModal();
+    const schedules = (window.MWKDataStore && typeof MWKDataStore.getKskSchedules === 'function') ? MWKDataStore.getKskSchedules() : seedMasterUnits;
+    const master = schedules.find(s => String(s.id || s.unitId || s.code) === String(unitId));
+    if (!master) return;
+
+    editingMasterId = master.id || master.unitId || master.code;
+    editingSubId = null;
+
+    const titleElem = document.getElementById('planned-drawer-title');
+    if (titleElem) titleElem.innerText = 'Chỉnh sửa dự kiến lịch KSK';
+
+    const code = master.customerCode || master.maDoiTuong || master.code || '';
+    const codeBadge = document.getElementById('planned-master-code-badge');
+    if (codeBadge) codeBadge.innerText = code;
+    const inputCode = document.getElementById('create-ma-doi-tuong');
+    if (inputCode) inputCode.value = code;
+
+    const tenElem = document.getElementById('create-ten-don-vi');
+    if (tenElem) tenElem.value = master.customerName || master.teamName || master.tenDonVi || '';
+
+    const tuElem = document.getElementById('create-tu-ngay');
+    const denElem = document.getElementById('create-den-ngay');
+    if (tuElem) tuElem.value = master.tuNgay || master.examDate || new Date().toISOString().split('T')[0];
+    if (denElem) denElem.value = master.denNgay || master.tuNgay || master.examDate || new Date().toISOString().split('T')[0];
+
+    const cbElem = document.getElementById('create-cb-phu-trach');
+    if (cbElem) cbElem.value = master.personInCharge || master.cbPhuTrach || 'Nguyễn Văn An';
+
+    const noteElem = document.getElementById('create-ghi-chu');
+    if (noteElem) noteElem.value = master.contractNote || master.generalNote || '';
+
+    workTypesList = Array.isArray(master.workTypes) && master.workTypes.length > 0 ? [...master.workTypes] : (master.loaiLich ? master.loaiLich.split(',').map(s => s.trim()) : ['Khám sức khỏe']);
+    renderWorkTypes();
+    bindWorkTypeTagEvents();
+
+    // Reconstruct currentDraftSubSchedules from master
+    currentDraftSubSchedules = [];
+    if (master.step2Data) {
+        const parseSubGroup = (list, scheduleType, loaiLich) => {
+            if (Array.isArray(list)) {
+                list.forEach((sub, idx) => {
+                    currentDraftSubSchedules.push({
+                        id: sub.id || sub.scheduleId || `SUB-${Date.now()}-${idx}`,
+                        scheduleType: scheduleType,
+                        loaiLich: sub.loaiLich || loaiLich,
+                        ngayKham: sub.ngayKham || sub.examDate || master.tuNgay || new Date().toISOString().split('T')[0],
+                        ca: sub.ca || (sub.session === 'Chiều' ? 'Chieu' : 'Sang'),
+                        soLuongNam: Number(sub.soLuongNam || sub.nam || 0),
+                        soLuongNu: Number(sub.soLuongNu || sub.nu || 0),
+                        soLuongKhach: Number(sub.soLuongKhach || sub.quantity || sub.soLuong || 0),
+                        coSo: sub.coSo || sub.facility || sub.location || 'MEDLATEC Ba Đình',
+                        diaDiemKham: sub.diaDiemKham || sub.location || 'Địa điểm khám',
+                        ghiChu: sub.ghiChu || sub.note || ''
+                    });
+                });
+            }
+        };
+        parseSubGroup(master.step2Data.taiVien, 'TAI_VIEN', 'Lịch tại viện');
+        parseSubGroup(master.step2Data.ngoaiVien, 'NGOAI_VIEN', 'Lịch ngoại viện');
+        parseSubGroup(master.step2Data.lichPhuong, 'LICH_PHUONG', 'Lịch phường');
+    } else if (Array.isArray(master.childSchedules)) {
+        master.childSchedules.forEach((sub, idx) => {
+            let st = (sub.scheduleType || '').toUpperCase();
+            if (!st) {
+                if ((sub.loaiLich || '').includes('ngoại viện')) st = 'NGOAI_VIEN';
+                else if ((sub.loaiLich || '').includes('phường')) st = 'LICH_PHUONG';
+                else st = 'TAI_VIEN';
+            }
+            currentDraftSubSchedules.push({
+                id: sub.id || sub.scheduleId || `SUB-${Date.now()}-${idx}`,
+                scheduleType: st,
+                loaiLich: sub.loaiLich || (st === 'NGOAI_VIEN' ? 'Lịch ngoại viện' : (st === 'LICH_PHUONG' ? 'Lịch phường' : 'Lịch tại viện')),
+                ngayKham: sub.ngayKham || sub.examDate || master.tuNgay || new Date().toISOString().split('T')[0],
+                ca: sub.ca || 'Sang',
+                soLuongNam: Number(sub.soLuongNam || 0),
+                soLuongNu: Number(sub.soLuongNu || 0),
+                soLuongKhach: Number(sub.soLuongKhach || sub.quantity || sub.soLuong || 0),
+                coSo: sub.coSo || sub.facility || 'MEDLATEC Ba Đình',
+                diaDiemKham: sub.diaDiemKham || sub.location || 'Địa điểm khám',
+                ghiChu: sub.ghiChu || ''
+            });
+        });
     }
 
-    // Reset default inputs
-    const inputTenDonVi = document.getElementById('create-ten-don-vi');
-    if (inputTenDonVi) inputTenDonVi.value = '';
+    closeMiniSubForm();
+    renderPlannedSubSchedulesList();
 
-    const inputSoLuong = document.getElementById('create-so-luong-khach');
-    if (inputSoLuong) inputSoLuong.value = 100;
+    showDrawer();
+}
 
-    const inputDiaDiem = document.getElementById('create-dia-diem');
-    if (inputDiaDiem) inputDiaDiem.value = '';
-
-    const selectLoaiLich = document.getElementById('create-loai-lich');
-    if (selectLoaiLich) selectLoaiLich.value = 'Lịch tại viện';
-
-    const selectCaKham = document.getElementById('create-ca-kham');
-    if (selectCaKham) selectCaKham.value = 'Sang';
-
-    const selectCoSo = document.getElementById('create-co-so');
-    if (selectCoSo) selectCoSo.value = 'MEDLATEC Ba Đình';
-
-    const selectCb = document.getElementById('create-cb-phu-trach');
-    if (selectCb) selectCb.value = 'Nguyễn Văn An';
-
-    modal.classList.remove('hidden');
+function showDrawer() {
+    const backdrop = document.getElementById('drawer-create-planned-backdrop');
+    const drawer = document.getElementById('drawer-create-planned');
+    if (backdrop) {
+        backdrop.classList.remove('pointer-events-none', 'opacity-0');
+        backdrop.classList.add('opacity-100');
+    }
+    if (drawer) {
+        drawer.classList.remove('translate-x-full');
+    }
 }
 
 function closeCreatePlannedModal() {
-    const modal = document.getElementById('modal-create-planned-schedule');
-    if (modal) {
-        modal.classList.add('hidden');
+    const backdrop = document.getElementById('drawer-create-planned-backdrop');
+    const drawer = document.getElementById('drawer-create-planned');
+    if (backdrop) {
+        backdrop.classList.remove('opacity-100');
+        backdrop.classList.add('opacity-0', 'pointer-events-none');
     }
-    const form = document.getElementById('form-create-planned');
-    if (form) form.reset();
+    if (drawer) {
+        drawer.classList.add('translate-x-full');
+    }
+    editingMasterId = null;
+    editingSubId = null;
+    currentDraftSubSchedules = [];
 }
 
-function handleSaveCreatePlannedSchedule(event) {
-    event.preventDefault();
+// Mini Sub Form Handlers
+function openMiniSubForm(typeCode, subId = null) {
+    currentMiniSubScheduleType = typeCode;
+    editingSubId = subId;
 
-    const tenDonVi = (document.getElementById('create-ten-don-vi')?.value || '').trim();
-    const ngayKham = document.getElementById('create-ngay-kham')?.value || '';
-    const caKham = document.getElementById('create-ca-kham')?.value || 'Sang';
-    const loaiLich = document.getElementById('create-loai-lich')?.value || 'Lịch tại viện';
-    const soLuongKhach = parseInt(document.getElementById('create-so-luong-khach')?.value, 10) || 100;
-    const coSo = document.getElementById('create-co-so')?.value || 'MEDLATEC Ba Đình';
-    const cbPhuTrach = document.getElementById('create-cb-phu-trach')?.value || 'Nguyễn Văn An';
-    const diaDiemKham = (document.getElementById('create-dia-diem')?.value || '').trim();
+    const panel = document.getElementById('mini-sub-form-panel');
+    const titleElem = document.getElementById('mini-sub-form-title');
+    const masterTuDate = document.getElementById('create-tu-ngay')?.value || new Date().toISOString().split('T')[0];
 
-    if (!tenDonVi || !ngayKham) {
-        if (window.showToast) window.showToast('Vui lòng nhập đầy đủ Tên đơn vị và Ngày dự kiến!', 'error');
-        else alert('Vui lòng nhập đầy đủ Tên đơn vị và Ngày dự kiến!');
+    let typeLabel = 'Lịch tại viện';
+    if (typeCode === 'NGOAI_VIEN') typeLabel = 'Lịch ngoại viện';
+    else if (typeCode === 'LICH_PHUONG') typeLabel = 'Lịch phường';
+
+    if (titleElem) {
+        titleElem.innerText = subId ? `Chỉnh sửa: ${typeLabel}` : `Thêm mới: ${typeLabel}`;
+    }
+
+    if (subId) {
+        const sub = currentDraftSubSchedules.find(s => String(s.id) === String(subId));
+        if (sub) {
+            if (document.getElementById('mini-sub-ngay-kham')) document.getElementById('mini-sub-ngay-kham').value = sub.ngayKham || masterTuDate;
+            if (document.getElementById('mini-sub-ca-kham')) document.getElementById('mini-sub-ca-kham').value = sub.ca || 'Sang';
+            if (document.getElementById('mini-sub-nam')) document.getElementById('mini-sub-nam').value = sub.soLuongNam || 0;
+            if (document.getElementById('mini-sub-nu')) document.getElementById('mini-sub-nu').value = sub.soLuongNu || 0;
+            if (document.getElementById('mini-sub-co-so')) document.getElementById('mini-sub-co-so').value = sub.coSo || sub.diaDiemKham || '';
+            if (document.getElementById('mini-sub-ghi-chu')) document.getElementById('mini-sub-ghi-chu').value = sub.ghiChu || '';
+        }
+    } else {
+        if (document.getElementById('mini-sub-ngay-kham')) document.getElementById('mini-sub-ngay-kham').value = masterTuDate;
+        if (document.getElementById('mini-sub-ca-kham')) document.getElementById('mini-sub-ca-kham').value = 'Sang';
+        if (document.getElementById('mini-sub-nam')) document.getElementById('mini-sub-nam').value = 50;
+        if (document.getElementById('mini-sub-nu')) document.getElementById('mini-sub-nu').value = 50;
+        if (document.getElementById('mini-sub-co-so')) document.getElementById('mini-sub-co-so').value = typeCode === 'TAI_VIEN' ? 'MEDLATEC Ba Đình' : (typeCode === 'NGOAI_VIEN' ? 'Ngoại viện' : 'MEDLATEC Ba Đình');
+        if (document.getElementById('mini-sub-ghi-chu')) document.getElementById('mini-sub-ghi-chu').value = '';
+    }
+
+    calculateMiniSubTotal();
+    if (panel) panel.classList.remove('hidden');
+}
+
+function calculateMiniSubTotal() {
+    const nam = parseInt(document.getElementById('mini-sub-nam')?.value, 10) || 0;
+    const nu = parseInt(document.getElementById('mini-sub-nu')?.value, 10) || 0;
+    const tongInput = document.getElementById('mini-sub-tong');
+    if (tongInput) tongInput.value = nam + nu;
+}
+
+function closeMiniSubForm() {
+    const panel = document.getElementById('mini-sub-form-panel');
+    if (panel) panel.classList.add('hidden');
+    editingSubId = null;
+}
+
+function saveMiniSubForm() {
+    const ngayKham = document.getElementById('mini-sub-ngay-kham')?.value || '';
+    const ca = document.getElementById('mini-sub-ca-kham')?.value || 'Sang';
+    const nam = parseInt(document.getElementById('mini-sub-nam')?.value, 10) || 0;
+    const nu = parseInt(document.getElementById('mini-sub-nu')?.value, 10) || 0;
+    const tong = nam + nu;
+    const coSo = document.getElementById('mini-sub-co-so')?.value.trim() || 'MEDLATEC';
+    const ghiChu = document.getElementById('mini-sub-ghi-chu')?.value.trim() || '';
+
+    if (!ngayKham) {
+        if (window.showToast) window.showToast('Vui lòng chọn Ngày dự kiến cho lịch con!', 'error');
+        else alert('Vui lòng chọn Ngày dự kiến cho lịch con!');
         return;
     }
 
-    let typeKey = 'taiVien';
-    let scheduleType = 'TAI_VIEN';
-    if (loaiLich.includes('ngoại viện')) {
-        typeKey = 'ngoaiVien';
-        scheduleType = 'NGOAI_VIEN';
-    } else if (loaiLich.includes('phường')) {
-        typeKey = 'lichPhuong';
-        scheduleType = 'LICH_PHUONG';
+    let typeLabel = 'Lịch tại viện';
+    if (currentMiniSubScheduleType === 'NGOAI_VIEN') typeLabel = 'Lịch ngoại viện';
+    else if (currentMiniSubScheduleType === 'LICH_PHUONG') typeLabel = 'Lịch phường';
+
+    if (editingSubId) {
+        const sub = currentDraftSubSchedules.find(s => String(s.id) === String(editingSubId));
+        if (sub) {
+            sub.ngayKham = ngayKham;
+            sub.examDate = ngayKham;
+            sub.ca = ca;
+            sub.soLuongNam = nam;
+            sub.soLuongNu = nu;
+            sub.soLuongKhach = tong;
+            sub.coSo = coSo;
+            sub.diaDiemKham = coSo;
+            sub.ghiChu = ghiChu;
+        }
+    } else {
+        const newId = `SUB-${Date.now()}-${Math.floor(Math.random()*1000)}`;
+        currentDraftSubSchedules.push({
+            id: newId,
+            scheduleId: newId,
+            maLich: newId,
+            scheduleType: currentMiniSubScheduleType,
+            loaiLich: typeLabel,
+            ngayKham: ngayKham,
+            examDate: ngayKham,
+            ca: ca,
+            soLuongNam: nam,
+            soLuongNu: nu,
+            soLuongKhach: tong,
+            coSo: coSo,
+            diaDiemKham: coSo,
+            ghiChu: ghiChu
+        });
     }
 
-    const newChildId = `SCH-${Date.now().toString(36).toUpperCase()}-${Math.floor(Math.random()*1000)}`;
-    const newChildSchedule = {
-        id: newChildId,
-        scheduleId: newChildId,
-        maLich: newChildId,
-        ngayKham: ngayKham,
-        examDate: ngayKham,
-        session: caKham === 'Chieu' ? 'Chiều' : (caKham === 'CaNgay' ? 'Cả ngày' : 'Sáng'),
-        ca: caKham,
-        startTime: caKham === 'Chieu' ? '13:30' : '07:30',
-        endTime: caKham === 'Chieu' ? '17:00' : '11:30',
-        soLuongKhach: soLuongKhach,
-        soLuong: soLuongKhach,
-        quantity: soLuongKhach,
-        tongNhanSu: 10,
-        facility: coSo,
-        coSo: coSo,
-        diaDiemKham: diaDiemKham || `${coSo} - ${loaiLich}`,
+    closeMiniSubForm();
+    renderPlannedSubSchedulesList();
+
+    if (window.showToast) window.showToast(`Đã lưu thông tin ${typeLabel}!`, 'success');
+}
+
+function deletePlannedSubSchedule(subId) {
+    if (confirm('Bạn có chắc chắn muốn xóa lịch con này không?')) {
+        currentDraftSubSchedules = currentDraftSubSchedules.filter(s => String(s.id) !== String(subId));
+        renderPlannedSubSchedulesList();
+        if (window.showToast) window.showToast('Đã xóa lịch con dự kiến', 'info');
+    }
+}
+
+function renderPlannedSubSchedulesList() {
+    const listElem = document.getElementById('planned-sub-schedules-list');
+    const badgeElem = document.getElementById('planned-drawer-summary-badge');
+
+    const totalGuests = currentDraftSubSchedules.reduce((sum, s) => sum + (parseInt(s.soLuongKhach) || 0), 0);
+    if (badgeElem) {
+        badgeElem.innerHTML = `Tổng số <strong>${currentDraftSubSchedules.length}</strong> lịch con dự kiến (<strong>${totalGuests.toLocaleString('vi-VN')}</strong> KH)`;
+    }
+
+    if (!listElem) return;
+
+    if (currentDraftSubSchedules.length === 0) {
+        listElem.innerHTML = `
+            <div class="text-center py-6 text-[#9CA3AF] italic border border-dashed border-[#CBD5E1] rounded-[4px] bg-[#F8FAFC]">
+                <i class="fa-solid fa-list-check text-2xl mb-1 text-[#CBD5E1]"></i>
+                <p>Chưa có lịch con dự kiến nào. Nhấn một trong 3 nút trên để thêm lịch con.</p>
+            </div>
+        `;
+        return;
+    }
+
+    listElem.innerHTML = currentDraftSubSchedules.map(item => {
+        const style = CalendarHelper.getScheduleTypeStyle(item.loaiLich);
+        const shiftLabel = item.ca === 'Chieu' ? 'Chiều (13:30 - 17:00)' : (item.ca === 'CaNgay' ? 'Cả ngày' : 'Sáng (07:30 - 11:30)');
+        const dParts = (item.ngayKham || '').split('-');
+        const dateFmt = dParts.length === 3 ? `${dParts[2]}/${dParts[1]}/${dParts[0]}` : item.ngayKham;
+
+        return `
+            <div class="bg-white p-3 rounded-[4px] border border-[#D9DEE5] hover:border-[#27496D] shadow-2xs space-y-2 transition-all">
+                <div class="flex items-center justify-between">
+                    <span class="font-bold text-xs flex items-center gap-1.5 ${style.badgeClass} px-2 py-0.5 rounded-[3px]">
+                        ${style.label}
+                    </span>
+                    <div class="flex items-center gap-1">
+                        <button type="button" onclick="openMiniSubForm('${item.scheduleType}', '${item.id}')" class="text-xs text-[#27496D] hover:underline font-bold px-2 py-0.5 rounded hover:bg-[#E8F1FB]">
+                            <i class="fa-solid fa-pen text-[10px] mr-1"></i>Sửa
+                        </button>
+                        <button type="button" onclick="deletePlannedSubSchedule('${item.id}')" class="text-xs text-red-600 hover:underline font-bold px-2 py-0.5 rounded hover:bg-red-50">
+                            <i class="fa-solid fa-trash text-[10px] mr-1"></i>Xóa
+                        </button>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between text-xs text-[#4B5563]">
+                    <div><i class="fa-solid fa-calendar-day text-[10px] mr-1 text-[#27496D]"></i><strong>${dateFmt}</strong> (${shiftLabel})</div>
+                    <div><i class="fa-solid fa-users text-[10px] mr-1 text-[#15803D]"></i><strong class="text-[#15803D]">${item.soLuongKhach} KH</strong> (${item.soLuongNam || 0} Nam / ${item.soLuongNu || 0} Nữ)</div>
+                </div>
+                <div class="text-xs text-[#4B5563]">
+                    <i class="fa-solid fa-location-dot text-[10px] mr-1 text-[#27496D]"></i>${escapeHtml(item.coSo)}
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function handleMasterDateChange() {
+    const tuNgay = document.getElementById('create-tu-ngay')?.value;
+    const denNgayElem = document.getElementById('create-den-ngay');
+    if (tuNgay && denNgayElem && (!denNgayElem.value || denNgayElem.value < tuNgay)) {
+        denNgayElem.value = tuNgay;
+    }
+}
+
+// Master Save Function
+function savePlannedSchedule() {
+    const tenDonVi = (document.getElementById('create-ten-don-vi')?.value || '').trim();
+    const maDoiTuong = (document.getElementById('create-ma-doi-tuong')?.value || '').trim() || ('KAD' + String(Date.now()).slice(-6));
+    const tuNgay = document.getElementById('create-tu-ngay')?.value || new Date().toISOString().split('T')[0];
+    const denNgay = document.getElementById('create-den-ngay')?.value || tuNgay;
+    const cbPhuTrach = document.getElementById('create-cb-phu-trach')?.value || 'Nguyễn Văn An';
+    const ghiChu = (document.getElementById('create-ghi-chu')?.value || '').trim();
+
+    if (!tenDonVi) {
+        if (window.showToast) window.showToast('Vui lòng nhập Tên đơn vị / Khách hàng!', 'error');
+        else alert('Vui lòng nhập Tên đơn vị / Khách hàng!');
+        return;
+    }
+
+    // Auto-create 1 fallback sub-schedule if list is empty
+    if (currentDraftSubSchedules.length === 0) {
+        const fallbackId = `SUB-${Date.now()}`;
+        currentDraftSubSchedules.push({
+            id: fallbackId,
+            scheduleId: fallbackId,
+            scheduleType: 'TAI_VIEN',
+            loaiLich: 'Lịch tại viện',
+            ngayKham: tuNgay,
+            examDate: tuNgay,
+            ca: 'Sang',
+            soLuongNam: 50,
+            soLuongNu: 50,
+            soLuongKhach: 100,
+            coSo: 'MEDLATEC Ba Đình',
+            diaDiemKham: 'MEDLATEC Ba Đình',
+            ghiChu: ghiChu
+        });
+    }
+
+    const masterId = editingMasterId || `PLAN-${Date.now()}`;
+    const masterCode = maDoiTuong.startsWith('LK-') ? maDoiTuong : `LK-2026-${Math.floor(100 + Math.random()*900)}`;
+
+    const totalGuests = currentDraftSubSchedules.reduce((sum, s) => sum + (parseInt(s.soLuongKhach) || 0), 0);
+    const loaiLichTypes = Array.from(new Set(currentDraftSubSchedules.map(s => s.loaiLich)));
+
+    const masterObj = {
+        id: masterId,
+        unitId: masterId,
+        code: masterCode,
+        customerCode: maDoiTuong,
+        maDoiTuong: maDoiTuong,
+        customerName: tenDonVi,
+        teamName: tenDonVi,
+        tenDonVi: tenDonVi,
         personInCharge: cbPhuTrach,
         cbPhuTrach: cbPhuTrach,
-        loaiLich: loaiLich,
-        scheduleType: scheduleType,
-        trangThai: 'TAO_MOI',
-        status: 'Tạo mới'
+        facility: currentDraftSubSchedules[0]?.coSo || 'MEDLATEC Ba Đình',
+        tuNgay: tuNgay,
+        denNgay: denNgay,
+        examDate: tuNgay,
+        workTypes: workTypesList,
+        loaiLich: loaiLichTypes.join(', '),
+        loaiLichTypes: loaiLichTypes,
+        estimatedCount: totalGuests,
+        soLuong: totalGuests,
+        contractNote: ghiChu,
+        generalNote: ghiChu,
+        isDuKien: true,
+        recordType: 'DU_KIEN',
+        trangThai: 'DU_KIEN',
+        status: 'Dự kiến',
+        childSchedules: currentDraftSubSchedules,
+        step2Data: {
+            taiVien: currentDraftSubSchedules.filter(s => s.scheduleType === 'TAI_VIEN'),
+            ngoaiVien: currentDraftSubSchedules.filter(s => s.scheduleType === 'NGOAI_VIEN'),
+            lichPhuong: currentDraftSubSchedules.filter(s => s.scheduleType === 'LICH_PHUONG')
+        }
     };
 
-    let dataStoreMasters = [];
-    if (window.MWKDataStore && typeof window.MWKDataStore.getKskSchedules === 'function') {
-        dataStoreMasters = window.MWKDataStore.getKskSchedules() || [];
-    }
-
-    // Match existing master record or create a new one
-    const matchingMaster = dataStoreMasters.find(m => 
-        (m.customerName || m.teamName || '').trim().toLowerCase() === tenDonVi.toLowerCase()
-    );
-
-    if (matchingMaster && window.MWKDataStore) {
-        const step2Data = matchingMaster.step2Data || { taiVien: [], ngoaiVien: [], lichPhuong: [] };
-        if (!Array.isArray(step2Data[typeKey])) {
-            step2Data[typeKey] = [];
+    if (window.MWKDataStore && typeof window.MWKDataStore.addKskSchedule === 'function') {
+        const existingList = MWKDataStore.getKskSchedules();
+        const existing = existingList.find(s => String(s.id) === String(masterId) || String(s.unitId) === String(masterId));
+        if (existing) {
+            MWKDataStore.updateKskSchedule(existing.id, masterRecordToStore(masterObj));
+        } else {
+            MWKDataStore.addKskSchedule(masterRecordToStore(masterObj));
         }
-        newChildSchedule.unitId = matchingMaster.id || matchingMaster.code;
-        step2Data[typeKey].push(newChildSchedule);
-
-        window.MWKDataStore.updateKskSchedule(matchingMaster.id, {
-            step2Data: step2Data
-        });
     } else {
-        const newUnitId = `U-${Date.now().toString(36).toUpperCase()}`;
-        const newCode = `LK-2026-${Math.floor(100 + Math.random()*900)}`;
-
-        newChildSchedule.unitId = newUnitId;
-
-        const newMasterObj = {
-            unitId: newUnitId,
-            code: newCode,
-            customerName: tenDonVi,
-            teamName: tenDonVi,
-            personInCharge: cbPhuTrach,
-            facility: coSo,
-            status: 'Tạo mới',
-            trangThai: 'TAO_MOI',
-            suDungPAKD: true,
-            pakdStatus: 'Có PAKD',
-            childSchedules: [newChildSchedule],
-            step2Data: {
-                taiVien: typeKey === 'taiVien' ? [newChildSchedule] : [],
-                ngoaiVien: typeKey === 'ngoaiVien' ? [newChildSchedule] : [],
-                lichPhuong: typeKey === 'lichPhuong' ? [newChildSchedule] : []
-            }
-        };
-
-        seedMasterUnits.unshift(newMasterObj);
-
-        if (window.MWKDataStore && typeof window.MWKDataStore.addKskSchedule === 'function') {
-            window.MWKDataStore.addKskSchedule(newMasterObj);
-        }
+        const existingIdx = seedMasterUnits.findIndex(s => String(s.unitId) === String(masterId));
+        if (existingIdx >= 0) seedMasterUnits[existingIdx] = masterObj;
+        else seedMasterUnits.unshift(masterObj);
     }
 
-    // Refresh view
     closeCreatePlannedModal();
     loadSchedulesData();
     renderCalendar();
 
     if (window.showToast) {
-        window.showToast(`Đã tạo dự kiến lịch "${loaiLich}" cho ${tenDonVi} vào ngày ${ngayKham}`, 'success');
-    } else {
-        alert(`Đã tạo dự kiến lịch "${loaiLich}" cho ${tenDonVi} vào ngày ${ngayKham}`);
+        window.showToast(`Đã lưu dự kiến lịch KSK cho "${tenDonVi}" thành công!`, 'success');
+    }
+}
+
+function masterRecordToStore(obj) {
+    return {
+        ...obj,
+        trangThai: 'DU_KIEN',
+        status: 'Dự kiến',
+        isDuKien: true,
+        recordType: 'DU_KIEN'
+    };
+}
+
+function deletePlannedMasterSchedule(unitId) {
+    if (confirm('Bạn có chắc chắn muốn xóa đợt khám dự kiến này không?')) {
+        if (window.MWKDataStore && typeof MWKDataStore.deleteKskSchedule === 'function') {
+            MWKDataStore.deleteKskSchedule(unitId);
+        } else {
+            const idx = seedMasterUnits.findIndex(s => String(s.unitId || s.id) === String(unitId));
+            if (idx >= 0) seedMasterUnits.splice(idx, 1);
+        }
+        closeDayDetailsModal();
+        loadSchedulesData();
+        renderCalendar();
+        if (window.showToast) window.showToast('Đã xóa dự kiến lịch thành công!', 'info');
     }
 }
 
@@ -1508,19 +1878,18 @@ function handleSaveCreatePlannedSchedule(event) {
 // 7. DETAIL MODAL HANDLERS
 // ==========================================
 
-function navigateToDetail(id) {
-    window.location.href = `detail/detail.html?id=${id}`;
-}
-
 function handleCellDoubleClick(dateStr, shiftLabel) {
     openCreatePlannedModalForDate(dateStr);
 }
 
 function openGroupDetailModal(unitId, dateISO) {
+    const schedules = (window.MWKDataStore && typeof MWKDataStore.getKskSchedules === 'function') ? MWKDataStore.getKskSchedules() : seedMasterUnits;
+    const master = schedules.find(s => String(s.id || s.unitId || s.code) === String(unitId));
+    
     const activeList = getFilteredSchedules();
-    const unitChilds = activeList.filter(item => String(item.unitId) === String(unitId) && item.ngayKham === dateISO);
+    const unitChilds = activeList.filter(item => String(item.unitId) === String(unitId));
 
-    if (unitChilds.length === 0) {
+    if (!master && unitChilds.length === 0) {
         openDayDetailsModal(dateISO);
         return;
     }
@@ -1530,19 +1899,28 @@ function openGroupDetailModal(unitId, dateISO) {
     const contentElem = document.getElementById('modal-day-content');
     const countSummary = document.getElementById('modal-day-count-summary');
 
-    const unitName = unitChilds[0].tenDonVi;
+    const unitName = master ? (master.customerName || master.teamName || master.tenDonVi) : (unitChilds[0]?.tenDonVi || 'Đơn vị KSK');
     const totalGuests = unitChilds.reduce((sum, i) => sum + (parseInt(i.soLuongKhach) || 0), 0);
 
     if (titleElem) {
-        titleElem.innerText = unitName;
+        titleElem.innerHTML = `<span class="font-bold text-[#27496D]">${escapeHtml(unitName)}</span> <span class="bg-[#E8F1FB] text-[#27496D] text-[10px] font-bold px-2 py-0.5 rounded-[3px] ml-2 border border-[#B4CBE5]">DỰ KIẾN</span>`;
     }
 
     if (countSummary) {
-        countSummary.innerText = `Tổng số ${unitChilds.length} lịch con dự kiến (${totalGuests.toLocaleString('vi-VN')} lượt khách)`;
+        countSummary.innerHTML = `
+            <div class="flex items-center gap-2">
+                <button type="button" onclick="openEditPlannedScheduleModal('${escapeHtml(unitId)}')" class="btn-primary text-xs px-3 py-1 font-bold cursor-pointer">
+                    <i class="fa-solid fa-pen-to-square text-[10px] mr-1"></i>Sửa dự kiến
+                </button>
+                <button type="button" onclick="deletePlannedMasterSchedule('${escapeHtml(unitId)}')" class="btn-secondary text-xs px-3 py-1 text-red-600 border-red-300 hover:bg-red-50 font-bold cursor-pointer">
+                    <i class="fa-solid fa-trash text-[10px] mr-1"></i>Xóa đợt khám
+                </button>
+            </div>
+        `;
     }
 
     if (contentElem) {
-        renderModalGroupedContent(contentElem, unitChilds);
+        renderModalGroupedContent(contentElem, unitChilds.length > 0 ? unitChilds : (master ? master.childSchedules || [] : []));
     }
 
     if (modal) modal.classList.remove('hidden');
@@ -1665,12 +2043,6 @@ function renderModalChildItems(items) {
                 <div class="text-xs text-[#4B5563]">
                     <i class="fa-solid fa-hospital text-[10px] mr-1 text-[#27496D]"></i>${escapeHtml(item.coSo)} • ${escapeHtml(item.diaDiemKham)}
                 </div>
-                <div class="flex items-center justify-between pt-2 border-t border-[#E2E8F0] text-xs">
-                    <span class="text-[#6B7280]">CB phụ trách: <strong class="text-[#1F2937]">${escapeHtml(item.cbPhuTrach)}</strong></span>
-                    <button type="button" onclick="navigateToDetail('${escapeHtml(item.id)}')" class="btn-primary text-xs px-3 py-1 h-[28px] font-semibold cursor-pointer">
-                        <i class="fa-solid fa-eye text-[10px] mr-1"></i>Xem chi tiết
-                    </button>
-                </div>
             </div>
         `;
     }).join('');
@@ -1694,10 +2066,18 @@ window.loadSchedulesData = loadSchedulesData;
 window.getFilteredSchedules = getFilteredSchedules;
 window.renderSummaryCards = renderSummaryCards;
 window.openCreatePlannedModalForDate = openCreatePlannedModalForDate;
+window.openEditPlannedScheduleModal = openEditPlannedScheduleModal;
 window.closeCreatePlannedModal = closeCreatePlannedModal;
-window.handleSaveCreatePlannedSchedule = handleSaveCreatePlannedSchedule;
+window.savePlannedSchedule = savePlannedSchedule;
+window.openMiniSubForm = openMiniSubForm;
+window.closeMiniSubForm = closeMiniSubForm;
+window.saveMiniSubForm = saveMiniSubForm;
+window.calculateMiniSubTotal = calculateMiniSubTotal;
+window.deletePlannedSubSchedule = deletePlannedSubSchedule;
+window.deletePlannedMasterSchedule = deletePlannedMasterSchedule;
+window.removeWorkTypeTag = removeWorkTypeTag;
+window.handleMasterDateChange = handleMasterDateChange;
 window.openGroupDetailModal = openGroupDetailModal;
 window.openDayDetailsModal = openDayDetailsModal;
 window.closeDayDetailsModal = closeDayDetailsModal;
-window.navigateToDetail = navigateToDetail;
 window.handleCellDoubleClick = handleCellDoubleClick;

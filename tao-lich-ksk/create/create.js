@@ -130,6 +130,26 @@ function saveCurrentDraftToSession() {
 
 function loadExistingScheduleFromUrl() {
     const urlParams = new URLSearchParams(window.location.search);
+    const isDuKien = urlParams.get('isDuKien') === 'true';
+    const tuNgayParam = urlParams.get('tuNgay');
+    const denNgayParam = urlParams.get('denNgay') || tuNgayParam;
+
+    if (isDuKien) {
+        const pageTitle = document.querySelector('h1');
+        if (pageTitle) pageTitle.textContent = 'Tạo dự kiến lịch KSK';
+
+        if (tuNgayParam) {
+            const tuNgayElem = document.getElementById('tuNgay');
+            if (tuNgayElem) tuNgayElem.value = tuNgayParam;
+            const examDateElem = document.getElementById('examDate');
+            if (examDateElem) examDateElem.value = tuNgayParam;
+        }
+        if (denNgayParam) {
+            const denNgayElem = document.getElementById('denNgay');
+            if (denNgayElem) denNgayElem.value = denNgayParam;
+        }
+    }
+
     const itemId = urlParams.get('id');
     if (!itemId) return;
 
@@ -1038,6 +1058,9 @@ function handleSelectAllStep2(checkboxElem) {
 }
 
 function computeMasterUnitRecord(statusStr, trangThaiStr, daGuiBool) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const isDuKien = urlParams.get('isDuKien') === 'true';
+
     let customerCode = document.getElementById('customerCode')?.value.trim() || '';
     if (!customerCode) {
         customerCode = 'KAD' + String(Date.now()).slice(-6);
@@ -1106,6 +1129,9 @@ function computeMasterUnitRecord(statusStr, trangThaiStr, daGuiBool) {
     const denNgay = document.getElementById('denNgay')?.value || tuNgay;
     const thoiGianKhamStr = window.formatExamDateRange ? window.formatExamDateRange({ tuNgay, denNgay, step2Data }) : `${tuNgay} - ${denNgay}`;
 
+    const finalStatus = isDuKien ? (statusStr === 'Chờ tổng hợp' ? 'Chờ tổng hợp' : 'Dự kiến') : statusStr;
+    const finalTrangThai = isDuKien ? (trangThaiStr === 'CHO_TONG_HOP' ? 'CHO_TONG_HOP' : 'DU_KIEN') : trangThaiStr;
+
     return {
         teamName: unitName,
         customerName: unitName,
@@ -1129,8 +1155,10 @@ function computeMasterUnitRecord(statusStr, trangThaiStr, daGuiBool) {
         tongNhanSu: totalStaff,
         facility: primaryFacility,
         personInCharge: cbkd || 'Nguyễn Văn An',
-        status: statusStr,
-        trangThai: trangThaiStr,
+        status: finalStatus,
+        trangThai: finalTrangThai,
+        recordType: isDuKien ? 'DU_KIEN' : 'CHINH_THUC',
+        isDuKien: isDuKien,
         daGuiTongHop: daGuiBool,
         suDungPAKD: document.getElementById('suDungPAKD')?.checked ?? (pakdValue === 'Có PAKD'),
         pakdStatus: pakdValue,
@@ -1183,6 +1211,9 @@ function saveCurrentUnitRecord(statusStr = 'Tạo mới', trangThaiStr = 'TAO_MO
 }
 
 function handleSubmitTongHopStep2() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const isDuKien = urlParams.get('isDuKien') === 'true';
+
     saveCurrentUnitRecord('Chờ tổng hợp', 'CHO_TONG_HOP', true);
     sessionStorage.removeItem('mwk_create_schedule_draft');
 
@@ -1191,34 +1222,40 @@ function handleSubmitTongHopStep2() {
     }
 
     setTimeout(() => {
-        window.location.href = '../index.html';
+        window.location.href = isDuKien ? '../index.html?tab=du_kien' : '../index.html';
     }, 600);
 }
 
 function saveDraftStep2() {
-    saveCurrentUnitRecord('Nháp', 'NHAP', false);
+    const urlParams = new URLSearchParams(window.location.search);
+    const isDuKien = urlParams.get('isDuKien') === 'true';
+
+    saveCurrentUnitRecord(isDuKien ? 'Dự kiến' : 'Nháp', isDuKien ? 'DU_KIEN' : 'NHAP', false);
     sessionStorage.removeItem('mwk_create_schedule_draft');
 
     if (window.showToast) {
-        window.showToast('Đã lưu nháp thông tin lịch KSK thành công!', 'success');
+        window.showToast(isDuKien ? 'Đã lưu dự kiến lịch KSK thành công!' : 'Đã lưu nháp thông tin lịch KSK thành công!', 'success');
     }
 
     setTimeout(() => {
-        window.location.href = '../index.html';
+        window.location.href = isDuKien ? '../index.html?tab=du_kien' : '../index.html';
     }, 500);
 }
 
 function saveDraftStep1() {
     if (!validateStep1()) return;
 
-    saveCurrentUnitRecord('Nháp', 'NHAP', false);
+    const urlParams = new URLSearchParams(window.location.search);
+    const isDuKien = urlParams.get('isDuKien') === 'true';
+
+    saveCurrentUnitRecord(isDuKien ? 'Dự kiến' : 'Nháp', isDuKien ? 'DU_KIEN' : 'NHAP', false);
     sessionStorage.removeItem('mwk_create_schedule_draft');
 
     if (window.showToast) {
-        window.showToast('Đã lưu nháp thông tin lịch thành công!', 'success');
+        window.showToast(isDuKien ? 'Đã lưu dự kiến lịch KSK thành công!' : 'Đã lưu nháp thông tin lịch thành công!', 'success');
     }
 
     setTimeout(() => {
-        window.location.href = '../index.html';
+        window.location.href = isDuKien ? '../index.html?tab=du_kien' : '../index.html';
     }, 500);
 }

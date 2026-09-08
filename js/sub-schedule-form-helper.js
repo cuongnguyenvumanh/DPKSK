@@ -132,7 +132,8 @@
         // Collect all input values from the form into a clean sub-schedule object
         collectSubScheduleFormData: function(scheduleType = 'NGOAI_VIEN', existingId = null) {
             const today = new Date().toISOString().split('T')[0];
-            const cfg = window.ScheduleFormConfig ? window.ScheduleFormConfig.CONFIG[scheduleType] : {};
+            const configMap = (window.ScheduleFormConfig && window.ScheduleFormConfig.CONFIG) ? window.ScheduleFormConfig.CONFIG : {};
+            const cfg = configMap[scheduleType] || {};
 
             const maleInput = document.getElementById('soLuongNam');
             const femaleInput = document.getElementById('soLuongNu');

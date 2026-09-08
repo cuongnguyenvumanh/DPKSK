@@ -33,15 +33,38 @@
             'Khác'
         ],
 
+        // Configuration mapping per sub-schedule type
+        CONFIG: {
+            TAI_VIEN: {
+                typeCode: 'TAI_VIEN',
+                typeLabel: 'Lịch tại viện',
+                title: 'Lịch tại viện',
+                icon: 'fa-hospital'
+            },
+            NGOAI_VIEN: {
+                typeCode: 'NGOAI_VIEN',
+                typeLabel: 'Lịch ngoại viện',
+                title: 'Lịch ngoại viện',
+                icon: 'fa-truck-medical'
+            },
+            LICH_PHUONG: {
+                typeCode: 'LICH_PHUONG',
+                typeLabel: 'Lịch phường',
+                title: 'Lịch phường',
+                icon: 'fa-building-user'
+            }
+        },
+
         // Helper method to create a clean complete schedule object schema
         createEmptySubScheduleObject: function(typeCode = 'TAI_VIEN') {
-            const cfg = this.CONFIG[typeCode] || this.CONFIG.TAI_VIEN;
+            const configMap = this.CONFIG || {};
+            const cfg = configMap[typeCode] || configMap.TAI_VIEN || { typeLabel: 'Lịch tại viện' };
 
             return {
                 id: 'SCH_' + Date.now(),
                 scheduleId: 'SCH_' + Date.now(),
                 scheduleType: typeCode,
-                loaiLich: cfg.typeLabel,
+                loaiLich: cfg.typeLabel || 'Lịch tại viện',
 
                 // Section 1: Thông tin lịch & Kinh doanh
                 ngayDienLich: '',

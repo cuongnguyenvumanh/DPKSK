@@ -1115,6 +1115,8 @@ function computeMasterUnitRecord(statusStr, trangThaiStr, daGuiBool) {
         details: 'Cập nhật thông tin chi tiết đợt khám và danh sách các lịch KSK.'
     });
 
+    const isDuKien = (currentItem && (currentItem.isDuKien === true || currentItem.trangThai === 'DU_KIEN' || currentItem.recordType === 'DU_KIEN')) || (new URLSearchParams(window.location.search)).get('isDuKien') === 'true';
+
     return {
         ...currentItem,
         teamName: unitName,
@@ -1133,8 +1135,10 @@ function computeMasterUnitRecord(statusStr, trangThaiStr, daGuiBool) {
         tongNhanSu: totalStaff,
         facility: primaryFacility,
         personInCharge: 'Nguyễn Văn An',
-        status: statusStr,
-        trangThai: trangThaiStr,
+        status: isDuKien ? (statusStr === 'Chờ tổng hợp' ? 'Chờ tổng hợp' : 'Dự kiến') : statusStr,
+        trangThai: isDuKien ? (trangThaiStr === 'CHO_TONG_HOP' ? 'CHO_TONG_HOP' : 'DU_KIEN') : trangThaiStr,
+        recordType: isDuKien ? 'DU_KIEN' : (currentItem?.recordType || 'CHINH_THUC'),
+        isDuKien: isDuKien,
         daGuiTongHop: daGuiBool,
         suDungPAKD: document.getElementById('suDungPAKD')?.checked ?? (pakdValue === 'Có PAKD'),
         pakdStatus: pakdValue,
@@ -1155,6 +1159,7 @@ function computeMasterUnitRecord(statusStr, trangThaiStr, daGuiBool) {
 }
 
 function handleSubmitTongHopStep2() {
+    const isDuKien = (currentItem && (currentItem.isDuKien === true || currentItem.trangThai === 'DU_KIEN' || currentItem.recordType === 'DU_KIEN')) || (new URLSearchParams(window.location.search)).get('isDuKien') === 'true';
     const updatedItem = computeMasterUnitRecord('Chờ tổng hợp', 'CHO_TONG_HOP', true);
     updatedItem.ngayGuiTongHop = new Date().toISOString();
 
@@ -1166,22 +1171,23 @@ function handleSubmitTongHopStep2() {
     }
 
     setTimeout(() => {
-        window.location.href = '../index.html';
+        window.location.href = isDuKien ? '../index.html?tab=du_kien' : '../index.html';
     }, 600);
 }
 
 function saveDraftStep2() {
-    const draftItem = computeMasterUnitRecord('Nháp', 'NHAP', false);
+    const isDuKien = (currentItem && (currentItem.isDuKien === true || currentItem.trangThai === 'DU_KIEN' || currentItem.recordType === 'DU_KIEN')) || (new URLSearchParams(window.location.search)).get('isDuKien') === 'true';
+    const draftItem = computeMasterUnitRecord(isDuKien ? 'Dự kiến' : 'Nháp', isDuKien ? 'DU_KIEN' : 'NHAP', false);
 
     MWKDataStore.updateKskSchedule(currentId, draftItem);
     sessionStorage.removeItem(`mwk_edit_schedule_draft_${currentId}`);
 
     if (window.showToast) {
-        window.showToast('Đã lưu nháp thông tin cập nhật lịch KSK thành công!', 'success');
+        window.showToast(isDuKien ? 'Đã lưu dự kiến lịch KSK thành công!' : 'Đã lưu nháp thông tin cập nhật lịch KSK thành công!', 'success');
     }
 
     setTimeout(() => {
-        window.location.href = '../index.html';
+        window.location.href = isDuKien ? '../index.html?tab=du_kien' : '../index.html';
     }, 500);
 }
 
