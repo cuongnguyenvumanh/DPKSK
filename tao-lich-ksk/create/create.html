@@ -182,12 +182,26 @@
                 <input type="number" id="estimatedCount" min="0" placeholder="Tự động điền khi có PAKD" class="sys-input text-xs h-9">
             </div>
 
-            <!-- Row 3 Col 2: Thời gian khám * -->
+            <!-- Row 3 Col 2: Thời gian khám * (Từ ngày - Đến ngày) -->
             <div>
-                <label for="examDate" class="sys-label font-bold text-xs text-[#1F2937]">Thời gian khám <span class="text-[#D32F2F]">*</span></label>
-                <div class="relative">
-                    <input type="date" id="examDate" placeholder="Tự động điền khi có PAKD" class="sys-input text-xs h-9 pr-9">
-                    <i class="fa-regular fa-calendar absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none text-xs"></i>
+                <label class="sys-label font-bold text-xs text-[#1F2937]">Thời gian khám <span class="text-[#D32F2F]">*</span></label>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
+                    <div>
+                        <label for="tuNgay" class="text-[11px] text-[#4B5563] font-semibold block mb-0.5">Từ ngày <span class="text-[#D32F2F]">*</span></label>
+                        <div class="relative">
+                            <input type="date" id="tuNgay" class="sys-input text-xs h-9 pr-8">
+                            <i class="fa-regular fa-calendar absolute right-2.5 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none text-xs"></i>
+                        </div>
+                        <span id="err-tuNgay" class="text-[11px] text-[#D32F2F] hidden mt-0.5 block"></span>
+                    </div>
+                    <div>
+                        <label for="denNgay" class="text-[11px] text-[#4B5563] font-semibold block mb-0.5">Đến ngày <span class="text-[#D32F2F]">*</span></label>
+                        <div class="relative">
+                            <input type="date" id="denNgay" class="sys-input text-xs h-9 pr-8">
+                            <i class="fa-regular fa-calendar absolute right-2.5 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none text-xs"></i>
+                        </div>
+                        <span id="err-denNgay" class="text-[11px] text-[#D32F2F] hidden mt-0.5 block"></span>
+                    </div>
                 </div>
             </div>
 

@@ -570,6 +570,71 @@
         SCHEDULE_STATUS_CONFIG: SCHEDULE_STATUS_CONFIG,
         normalizeScheduleStatusKey: normalizeScheduleStatusKey,
         renderScheduleStatus: renderScheduleStatus,
+
+        formatExamDateRange: function(item) {
+            if (!item) return '-';
+            if (typeof item === 'string') {
+                const parts = item.split('-');
+                if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+                return item;
+            }
+
+            const formatDateStr = (dStr) => {
+                if (!dStr) return '';
+                if (dStr.includes('T')) dStr = dStr.split('T')[0];
+                if (dStr.includes('/')) return dStr;
+                const parts = dStr.split('-');
+                if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+                return dStr;
+            };
+
+            let tuVal = item.tuNgay || item.examDateFrom || item.startDate || item.fromDate || item.examDate || item.ngayKham || item.ngayTrienKhai || '';
+            let denVal = item.denNgay || item.examDateTo || item.endDate || item.toDate || item.tuNgay || item.examDate || item.ngayKham || item.ngayTrienKhai || '';
+
+            // Compute range from child schedules if present
+            const children = item.childSchedules || (typeof this.getChildSchedules === 'function' ? this.getChildSchedules(item.id || item.tongLichId) : []);
+            if (Array.isArray(children) && children.length > 0) {
+                let childDates = [];
+                children.forEach(c => {
+                    if (c.tuNgay) childDates.push(c.tuNgay);
+                    if (c.denNgay) childDates.push(c.denNgay);
+                    if (c.examDate) childDates.push(c.examDate);
+                    if (c.ngayKham) childDates.push(c.ngayKham);
+                });
+                if (childDates.length > 0) {
+                    const normalized = childDates.map(d => {
+                        if (!d) return null;
+                        if (d.includes('T')) d = d.split('T')[0];
+                        if (d.includes('/')) {
+                            const p = d.split('/');
+                            if (p.length === 3) return `${p[2]}-${p[1].padStart(2, '0')}-${p[0].padStart(2, '0')}`;
+                        }
+                        return d;
+                    }).filter(Boolean);
+                    normalized.sort();
+                    if (normalized.length > 0) {
+                        tuVal = normalized[0];
+                        denVal = normalized[normalized.length - 1];
+                    }
+                }
+            }
+
+            if (!tuVal && !denVal) {
+                return item.thoiGianKham || '-';
+            }
+
+            if (!tuVal) tuVal = denVal;
+            if (!denVal) denVal = tuVal;
+
+            const formattedStart = formatDateStr(tuVal);
+            const formattedEnd = formatDateStr(denVal);
+
+            if (formattedStart && formattedEnd && formattedStart !== formattedEnd) {
+                return `${formattedStart} - ${formattedEnd}`;
+            }
+            return formattedStart || formattedEnd || '-';
+        },
+
         // --- 1. CATEGORIES (DANH MỤC KHÁM) ---
         getCategories: function() {
             const data = localStorage.getItem(STORAGE_KEYS.CATEGORIES);
@@ -773,6 +838,8 @@
             
             s.ngayKham = s.ngayKham || s.examDate || '';
             s.examDate = s.examDate || s.ngayKham || '';
+            s.tuNgay = s.tuNgay || s.examDateFrom || s.startDate || s.fromDate || '';
+            s.denNgay = s.denNgay || s.examDateTo || s.endDate || s.toDate || '';
             
             s.buoi = s.buoi || s.session || 'Sáng';
             s.session = s.session || s.buoi || 'Sáng';
@@ -846,6 +913,54 @@
                 className: config.className,
                 badgeHtml: `<span class="schedule-status ${config.className}">${config.label}</span>`
             };
+        },
+        formatExamDateRange: function(item) {
+            if (!item) return '-';
+
+            const fmt = function(str) {
+                if (!str) return '';
+                if (typeof str !== 'string') return '';
+                const trimmed = str.trim();
+                if (!trimmed) return '';
+                if (trimmed.includes('/')) return trimmed;
+                const parts = trimmed.split('-');
+                if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+                return trimmed;
+            };
+
+            let tuVal = item.tuNgay || item.examDateFrom || item.startDate || item.fromDate || '';
+            let denVal = item.denNgay || item.examDateTo || item.endDate || item.toDate || '';
+
+            if (!tuVal || !denVal) {
+                const childList = item.childSchedules || [
+                    ...(item.step2Data?.taiVien || []),
+                    ...(item.step2Data?.ngoaiVien || []),
+                    ...(item.step2Data?.lichPhuong || [])
+                ];
+                const dates = childList
+                    .map(c => c.ngayKham || c.examDate || c.date)
+                    .filter(Boolean)
+                    .sort();
+                if (dates.length > 0) {
+                    if (!tuVal) tuVal = dates[0];
+                    if (!denVal) denVal = dates[dates.length - 1];
+                }
+            }
+
+            if (!tuVal) tuVal = item.examDate || item.ngayKham || '';
+            if (!denVal) denVal = tuVal;
+
+            const startStr = fmt(tuVal);
+            const endStr = fmt(denVal);
+
+            if (startStr && endStr && startStr !== endStr) {
+                return `${startStr} - ${endStr}`;
+            }
+            if (startStr) return startStr;
+            if (endStr) return endStr;
+            if (item.thoiGianKham) return item.thoiGianKham;
+
+            return '-';
         },
         isScheduleLocked: function(scheduleOrStatus) {
             const rawStatus = (typeof scheduleOrStatus === 'object' && scheduleOrStatus !== null)
@@ -1087,6 +1202,11 @@
                         loaiLich: loaiLichTypes.join(', '),
                         loaiLichTypes: loaiLichTypes,
                         tongSoLichCount: totalChilds,
+                        tuNgay: draft.tuNgay || draft.examDateFrom || draft.examDate,
+                        denNgay: draft.denNgay || draft.examDateTo || draft.tuNgay || draft.examDate,
+                        examDate: draft.examDate || draft.tuNgay,
+                        ngayKham: draft.ngayKham || draft.tuNgay,
+                        thoiGianKham: draft.thoiGianKham,
                         step2Data: step2Data
                     });
                     return existingItem.id;
@@ -1112,6 +1232,11 @@
                         daGuiTongHop: false,
                         suDungPAKD: draft.suDungPAKD !== undefined ? draft.suDungPAKD : (draft.pakdStatus === 'Có PAKD' || draft.pakdStatus === 'Đã có PAKD'),
                         pakdStatus: draft.pakdStatus || 'Có PAKD',
+                        tuNgay: draft.tuNgay || draft.examDateFrom || draft.examDate,
+                        denNgay: draft.denNgay || draft.examDateTo || draft.tuNgay || draft.examDate,
+                        examDate: draft.examDate || draft.tuNgay,
+                        ngayKham: draft.ngayKham || draft.tuNgay,
+                        thoiGianKham: draft.thoiGianKham,
                         step2Data: step2Data
                     };
                     const newId = this.addKskSchedule(newItem);
@@ -2921,6 +3046,9 @@
         }
     };
 
+    window.formatExamDateRange = function(item) {
+        return MWKDataStore.formatExamDateRange(item);
+    };
     window.MWKDataStore = MWKDataStore;
     window.SCHEDULE_STATUS_CONFIG = SCHEDULE_STATUS_CONFIG;
     window.normalizeScheduleStatusKey = normalizeScheduleStatusKey;

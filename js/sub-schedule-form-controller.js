@@ -452,15 +452,48 @@
             this.renderLocationTable();
         },
 
+        calculateTotalQuantity: function() {
+            const maleInput = document.getElementById('soLuongNam');
+            const femaleInput = document.getElementById('soLuongNu');
+            const totalInput = document.getElementById('guestCount');
+
+            if (!totalInput) return;
+
+            let maleVal = maleInput && maleInput.value !== '' ? parseInt(maleInput.value, 10) : 0;
+            if (isNaN(maleVal) || maleVal < 0) maleVal = 0;
+
+            let femaleVal = femaleInput && femaleInput.value !== '' ? parseInt(femaleInput.value, 10) : 0;
+            if (isNaN(femaleVal) || femaleVal < 0) femaleVal = 0;
+
+            const total = maleVal + femaleVal;
+            totalInput.value = total;
+        },
+
         setupEvents: function() {
-            const guestCount = document.getElementById('guestCount');
-            if (guestCount) {
-                guestCount.addEventListener('input', () => this.updateSummaryBar());
+            const maleInput = document.getElementById('soLuongNam');
+            const femaleInput = document.getElementById('soLuongNu');
+
+            const handleGenderChange = () => {
+                this.calculateTotalQuantity();
+                this.updateSummaryBar();
+            };
+
+            if (maleInput) {
+                maleInput.addEventListener('input', handleGenderChange);
+                maleInput.addEventListener('change', handleGenderChange);
             }
+            if (femaleInput) {
+                femaleInput.addEventListener('input', handleGenderChange);
+                femaleInput.addEventListener('change', handleGenderChange);
+            }
+
             const examDate = document.getElementById('examDate');
             if (examDate) {
                 examDate.addEventListener('change', () => this.updateSummaryBar());
             }
+
+            // Run initial calculation to sync UI
+            this.calculateTotalQuantity();
         },
 
         updateSummaryBar: function() {

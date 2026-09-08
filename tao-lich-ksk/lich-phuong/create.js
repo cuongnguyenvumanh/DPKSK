@@ -41,7 +41,7 @@ function markFormDirty() {
 }
 
 function setupFormDirtyTracker() {
-    const fields = ['examDate', 'province', 'facility', 'guestCount', 'notes', 'time-sang-start', 'time-sang-end', 'time-chieu-start', 'time-chieu-end'];
+    const fields = ['examDate', 'province', 'facility', 'guestCount', 'soLuongNam', 'soLuongNu', 'notes', 'time-sang-start', 'time-sang-end', 'time-chieu-start', 'time-chieu-end'];
     fields.forEach(id => {
         const elem = document.getElementById(id);
         if (elem) {

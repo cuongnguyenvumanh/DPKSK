@@ -303,17 +303,20 @@
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
                                     <div>
                                         <label class="sys-label">Tổng số lượng dự kiến <span class="text-[#D32F2F]">*</span></label>
-                                        <input type="number" id="guestCount" min="1" value="180" class="sys-input text-xs h-9 font-bold text-[#ED6C02]">
+                                        <input type="number" id="guestCount" readonly tabindex="-1" value="180" class="sys-input text-xs h-9 font-bold text-[#ED6C02] bg-[#F4F5F7] cursor-not-allowed select-none">
+                                        <p class="text-[11px] text-[#6B7280] mt-1">Tự động tính từ Nam + Nữ</p>
+                                        <span id="err-guestCount" class="text-[11px] text-[#D32F2F] hidden mt-1"></span>
                                     </div>
                                     <div>
                                         <label class="sys-label">Số lượng Nam</label>
-                                        <input type="number" id="soLuongNam" min="0" value="100" class="sys-input text-xs h-9">
+                                        <input type="number" id="soLuongNam" min="0" step="1" value="100" class="sys-input text-xs h-9">
                                     </div>
                                     <div>
                                         <label class="sys-label">Số lượng Nữ</label>
-                                        <input type="number" id="soLuongNu" min="0" value="80" class="sys-input text-xs h-9">
+                                        <input type="number" id="soLuongNu" min="0" step="1" value="80" class="sys-input text-xs h-9">
                                     </div>
                                 </div>
+                                <span id="err-soLuongGender" class="text-[11px] text-[#D32F2F] hidden mt-1 block"></span>
                             </div>
 
                             <!-- 6. DANH MỤC THỰC HIỆN -->

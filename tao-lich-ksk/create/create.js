@@ -65,7 +65,10 @@ function loadDraftStateFromSession() {
             if (draft.customerName && document.getElementById('customerName')) document.getElementById('customerName').value = draft.customerName;
             if (draft.customerType && document.getElementById('customerType')) document.getElementById('customerType').value = draft.customerType;
             if (draft.address && document.getElementById('address')) document.getElementById('address').value = draft.address;
-            if (draft.estimatedCount && document.getElementById('estimatedCount')) document.getElementById('estimatedCount').value = draft.estimatedCount;
+            if (draft.tuNgay && document.getElementById('tuNgay')) document.getElementById('tuNgay').value = draft.tuNgay;
+            if (draft.denNgay && document.getElementById('denNgay')) document.getElementById('denNgay').value = draft.denNgay;
+            if (!draft.tuNgay && draft.examDate && document.getElementById('tuNgay')) document.getElementById('tuNgay').value = draft.examDate;
+            if (!draft.denNgay && draft.examDate && document.getElementById('denNgay')) document.getElementById('denNgay').value = draft.examDate;
             if (draft.examDate && document.getElementById('examDate')) document.getElementById('examDate').value = draft.examDate;
             if (draft.contactPerson && document.getElementById('contactPerson')) document.getElementById('contactPerson').value = draft.contactPerson;
             if (draft.contractNote && document.getElementById('contractNote')) document.getElementById('contractNote').value = draft.contractNote;
@@ -112,8 +115,9 @@ function saveCurrentDraftToSession() {
         customerName: document.getElementById('customerName')?.value.trim() || '',
         customerType: document.getElementById('customerType')?.value || 'Doanh nghiệp',
         address: document.getElementById('address')?.value.trim() || '',
-        estimatedCount: document.getElementById('estimatedCount')?.value.trim() || '',
-        examDate: document.getElementById('examDate')?.value || '',
+        tuNgay: document.getElementById('tuNgay')?.value || document.getElementById('examDate')?.value || '',
+        denNgay: document.getElementById('denNgay')?.value || document.getElementById('tuNgay')?.value || document.getElementById('examDate')?.value || '',
+        examDate: document.getElementById('tuNgay')?.value || document.getElementById('examDate')?.value || '',
         contactPerson: document.getElementById('contactPerson')?.value.trim() || '',
         contractNote: document.getElementById('contractNote')?.value.trim() || '',
         suDungPAKD: isPakdChecked,
@@ -182,6 +186,8 @@ function handleFetchPakd() {
     if (document.getElementById('customerName')) document.getElementById('customerName').value = mockPakd.customerName;
     if (document.getElementById('address')) document.getElementById('address').value = mockPakd.address;
     if (document.getElementById('estimatedCount')) document.getElementById('estimatedCount').value = mockPakd.estimatedCount;
+    if (document.getElementById('tuNgay')) document.getElementById('tuNgay').value = mockPakd.examDate;
+    if (document.getElementById('denNgay')) document.getElementById('denNgay').value = mockPakd.examDate;
     if (document.getElementById('examDate')) document.getElementById('examDate').value = mockPakd.examDate;
     if (document.getElementById('contactPerson')) document.getElementById('contactPerson').value = mockPakd.contactPerson;
     if (document.getElementById('contractNote')) document.getElementById('contractNote').value = mockPakd.contractNote;
@@ -196,7 +202,7 @@ function handleFetchPakd() {
 }
 
 function bindStep1Events() {
-    const inputIds = ['customerCode', 'cbkd', 'maNhanVien', 'customerName', 'address', 'estimatedCount', 'examDate', 'contactPerson', 'contractNote', 'pakdStatus'];
+    const inputIds = ['customerCode', 'cbkd', 'maNhanVien', 'customerName', 'address', 'estimatedCount', 'tuNgay', 'denNgay', 'examDate', 'contactPerson', 'contractNote', 'pakdStatus'];
     inputIds.forEach(id => {
         const elem = document.getElementById(id);
         if (elem) {
@@ -237,6 +243,8 @@ function validateStep1() {
     const customerNameElem = document.getElementById('customerName');
     const addressElem = document.getElementById('address');
     const estimatedCountElem = document.getElementById('estimatedCount');
+    const tuNgayElem = document.getElementById('tuNgay');
+    const denNgayElem = document.getElementById('denNgay');
     const examDateElem = document.getElementById('examDate');
 
     if (cbkdElem) isValid = MWKValidation.validateRequired(cbkdElem, 'Vui lòng nhập tên CBKD.') && isValid;
@@ -244,7 +252,25 @@ function validateStep1() {
     if (customerNameElem) isValid = MWKValidation.validateRequired(customerNameElem, 'Vui lòng nhập tên đơn vị KSK.') && isValid;
     if (addressElem) isValid = MWKValidation.validateRequired(addressElem, 'Vui lòng nhập địa chỉ.') && isValid;
     if (estimatedCountElem) isValid = MWKValidation.validateRequired(estimatedCountElem, 'Vui lòng nhập số lượng khách.') && isValid;
-    if (examDateElem) isValid = MWKValidation.validateRequired(examDateElem, 'Vui lòng chọn thời gian khám.') && isValid;
+
+    if (tuNgayElem) {
+        isValid = MWKValidation.validateRequired(tuNgayElem, 'Vui lòng chọn Từ ngày.') && isValid;
+    } else if (examDateElem) {
+        isValid = MWKValidation.validateRequired(examDateElem, 'Vui lòng chọn thời gian khám.') && isValid;
+    }
+
+    if (denNgayElem) {
+        isValid = MWKValidation.validateRequired(denNgayElem, 'Vui lòng chọn Đến ngày.') && isValid;
+    }
+
+    if (tuNgayElem && denNgayElem && tuNgayElem.value && denNgayElem.value) {
+        if (denNgayElem.value < tuNgayElem.value) {
+            MWKValidation.showFieldError(denNgayElem, 'Đến ngày phải lớn hơn hoặc bằng Từ ngày.');
+            isValid = false;
+        } else {
+            MWKValidation.clearFieldError(denNgayElem);
+        }
+    }
 
     if (!isValid && window.showToast) {
         window.showToast('Vui lòng điền đầy đủ các trường dữ liệu bắt buộc (*)', 'error');
@@ -1024,7 +1050,6 @@ function computeMasterUnitRecord(statusStr, trangThaiStr, daGuiBool) {
     const address = document.getElementById('address')?.value.trim() || '';
     const estimatedCountElem = document.getElementById('estimatedCount');
     const initialEstimatedCount = estimatedCountElem ? (parseInt(estimatedCountElem.value) || 0) : 0;
-    const examDate = document.getElementById('examDate')?.value || new Date().toISOString().split('T')[0];
     const contactPerson = document.getElementById('contactPerson')?.value.trim() || '';
     const contractNote = document.getElementById('contractNote')?.value.trim() || '';
     const pakdStatusElem = document.getElementById('pakdStatus');
@@ -1077,6 +1102,10 @@ function computeMasterUnitRecord(statusStr, trangThaiStr, daGuiBool) {
         primaryFacility = taiVienList[0].diaDiemKham;
     }
 
+    const tuNgay = document.getElementById('tuNgay')?.value || document.getElementById('examDate')?.value || new Date().toISOString().split('T')[0];
+    const denNgay = document.getElementById('denNgay')?.value || tuNgay;
+    const thoiGianKhamStr = window.formatExamDateRange ? window.formatExamDateRange({ tuNgay, denNgay, step2Data }) : `${tuNgay} - ${denNgay}`;
+
     return {
         teamName: unitName,
         customerName: unitName,
@@ -1107,7 +1136,11 @@ function computeMasterUnitRecord(statusStr, trangThaiStr, daGuiBool) {
         pakdStatus: pakdValue,
         phuongAnKinhDoanh: pakdValue,
         step2Data: JSON.parse(JSON.stringify(step2Data)),
-        examDate: examDate,
+        tuNgay: tuNgay,
+        denNgay: denNgay,
+        examDate: tuNgay,
+        ngayKham: tuNgay,
+        thoiGianKham: thoiGianKhamStr,
         createdAt: new Date().toISOString()
     };
 }

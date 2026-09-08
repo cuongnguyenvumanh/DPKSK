@@ -83,27 +83,27 @@
                 this.hideFieldError('workType');
             }
 
-            // 9. Số lượng khách dự kiến *
+            // 9. Số lượng khám dự kiến * (Tự động tính = Nam + Nữ)
+            const maleInput = document.getElementById('soLuongNam');
+            const femaleInput = document.getElementById('soLuongNu');
             const guestCount = document.getElementById('guestCount');
-            const totalVal = guestCount ? parseInt(guestCount.value) || 0 : 0;
+
+            let countNam = maleInput && maleInput.value !== '' ? parseInt(maleInput.value, 10) : 0;
+            if (isNaN(countNam) || countNam < 0) countNam = 0;
+
+            let countNu = femaleInput && femaleInput.value !== '' ? parseInt(femaleInput.value, 10) : 0;
+            if (isNaN(countNu) || countNu < 0) countNu = 0;
+
+            const totalVal = countNam + countNu;
+            if (guestCount) {
+                guestCount.value = totalVal;
+            }
+
             if (totalVal <= 0) {
-                this.showFieldError('guestCount', 'Số lượng khách phải lớn hơn 0.');
+                this.showFieldError('guestCount', 'Số lượng khách phải lớn hơn 0 (vui lòng nhập số lượng Nam và/hoặc Nữ).');
                 isValid = false;
             } else {
                 this.hideFieldError('guestCount');
-            }
-
-            // 10. Validation Nam + Nữ = Tổng số (Nếu có nhập)
-            const countNam = document.getElementById('soLuongNam') ? parseInt(document.getElementById('soLuongNam').value) || 0 : 0;
-            const countNu = document.getElementById('soLuongNu') ? parseInt(document.getElementById('soLuongNu').value) || 0 : 0;
-            if (countNam > 0 || countNu > 0) {
-                if (countNam + countNu !== totalVal) {
-                    this.showFieldError('soLuongGender', `Tổng Nam (${countNam}) + Nữ (${countNu}) = ${countNam + countNu} không khớp với Tổng số (${totalVal}).`);
-                    isValid = false;
-                } else {
-                    this.hideFieldError('soLuongGender');
-                }
-            } else {
                 this.hideFieldError('soLuongGender');
             }
 
@@ -134,9 +134,16 @@
             const today = new Date().toISOString().split('T')[0];
             const cfg = window.ScheduleFormConfig ? window.ScheduleFormConfig.CONFIG[scheduleType] : {};
 
-            const guestCount = parseInt(document.getElementById('guestCount')?.value) || 0;
-            const countNam = parseInt(document.getElementById('soLuongNam')?.value) || 0;
-            const countNu = parseInt(document.getElementById('soLuongNu')?.value) || 0;
+            const maleInput = document.getElementById('soLuongNam');
+            const femaleInput = document.getElementById('soLuongNu');
+
+            let countNam = maleInput && maleInput.value !== '' ? parseInt(maleInput.value, 10) : 0;
+            if (isNaN(countNam) || countNam < 0) countNam = 0;
+
+            let countNu = femaleInput && femaleInput.value !== '' ? parseInt(femaleInput.value, 10) : 0;
+            if (isNaN(countNu) || countNu < 0) countNu = 0;
+
+            const guestCount = countNam + countNu;
 
             const examDate = document.getElementById('examDate')?.value || '';
             const tenDonVi = document.getElementById('tenDonVi')?.value.trim() || '';
@@ -218,6 +225,9 @@
                     nam: countNam,
                     nu: countNu
                 },
+                soLuongNam: countNam,
+                soLuongNu: countNu,
+                tongSoLuong: guestCount,
                 guestCount: guestCount,
                 soLuongKhach: guestCount,
 
@@ -359,10 +369,13 @@
             if ((data.facility || data.diaDiemKham) && document.getElementById('facility')) document.getElementById('facility').value = data.facility || data.diaDiemKham;
 
             // Section 5
-            const totalQty = (data.soLuongDuKien && data.soLuongDuKien.tong) || data.guestCount || data.soLuongKhach || 180;
+            const countNam = (data.soLuongDuKien && data.soLuongDuKien.nam !== undefined) ? data.soLuongDuKien.nam : (data.soLuongNam !== undefined ? data.soLuongNam : 0);
+            const countNu = (data.soLuongDuKien && data.soLuongDuKien.nu !== undefined) ? data.soLuongDuKien.nu : (data.soLuongNu !== undefined ? data.soLuongNu : 0);
+            const totalQty = (countNam + countNu > 0) ? (countNam + countNu) : ((data.soLuongDuKien && data.soLuongDuKien.tong) || data.tongSoLuong || data.guestCount || data.soLuongKhach || 0);
+
+            if (document.getElementById('soLuongNam')) document.getElementById('soLuongNam').value = countNam || '';
+            if (document.getElementById('soLuongNu')) document.getElementById('soLuongNu').value = countNu || '';
             if (document.getElementById('guestCount')) document.getElementById('guestCount').value = totalQty;
-            if (data.soLuongDuKien && document.getElementById('soLuongNam')) document.getElementById('soLuongNam').value = data.soLuongDuKien.nam || 0;
-            if (data.soLuongDuKien && document.getElementById('soLuongNu')) document.getElementById('soLuongNu').value = data.soLuongDuKien.nu || 0;
 
             // Section 6, 7, 8, 9, 10, 11
             if (data.gioChuyenMau && document.getElementById('gioChuyenMau')) document.getElementById('gioChuyenMau').value = data.gioChuyenMau;

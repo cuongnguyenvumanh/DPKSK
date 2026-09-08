@@ -587,8 +587,10 @@ function loadSchedulesData() {
                     customerCode: masterCode,
                     loaiLich: sub.loaiLich || typeLabel,
                     scheduleType: st || "TAI_VIEN",
-                    examDate: sub.examDate || sub.ngayKham || "2026-09-15",
-                    ngayKham: sub.examDate || sub.ngayKham || "2026-09-15",
+                    tuNgay: sub.tuNgay || master.tuNgay || sub.examDate || sub.ngayKham || master.examDate || "2026-09-15",
+                    denNgay: sub.denNgay || master.denNgay || sub.tuNgay || master.tuNgay || sub.examDate || sub.ngayKham || master.examDate || "2026-09-15",
+                    examDate: sub.examDate || sub.ngayKham || master.tuNgay || master.examDate || "2026-09-15",
+                    ngayKham: sub.examDate || sub.ngayKham || master.tuNgay || master.examDate || "2026-09-15",
                     ca: sub.ca || (sub.session === 'Chiều' ? 'Chieu' : 'Sang'),
                     gioBatDau: sub.startTime || sub.gioBatDau || "07:30",
                     gioKetThuc: sub.endTime || sub.gioKetThuc || "11:30",
@@ -624,8 +626,10 @@ function loadSchedulesData() {
                             customerCode: masterCode,
                             loaiLich: label,
                             scheduleType: scheduleType,
-                            examDate: sub.ngayKham || sub.examDate || master.examDate || "2026-09-15",
-                            ngayKham: sub.ngayKham || sub.examDate || master.examDate || "2026-09-15",
+                            tuNgay: sub.tuNgay || master.tuNgay || sub.ngayKham || sub.examDate || master.examDate || "2026-09-15",
+                            denNgay: sub.denNgay || master.denNgay || sub.tuNgay || master.tuNgay || sub.ngayKham || sub.examDate || master.examDate || "2026-09-15",
+                            examDate: sub.ngayKham || sub.examDate || master.tuNgay || master.examDate || "2026-09-15",
+                            ngayKham: sub.ngayKham || sub.examDate || master.tuNgay || master.examDate || "2026-09-15",
                             ca: sub.ca || (sub.session === 'Chiều' ? 'Chieu' : 'Sang'),
                             gioBatDau: sub.startTime || sub.gioBatDau || "07:30",
                             gioKetThuc: sub.endTime || sub.gioKetThuc || "11:30",
@@ -884,6 +888,20 @@ function getFilteredSchedules() {
     });
 }
 
+function isScheduleOnDate(item, targetISO) {
+    if (!item || !targetISO) return false;
+    let startISO = item.tuNgay || item.examDate || item.ngayKham || '';
+    let endISO = item.denNgay || item.tuNgay || item.examDate || item.ngayKham || '';
+
+    if (!startISO) return false;
+    if (startISO.includes('T')) startISO = startISO.split('T')[0];
+    if (endISO.includes('T')) endISO = endISO.split('T')[0];
+
+    if (startISO === targetISO || endISO === targetISO) return true;
+    if (startISO <= targetISO && targetISO <= endISO) return true;
+    return false;
+}
+
 function renderCalendar() {
     const activeList = getFilteredSchedules();
 
@@ -996,7 +1014,7 @@ function renderWeekView(activeList) {
             const shortDate = CalendarHelper.formatShortDate(dayDate);
             const isToday = isoStr === todayISO;
 
-            const dayItems = activeList.filter(item => item.ngayKham === isoStr);
+            const dayItems = activeList.filter(item => isScheduleOnDate(item, isoStr));
             const dayCount = dayItems.length;
             const dayGuests = dayItems.reduce((sum, i) => sum + (parseInt(i.soLuongKhach) || 0), 0);
 
@@ -1036,7 +1054,7 @@ function renderWeekView(activeList) {
             const isToday = isoStr === todayISO;
 
             const cellChilds = activeList.filter(item => {
-                if (item.ngayKham !== isoStr) return false;
+                if (!isScheduleOnDate(item, isoStr)) return false;
                 if (shift.code === 'CaNgay') return item.ca === 'CaNgay';
                 return item.ca === shift.code;
             });
@@ -1185,7 +1203,7 @@ function renderMonthView(activeList) {
                 const isCurrentMonth = dayDate.getMonth() === month;
                 const isToday = isoStr === todayISO;
 
-                const dayChilds = activeList.filter(item => item.ngayKham === isoStr);
+            const dayChilds = activeList.filter(item => isScheduleOnDate(item, isoStr));
                 
                 // Group by Master Unit
                 const masterMap = {};

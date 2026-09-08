@@ -262,21 +262,7 @@
                         </div>
                     </div>
 
-                    <!-- TAB CONTROL: LOẠI LỊCH (Tất cả / Lịch tại viện / Lịch ngoại viện / Lịch phường) -->
-                    <div class="flex items-center gap-4 bg-white border-b border-[#D9DEE5] h-10 px-4 text-xs font-semibold overflow-x-auto rounded-t-[4px]">
-                        <button type="button" onclick="switchLoaiLichTab('Tất cả')" id="tab-all" class="loai-lich-tab h-full border-b-2 border-[#27496D] text-[#27496D] font-bold px-1 transition-colors cursor-pointer">
-                            Tất cả
-                        </button>
-                        <button type="button" onclick="switchLoaiLichTab('Lịch tại viện')" id="tab-tai-vien" class="loai-lich-tab h-full border-b-2 border-transparent text-[#6B7280] hover:text-[#1F2937] px-1 transition-colors cursor-pointer">
-                            Lịch tại viện
-                        </button>
-                        <button type="button" onclick="switchLoaiLichTab('Lịch ngoại viện')" id="tab-ngoai-vien" class="loai-lich-tab h-full border-b-2 border-transparent text-[#6B7280] hover:text-[#1F2937] px-1 transition-colors cursor-pointer">
-                            Lịch ngoại viện
-                        </button>
-                        <button type="button" onclick="switchLoaiLichTab('Lịch phường')" id="tab-phuong" class="loai-lich-tab h-full border-b-2 border-transparent text-[#6B7280] hover:text-[#1F2937] px-1 transition-colors cursor-pointer">
-                            Lịch phường
-                        </button>
-                    </div>
+                    
 
                     <!-- DATA GRID ENTERPRISE CARD -->
                     <div class="bg-white rounded-[4px] border border-[#D9DEE5] overflow-hidden flex flex-col">
@@ -984,34 +970,46 @@
         }
 
         function formatExamDateRange(item) {
-            if (item.thoiGianKham) return item.thoiGianKham;
-            if (item.examDateFrom && item.examDateTo) {
-                return `${formatDateStr(item.examDateFrom)} - ${formatDateStr(item.examDateTo)}`;
+            if (window.MWKDataStore && typeof MWKDataStore.formatExamDateRange === 'function') {
+                return MWKDataStore.formatExamDateRange(item);
             }
-            if (item.examDate) {
-                const d = formatDateStr(item.examDate);
-                return `${d} - ${d}`;
+            if (!item) return '-';
+            let tuVal = item.tuNgay || item.examDateFrom || item.startDate || item.fromDate || '';
+            let denVal = item.denNgay || item.examDateTo || item.endDate || item.toDate || '';
+            if (!tuVal || !denVal) {
+                const childList = item.childSchedules || [
+                    ...(item.step2Data?.taiVien || []),
+                    ...(item.step2Data?.ngoaiVien || []),
+                    ...(item.step2Data?.lichPhuong || [])
+                ];
+                const dates = childList.map(c => c.ngayKham || c.examDate || c.date).filter(Boolean).sort();
+                if (dates.length > 0) {
+                    if (!tuVal) tuVal = dates[0];
+                    if (!denVal) denVal = dates[dates.length - 1];
+                }
             }
-            return '09/05/2025 - 10/05/2025';
+            if (!tuVal) tuVal = item.examDate || item.ngayKham || '';
+            if (!denVal) denVal = tuVal;
+            const startFmt = formatDateStr(tuVal);
+            const endFmt = formatDateStr(denVal);
+            if (startFmt && endFmt && startFmt !== endFmt) return `${startFmt} - ${endFmt}`;
+            if (startFmt) return startFmt;
+            if (endFmt) return endFmt;
+            return item.thoiGianKham || '-';
         }
 
         function formatExamDateHtml(item) {
-            let dateStr = '';
-            if (item.examDateFrom && item.examDateTo) {
-                dateStr = `${formatDateStr(item.examDateFrom)} - ${formatDateStr(item.examDateTo)}`;
-            } else if (item.examDate) {
-                dateStr = formatDateStr(item.examDate);
-            } else if (item.thoiGianKham) {
-                dateStr = item.thoiGianKham;
-            } else {
-                dateStr = '24/08/2026';
-            }
+            const dateStr = formatExamDateRange(item);
+            console.log('[KSK DEBUG] master item:', item);
+            console.log('[KSK DEBUG] tuNgay:', item ? item.tuNgay : undefined);
+            console.log('[KSK DEBUG] denNgay:', item ? item.denNgay : undefined);
+            console.log('[KSK DEBUG] formatted:', dateStr);
 
-            let timeStr = (item.startTime && item.endTime) ? `${item.startTime} - ${item.endTime}` : (item.session ? `${item.session} (07:30 - 11:30)` : '07:30 - 11:30');
+            const timeStr = (item.startTime && item.endTime) ? `${item.startTime} - ${item.endTime}` : (item.session ? `${item.session} (07:30 - 11:30)` : '07:30 - 11:30');
 
             return `
                 <div class="flex flex-col justify-center items-center leading-tight">
-                    <span class="font-semibold text-[#1F2937] text-xs">${dateStr}</span>
+                    <span class="font-semibold text-[#1F2937] text-xs text-center">${dateStr}</span>
                     <span class="text-[11px] text-[#6B7280] font-mono mt-0.5">${timeStr}</span>
                 </div>
             `;
@@ -1114,8 +1112,10 @@
                 const matchTab = currentTab === 'Tất cả' || 
                     (item.loaiLich && item.loaiLich.includes(currentTab)) ||
                     (Array.isArray(item.loaiLichTypes) && item.loaiLichTypes.includes(currentTab));
-                const matchDateFrom = !dateFrom || (item.examDate && item.examDate >= dateFrom);
-                const matchDateTo = !dateTo || (item.examDate && item.examDate <= dateTo);
+                const itemTu = item.tuNgay || item.examDate;
+                const itemDen = item.denNgay || item.examDate;
+                const matchDateFrom = !dateFrom || (itemDen && itemDen >= dateFrom);
+                const matchDateTo = !dateTo || (itemTu && itemTu <= dateTo);
                 const matchScheduleForm = !scheduleForm || item.scheduleForm === scheduleForm;
                 const matchFacility = !facility || item.facility === facility;
                 

@@ -148,7 +148,9 @@ function loadDraftStateFromSession() {
     const customerType = (draft && draft.customerType) || currentItem.customerType || 'Doanh nghiệp';
     const address = (draft && draft.address) || currentItem.address || currentItem.examLocation || '';
     const estimatedCount = (draft && draft.estimatedCount) || currentItem.estimatedCount || currentItem.soLuong || '';
-    const examDate = (draft && draft.examDate) || currentItem.examDate || '';
+    const tuNgay = (draft && draft.tuNgay) || currentItem.tuNgay || currentItem.examDate || currentItem.ngayKham || '';
+    const denNgay = (draft && draft.denNgay) || currentItem.denNgay || tuNgay || currentItem.examDate || currentItem.ngayKham || '';
+    const examDate = tuNgay || (draft && draft.examDate) || currentItem.examDate || '';
     const contactPerson = (draft && draft.contactPerson) || currentItem.contactPerson || '';
     const contractNote = (draft && draft.contractNote) || currentItem.contractNote || currentItem.generalNote || '';
     const pakdStatus = (draft && draft.pakdStatus) || currentItem.pakdStatus || currentItem.phuongAnKinhDoanh || 'Không có PAKD';
@@ -160,6 +162,8 @@ function loadDraftStateFromSession() {
     if (document.getElementById('customerType')) document.getElementById('customerType').value = customerType;
     if (document.getElementById('address')) document.getElementById('address').value = address;
     if (document.getElementById('estimatedCount')) document.getElementById('estimatedCount').value = estimatedCount;
+    if (document.getElementById('tuNgay')) document.getElementById('tuNgay').value = tuNgay;
+    if (document.getElementById('denNgay')) document.getElementById('denNgay').value = denNgay;
     if (document.getElementById('examDate')) document.getElementById('examDate').value = examDate;
     if (document.getElementById('contactPerson')) document.getElementById('contactPerson').value = contactPerson;
     if (document.getElementById('contractNote')) document.getElementById('contractNote').value = contractNote;
@@ -205,6 +209,8 @@ function saveCurrentEditDraftToSession() {
     if (!currentId) return;
     const suDungCb = document.getElementById('suDungPAKD');
     const isPakdChecked = suDungCb ? suDungCb.checked : (document.getElementById('pakdStatus')?.value === 'Có PAKD');
+    const tuNgayVal = document.getElementById('tuNgay')?.value || document.getElementById('examDate')?.value || '';
+    const denNgayVal = document.getElementById('denNgay')?.value || tuNgayVal;
     const draft = {
         customerCode: document.getElementById('customerCode')?.value.trim() || '',
         cbkd: document.getElementById('cbkd')?.value.trim() || '',
@@ -213,7 +219,9 @@ function saveCurrentEditDraftToSession() {
         customerType: document.getElementById('customerType')?.value || 'Doanh nghiệp',
         address: document.getElementById('address')?.value.trim() || '',
         estimatedCount: document.getElementById('estimatedCount')?.value.trim() || '',
-        examDate: document.getElementById('examDate')?.value || '',
+        tuNgay: tuNgayVal,
+        denNgay: denNgayVal,
+        examDate: tuNgayVal,
         contactPerson: document.getElementById('contactPerson')?.value.trim() || '',
         contractNote: document.getElementById('contractNote')?.value.trim() || '',
         suDungPAKD: isPakdChecked,
@@ -249,6 +257,8 @@ function handleFetchPakd() {
     if (document.getElementById('customerName')) document.getElementById('customerName').value = mockPakd.customerName;
     if (document.getElementById('address')) document.getElementById('address').value = mockPakd.address;
     if (document.getElementById('estimatedCount')) document.getElementById('estimatedCount').value = mockPakd.estimatedCount;
+    if (document.getElementById('tuNgay')) document.getElementById('tuNgay').value = mockPakd.examDate;
+    if (document.getElementById('denNgay')) document.getElementById('denNgay').value = mockPakd.examDate;
     if (document.getElementById('examDate')) document.getElementById('examDate').value = mockPakd.examDate;
     if (document.getElementById('contactPerson')) document.getElementById('contactPerson').value = mockPakd.contactPerson;
     if (document.getElementById('contractNote')) document.getElementById('contractNote').value = mockPakd.contractNote;
@@ -263,7 +273,7 @@ function handleFetchPakd() {
 }
 
 function bindStep1Events() {
-    const inputIds = ['customerCode', 'cbkd', 'maNhanVien', 'customerName', 'address', 'estimatedCount', 'examDate', 'contactPerson', 'contractNote', 'pakdStatus'];
+    const inputIds = ['customerCode', 'cbkd', 'maNhanVien', 'customerName', 'address', 'estimatedCount', 'tuNgay', 'denNgay', 'examDate', 'contactPerson', 'contractNote', 'pakdStatus'];
     inputIds.forEach(id => {
         const elem = document.getElementById(id);
         if (elem) {
@@ -304,6 +314,8 @@ function validateStep1() {
     const customerNameElem = document.getElementById('customerName');
     const addressElem = document.getElementById('address');
     const estimatedCountElem = document.getElementById('estimatedCount');
+    const tuNgayElem = document.getElementById('tuNgay');
+    const denNgayElem = document.getElementById('denNgay');
     const examDateElem = document.getElementById('examDate');
 
     if (cbkdElem) isValid = MWKValidation.validateRequired(cbkdElem, 'Vui lòng nhập tên CBKD.') && isValid;
@@ -311,7 +323,25 @@ function validateStep1() {
     if (customerNameElem) isValid = MWKValidation.validateRequired(customerNameElem, 'Vui lòng nhập tên đơn vị KSK.') && isValid;
     if (addressElem) isValid = MWKValidation.validateRequired(addressElem, 'Vui lòng nhập địa chỉ.') && isValid;
     if (estimatedCountElem) isValid = MWKValidation.validateRequired(estimatedCountElem, 'Vui lòng nhập số lượng khách.') && isValid;
-    if (examDateElem) isValid = MWKValidation.validateRequired(examDateElem, 'Vui lòng chọn thời gian khám.') && isValid;
+
+    if (tuNgayElem) {
+        isValid = MWKValidation.validateRequired(tuNgayElem, 'Vui lòng chọn Từ ngày.') && isValid;
+    } else if (examDateElem) {
+        isValid = MWKValidation.validateRequired(examDateElem, 'Vui lòng chọn thời gian khám.') && isValid;
+    }
+
+    if (denNgayElem) {
+        isValid = MWKValidation.validateRequired(denNgayElem, 'Vui lòng chọn Đến ngày.') && isValid;
+    }
+
+    if (tuNgayElem && denNgayElem && tuNgayElem.value && denNgayElem.value) {
+        if (denNgayElem.value < tuNgayElem.value) {
+            MWKValidation.showFieldError(denNgayElem, 'Đến ngày phải lớn hơn hoặc bằng Từ ngày.');
+            isValid = false;
+        } else {
+            MWKValidation.clearFieldError(denNgayElem);
+        }
+    }
 
     if (!isValid && window.showToast) {
         window.showToast('Vui lòng điền đầy đủ các trường dữ liệu bắt buộc (*)', 'error');
@@ -1110,6 +1140,15 @@ function computeMasterUnitRecord(statusStr, trangThaiStr, daGuiBool) {
         pakdStatus: pakdValue,
         phuongAnKinhDoanh: pakdValue,
         step2Data: JSON.parse(JSON.stringify(step2Data)),
+        tuNgay: document.getElementById('tuNgay')?.value || document.getElementById('examDate')?.value || currentItem?.tuNgay || currentItem?.examDate || new Date().toISOString().split('T')[0],
+        denNgay: document.getElementById('denNgay')?.value || document.getElementById('tuNgay')?.value || document.getElementById('examDate')?.value || currentItem?.denNgay || currentItem?.tuNgay || new Date().toISOString().split('T')[0],
+        examDate: document.getElementById('tuNgay')?.value || document.getElementById('examDate')?.value || currentItem?.examDate || new Date().toISOString().split('T')[0],
+        ngayKham: document.getElementById('tuNgay')?.value || document.getElementById('examDate')?.value || currentItem?.examDate || new Date().toISOString().split('T')[0],
+        thoiGianKham: window.formatExamDateRange ? window.formatExamDateRange({
+            tuNgay: document.getElementById('tuNgay')?.value || currentItem?.tuNgay || currentItem?.examDate,
+            denNgay: document.getElementById('denNgay')?.value || currentItem?.denNgay || currentItem?.tuNgay || currentItem?.examDate,
+            step2Data: step2Data
+        }) : '',
         history: existingHistory,
         updatedAt: new Date().toISOString()
     };
