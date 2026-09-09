@@ -149,3 +149,17 @@
     background: #94A3B8;
 }
 
+/* 6. MINI SUB FORM RESPONSIVE & LAYOUT SAFETY */
+#mini-sub-form-panel input[type="date"],
+#mini-sub-form-panel input[type="time"] {
+    min-width: 0;
+    padding-left: 6px;
+    padding-right: 4px;
+}
+
+#mini-sub-form-panel select,
+#mini-sub-form-panel input {
+    box-sizing: border-box;
+}
+
+

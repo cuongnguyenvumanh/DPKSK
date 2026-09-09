@@ -549,14 +549,42 @@
 
         const count = selectedReceiveScheduleIds.size;
         selectedReceiveScheduleIds.forEach(id => {
-            MWKDataStore.updateKskSchedule(id, {
-                status: 'Trả lại',
-                trangThai: 'TRA_CHINH_SUA',
-                daGuiTongHop: false,
-                lyDoTra: reason,
-                ngayTra: new Date().toISOString(),
-                nguoiTra: 'Trần Thị Mai (Cán bộ Tổng hợp)'
-            }, 'Trần Thị Mai (Cán bộ Tổng hợp)');
+            const item = MWKDataStore.getKskScheduleById(id);
+            if (item) {
+                if (item.step2Data) {
+                    ['taiVien', 'ngoaiVien', 'lichPhuong'].forEach(typeKey => {
+                        const list = item.step2Data[typeKey];
+                        if (Array.isArray(list)) {
+                            list.forEach(child => {
+                                child.trangThai = 'TRA_LAI';
+                                child.status = 'Trả lại';
+                                child.lyDoTra = reason;
+                                child.ngayTra = new Date().toISOString();
+                                child.nguoiTra = 'Trần Thị Mai (Cán bộ Tổng hợp)';
+                            });
+                        }
+                    });
+                }
+                if (Array.isArray(item.childSchedules)) {
+                    item.childSchedules.forEach(child => {
+                        child.trangThai = 'TRA_LAI';
+                        child.status = 'Trả lại';
+                        child.lyDoTra = reason;
+                        child.ngayTra = new Date().toISOString();
+                        child.nguoiTra = 'Trần Thị Mai (Cán bộ Tổng hợp)';
+                    });
+                }
+                MWKDataStore.updateKskSchedule(id, {
+                    step2Data: item.step2Data,
+                    childSchedules: item.childSchedules,
+                    status: 'Trả lại',
+                    trangThai: 'TRA_LAI',
+                    daGuiTongHop: false,
+                    lyDoTra: reason,
+                    ngayTra: new Date().toISOString(),
+                    nguoiTra: 'Trần Thị Mai (Cán bộ Tổng hợp)'
+                }, 'Trần Thị Mai (Cán bộ Tổng hợp)');
+            }
         });
 
         closeReturnModal();

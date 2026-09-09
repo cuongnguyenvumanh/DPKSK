@@ -517,10 +517,11 @@
                         if (Array.isArray(item.step2Data[key])) {
                             item.step2Data[key].forEach(child => {
                                 const keySt = MWKDataStore.normalizeScheduleStatusKey(child.trangThai || child.status);
-                                if (keySt === 'TAO_MOI' || keySt === 'TRA_LAI') {
+                                if (keySt === 'TAO_MOI' || keySt === 'TRA_LAI' || keySt === 'NHAP') {
                                     child.trangThai = 'CHO_TONG_HOP';
                                     child.status = 'Chờ tổng hợp';
                                     child.ngayGuiTongHop = new Date().toISOString();
+                                    delete child.lyDoTra;
                                 }
                             });
                         }

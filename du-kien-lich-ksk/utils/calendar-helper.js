@@ -154,5 +154,31 @@ window.CalendarHelper = {
                 label: 'Phát sinh'
             };
         }
+    },
+
+    /**
+     * Format Planning Date Range (DD/MM/YYYY or DD/MM/YYYY - DD/MM/YYYY)
+     */
+    formatPlanningDateRange: function(tuNgay, denNgay) {
+        if (!tuNgay) return '';
+        let startISO = String(tuNgay).includes('T') ? String(tuNgay).split('T')[0] : String(tuNgay);
+        let endISO = denNgay ? (String(denNgay).includes('T') ? String(denNgay).split('T')[0] : String(denNgay)) : startISO;
+
+        const parseISO = (str) => {
+            const parts = str.split('-');
+            if (parts.length === 3) {
+                return `${parts[2]}/${parts[1]}/${parts[0]}`;
+            }
+            return str;
+        };
+
+        const startFormatted = parseISO(startISO);
+        const endFormatted = parseISO(endISO);
+
+        if (startISO === endISO) {
+            return startFormatted;
+        }
+        return `${startFormatted} - ${endFormatted}`;
     }
 };
+

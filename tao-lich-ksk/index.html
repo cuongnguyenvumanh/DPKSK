@@ -25,7 +25,6 @@
     <!-- FontAwesome v6 CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../du-kien-lich-ksk/assets/calendar.css">
     <style>
         .data-grid {
             display: flex;
@@ -333,276 +332,7 @@
                     </div>
                 </div>
 
-                <!-- VIEW CONTAINER FOR TAB 3 (DỰ KIẾN LỊCH KSK - PLANNING CALENDAR VIEW) -->
-                <div id="view-container-du-kien" class="hidden space-y-3">
-                    
-                    <!-- 1. SUMMARY METRIC CARDS (5 CARDS UNIFORM HEIGHT 96px) -->
-                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-                        <!-- CARD 1: TỔNG LỊCH DỰ KIẾN -->
-                        <div class="bg-white p-3.5 rounded-[4px] border border-[#D9DEE5] shadow-2xs h-[96px] flex flex-col justify-between">
-                            <div class="flex items-center justify-between text-[#6B7280]">
-                                <span class="text-[11px] font-bold uppercase tracking-wider text-[#6B7280]">TỔNG LỊCH DỰ KIẾN</span>
-                                <i class="fa-solid fa-calendar-check text-sm text-[#27496D]"></i>
-                            </div>
-                            <div>
-                                <div id="summary-total-schedules" class="text-2xl font-extrabold text-[#27496D] leading-none">0</div>
-                                <p class="text-[11px] text-[#9CA3AF] font-medium mt-1">lịch con trong tháng</p>
-                            </div>
-                        </div>
 
-                        <!-- CARD 2: TỔNG NGƯỜI KHÁM -->
-                        <div class="bg-white p-3.5 rounded-[4px] border border-[#D9DEE5] shadow-2xs h-[96px] flex flex-col justify-between">
-                            <div class="flex items-center justify-between text-[#6B7280]">
-                                <span class="text-[11px] font-bold uppercase tracking-wider text-[#6B7280]">TỔNG NGƯỜI KHÁM</span>
-                                <i class="fa-solid fa-users text-sm text-[#2E7D32]"></i>
-                            </div>
-                            <div>
-                                <div id="summary-total-patients" class="text-2xl font-extrabold text-[#15803D] leading-none">0</div>
-                                <p class="text-[11px] text-[#9CA3AF] font-medium mt-1">lượt người dự kiến</p>
-                            </div>
-                        </div>
-
-                        <!-- CARD 3: TẠI VIỆN -->
-                        <div class="bg-white p-3.5 rounded-[4px] border border-[#D9DEE5] shadow-2xs h-[96px] flex flex-col justify-between border-l-4 border-l-[#27496D]">
-                            <div class="flex items-center justify-between text-[#6B7280]">
-                                <span class="text-[11px] font-bold uppercase tracking-wider text-[#6B7280]">TẠI VIỆN</span>
-                                <span class="w-2.5 h-2.5 rounded-full bg-[#27496D] shrink-0"></span>
-                            </div>
-                            <div>
-                                <div id="summary-tai-vien-patients" class="text-2xl font-extrabold text-[#27496D] leading-none">0</div>
-                                <p class="text-[11px] text-[#9CA3AF] font-medium mt-1">người dự kiến</p>
-                            </div>
-                        </div>
-
-                        <!-- CARD 4: NGOẠI VIỆN -->
-                        <div class="bg-white p-3.5 rounded-[4px] border border-[#D9DEE5] shadow-2xs h-[96px] flex flex-col justify-between border-l-4 border-l-[#ED6C02]">
-                            <div class="flex items-center justify-between text-[#6B7280]">
-                                <span class="text-[11px] font-bold uppercase tracking-wider text-[#6B7280]">NGOẠI VIỆN</span>
-                                <span class="w-2.5 h-2.5 rounded-full bg-[#ED6C02] shrink-0"></span>
-                            </div>
-                            <div>
-                                <div id="summary-ngoai-vien-patients" class="text-2xl font-extrabold text-[#D97706] leading-none">0</div>
-                                <p class="text-[11px] text-[#9CA3AF] font-medium mt-1">người dự kiến</p>
-                            </div>
-                        </div>
-
-                        <!-- CARD 5: TẠI PHƯỜNG -->
-                        <div class="bg-white p-3.5 rounded-[4px] border border-[#D9DEE5] shadow-2xs h-[96px] flex flex-col justify-between border-l-4 border-l-[#7E22CE]">
-                            <div class="flex items-center justify-between text-[#6B7280]">
-                                <span class="text-[11px] font-bold uppercase tracking-wider text-[#6B7280]">TẠI PHƯỜNG</span>
-                                <span class="w-2.5 h-2.5 rounded-full bg-[#7E22CE] shrink-0"></span>
-                            </div>
-                            <div>
-                                <div id="summary-phuong-patients" class="text-2xl font-extrabold text-[#7E22CE] leading-none">0</div>
-                                <p class="text-[11px] text-[#9CA3AF] font-medium mt-1">người dự kiến</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- UNIFIED CONTROL BAR (Header + Navigation + View Controls + Compact Filters) -->
-                    <div class="bg-white p-3 rounded-[4px] border border-[#D9DEE5] shrink-0 space-y-2.5 shadow-2xs">
-                        
-                        <!-- Row 1: Page Title & Time Navigation & View Mode Switcher -->
-                        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-[#F0F3F7] pb-2.5">
-                            <!-- Title & Subtitle -->
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-[4px] bg-[#27496D] text-white flex items-center justify-center font-bold text-sm shadow-xs">
-                                    <i class="fa-solid fa-calendar-days"></i>
-                                </div>
-                                <div>
-                                    <div class="flex items-center gap-2">
-                                        <h2 class="text-sm font-bold text-[#1F2937]">Dự kiến lịch KSK</h2>
-                                    </div>
-                                    <p class="text-[11px] text-[#6B7280]">Lập kế hoạch xem trước lịch khám sức khỏe, theo dõi mật độ lịch & phân bổ nguồn lực</p>
-                                </div>
-                            </div>
-
-                            <!-- Center: Time Navigation Controls -->
-                            <div class="flex items-center gap-2">
-                                <button type="button" id="btn-today" class="btn-secondary text-xs px-3 py-1 h-7 font-semibold cursor-pointer">
-                                    <i class="fa-solid fa-calendar-day text-xs text-[#27496D]"></i>
-                                    <span>Hôm nay</span>
-                                </button>
-                                <div class="inline-flex items-center bg-[#F8FAFC] p-0.5 rounded-[4px] border border-[#CBD5E1]">
-                                    <button type="button" id="btn-prev" class="w-6 h-6 hover:bg-white rounded-[3px] text-[#4B5563] flex items-center justify-center transition-colors cursor-pointer">
-                                        <i class="fa-solid fa-chevron-left text-xs"></i>
-                                    </button>
-                                    <span id="calendar-title-range" class="px-3 font-bold text-xs text-[#27496D] min-w-[200px] text-center font-mono">--</span>
-                                    <button type="button" id="btn-next" class="w-6 h-6 hover:bg-white rounded-[3px] text-[#4B5563] flex items-center justify-center transition-colors cursor-pointer">
-                                        <i class="fa-solid fa-chevron-right text-xs"></i>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- Right: View Mode Segmented Control -->
-                            <div class="flex items-center gap-2">
-                                <span class="text-xs font-bold text-[#6B7280] uppercase tracking-wide">Hiển thị:</span>
-                                <div class="bg-[#F1F5F9] p-0.5 rounded-[4px] border border-[#CBD5E1] inline-flex items-center gap-1">
-                                    <button type="button" id="btn-view-month" class="segmented-btn active px-3 py-0.5 text-xs rounded-[3px] transition-all cursor-pointer">
-                                        <i class="fa-solid fa-calendar-days mr-1"></i> Tháng
-                                    </button>
-                                    <button type="button" id="btn-view-week" class="segmented-btn px-3 py-0.5 text-xs rounded-[3px] text-[#6B7280] hover:text-[#1F2937] transition-all cursor-pointer">
-                                        <i class="fa-solid fa-calendar-week mr-1"></i> Tuần
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Row 2: Compact Filter Bar (Quick Type Pills & Filter Popover) -->
-                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-2.5">
-                            
-                            <!-- Left: Search Box + Quick Type Filter Pills Group -->
-                            <div class="flex items-center gap-2.5 flex-wrap flex-1">
-                                <!-- Compact Search Box -->
-                                <div class="relative w-48">
-                                    <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-[#9CA3AF]"></i>
-                                    <input type="text" id="filter-search" placeholder="Tìm tên đơn vị..." class="sys-input text-xs pl-8 h-7.5 text-[#1F2937]">
-                                </div>
-
-                                <div class="h-4 w-px bg-[#D9DEE5] hidden sm:block"></div>
-
-                                <!-- Quick Type Filter Pills Container (Chỉ 3 loại: Tại viện, Ngoại viện, Phường) -->
-                                <div class="inline-flex items-center bg-[#F8FAFC] p-0.5 rounded-[5px] border border-[#CBD5E1] gap-0.5 flex-wrap">
-                                    <button type="button" class="filter-type-pill active px-3 py-1 text-xs rounded-[3px] font-semibold text-white bg-[#27496D] transition-all cursor-pointer" data-type="">
-                                        Tất cả 3 loại
-                                    </button>
-                                    <button type="button" class="filter-type-pill px-3 py-1 text-xs rounded-[3px] font-medium text-[#4B5563] hover:bg-[#E8F1FB] hover:text-[#27496D] transition-all cursor-pointer" data-type="Lịch tại viện">
-                                        <span class="inline-block w-2 h-2 rounded-full bg-[#27496D] mr-1.5"></span> Tại viện
-                                    </button>
-                                    <button type="button" class="filter-type-pill px-3 py-1 text-xs rounded-[3px] font-medium text-[#4B5563] hover:bg-[#FFF3E0] hover:text-[#E65100] transition-all cursor-pointer" data-type="Lịch ngoại viện">
-                                        <span class="inline-block w-2 h-2 rounded-full bg-[#ED6C02] mr-1.5"></span> Ngoại viện
-                                    </button>
-                                    <button type="button" class="filter-type-pill px-3 py-1 text-xs rounded-[3px] font-medium text-[#4B5563] hover:bg-[#F3E8FF] hover:text-[#6B21A8] transition-all cursor-pointer" data-type="Lịch phường">
-                                        <span class="inline-block w-2 h-2 rounded-full bg-[#7E22CE] mr-1.5"></span> Tại phường
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- Right: Advanced Filter Popover Toggle & Summary Panel Toggle -->
-                            <div class="flex items-center gap-2 relative shrink-0">
-                                
-                                <!-- Advanced Filter Popover Dropdown Container -->
-                                <div class="relative">
-                                    <button type="button" id="btn-toggle-filter-popover" class="btn-secondary text-xs h-7.5 px-3 flex items-center gap-1.5 font-semibold cursor-pointer">
-                                        <i class="fa-solid fa-sliders text-xs text-[#27496D]"></i>
-                                        <span>Bộ lọc khác</span>
-                                        <span id="filter-popover-badge" class="hidden px-1.5 py-0.2 rounded-full bg-[#27496D] text-white text-[10px] font-bold">0</span>
-                                        <i class="fa-solid fa-chevron-down text-[10px] text-[#6B7280] ml-0.5"></i>
-                                    </button>
-
-                                    <!-- Floating Filter Popover Panel -->
-                                    <div id="filter-popover-panel" class="hidden absolute right-0 top-9 w-72 bg-white rounded-[6px] shadow-lg border border-[#D9DEE5] z-50 p-3.5 space-y-3">
-                                        <div class="flex items-center justify-between border-b border-[#F0F3F7] pb-2">
-                                            <span class="text-xs font-bold text-[#1F2937] flex items-center gap-1.5">
-                                                <i class="fa-solid fa-filter text-[#27496D]"></i> Bộ lọc nâng cao
-                                            </span>
-                                            <button type="button" id="btn-reset-filters" class="text-[11px] text-[#27496D] hover:underline font-semibold cursor-pointer">Xóa chọn</button>
-                                        </div>
-
-                                        <!-- Select Cơ sở -->
-                                        <div class="space-y-1">
-                                            <label class="text-[11px] font-semibold text-[#6B7280]">Cơ sở thực hiện:</label>
-                                            <select id="filter-co-so" class="sys-select text-xs h-8 text-[#1F2937] w-full">
-                                                <option value="">Tất cả cơ sở</option>
-                                                <option value="MEDLATEC Ba Đình">MEDLATEC Ba Đình</option>
-                                                <option value="MEDLATEC Tây Hồ">MEDLATEC Tây Hồ</option>
-                                                <option value="MEDLATEC Thanh Xuân">MEDLATEC Thanh Xuân</option>
-                                                <option value="Cơ sở Mỹ Đình">Cơ sở Mỹ Đình</option>
-                                                <option value="Cơ sở Cầu Giấy">Cơ sở Cầu Giấy</option>
-                                                <option value="Ngoại viện">Khám Ngoại viện</option>
-                                            </select>
-                                        </div>
-
-                                        <!-- Select CB Phụ trách -->
-                                        <div class="space-y-1">
-                                            <label class="text-[11px] font-semibold text-[#6B7280]">Cán bộ phụ trách:</label>
-                                            <select id="filter-cb-phu-trach" class="sys-select text-xs h-8 text-[#1F2937] w-full">
-                                                <option value="">Tất cả cán bộ</option>
-                                                <option value="Nguyễn Văn An">Nguyễn Văn An</option>
-                                                <option value="Lê Hoàng Nam">Lê Hoàng Nam</option>
-                                                <option value="Trần Văn Bình">Trần Văn Bình</option>
-                                                <option value="Phạm Minh Tuấn">Phạm Minh Tuấn</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <!-- MAIN GRID & RIGHT SUMMARY PANEL CONTENT -->
-                    <div class="flex-1 flex gap-3 min-h-0 overflow-hidden">
-                        
-                        <!-- CALENDAR GRID WRAPPER (Left / Center) -->
-                        <div id="calendar-grid-wrapper" class="flex-1 bg-white rounded-[4px] border border-[#D9DEE5] flex flex-col min-w-0 h-full overflow-hidden shadow-2xs">
-                            
-                            <!-- WEEK VIEW CONTAINER -->
-                            <div id="week-view-container" class="flex-1 flex flex-col h-full overflow-y-auto calendar-grid-scroll hidden">
-                                <table class="w-full border-collapse text-xs table-fixed">
-                                    <thead>
-                                        <tr class="bg-[#F8FAFC] border-b border-[#D9DEE5] sticky top-0 z-20 shadow-2xs">
-                                            <th class="w-24 p-2 text-center bg-[#F1F5F9] border-r border-[#D9DEE5] text-[#27496D] font-bold text-[11px] shrink-0">
-                                                CA / NGÀY
-                                            </th>
-                                            <!-- 7 Days headers rendered via JS -->
-                                            <th class="p-2 text-center border-r border-[#D9DEE5] day-col-header w-[calc((100%-6rem)/7)]" data-day-index="0"></th>
-                                            <th class="p-2 text-center border-r border-[#D9DEE5] day-col-header w-[calc((100%-6rem)/7)]" data-day-index="1"></th>
-                                            <th class="p-2 text-center border-r border-[#D9DEE5] day-col-header w-[calc((100%-6rem)/7)]" data-day-index="2"></th>
-                                            <th class="p-2 text-center border-r border-[#D9DEE5] day-col-header w-[calc((100%-6rem)/7)]" data-day-index="3"></th>
-                                            <th class="p-2 text-center border-r border-[#D9DEE5] day-col-header w-[calc((100%-6rem)/7)]" data-day-index="4"></th>
-                                            <th class="p-2 text-center border-r border-[#D9DEE5] day-col-header w-[calc((100%-6rem)/7)]" data-day-index="5"></th>
-                                            <th class="p-2 text-center day-col-header w-[calc((100%-6rem)/7)]" data-day-index="6"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="week-grid-tbody">
-                                        <!-- 3 fixed rows: Sáng, Chiều, Cả ngày rendered via JS -->
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <!-- MONTH VIEW CONTAINER (Default Visible) -->
-                            <div id="month-view-container" class="flex-1 flex flex-col h-full overflow-y-auto calendar-grid-scroll">
-                                <table class="w-full border-collapse text-xs table-fixed h-full">
-                                    <thead>
-                                        <tr class="bg-[#27496D] text-white sticky top-0 z-20 h-9">
-                                            <th class="p-2 text-center font-bold border-r border-[#3A5F88] w-[14.2857%]">Thứ 2</th>
-                                            <th class="p-2 text-center font-bold border-r border-[#3A5F88] w-[14.2857%]">Thứ 3</th>
-                                            <th class="p-2 text-center font-bold border-r border-[#3A5F88] w-[14.2857%]">Thứ 4</th>
-                                            <th class="p-2 text-center font-bold border-r border-[#3A5F88] w-[14.2857%]">Thứ 5</th>
-                                            <th class="p-2 text-center font-bold border-r border-[#3A5F88] w-[14.2857%]">Thứ 6</th>
-                                            <th class="p-2 text-center font-bold border-r border-[#3A5F88] w-[14.2857%]">Thứ 7</th>
-                                            <th class="p-2 text-center font-bold w-[14.2857%]">Chủ nhật</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="month-grid-tbody">
-                                        <!-- Month day cells rendered via JS -->
-                                    </tbody>
-                                </table>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <!-- FOOTER STATUS BAR -->
-                    <div class="bg-[#27496D] text-white px-4 py-2 rounded-[4px] flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs shrink-0 shadow-xs">
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-circle-info text-sky-300"></i>
-                            <span id="footer-period-label" class="font-semibold">Tuần 33 / 2026</span>
-                        </div>
-
-                        <div class="flex items-center gap-5 text-xs font-medium">
-                            <div>Tổng Lịch: <strong id="footer-count-schedules" class="text-white font-bold ml-1">0</strong></div>
-                            <div class="w-px h-3 bg-white/20"></div>
-                            <div>Tổng Khách: <strong id="footer-count-guests" class="text-sky-200 font-bold ml-1">0</strong></div>
-                            <div class="w-px h-3 bg-white/20"></div>
-                            <div>Tổng Nhân sự: <strong id="footer-count-staff" class="text-amber-200 font-bold ml-1">0</strong></div>
-                        </div>
-                    </div>
-
-                </div>
 
             </main>
         </div>
@@ -728,227 +458,9 @@
         </div>
     </div>
 
-    <!-- QUICK PLANNING DRAWER (TẠO / CHỈNH SỬA DỰ KIẾN LỊCH KSK) -->
-    <div id="drawer-create-planned-backdrop" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 transition-opacity duration-300 opacity-0 pointer-events-none" onclick="closeCreatePlannedModal()"></div>
-    <div id="drawer-create-planned" class="fixed right-0 top-0 bottom-0 w-[640px] max-w-full bg-white shadow-2xl z-50 transform transition-transform duration-300 translate-x-full flex flex-col font-sans">
-        
-        <!-- Header -->
-        <div class="px-5 py-4 bg-[#27496D] text-white flex items-center justify-between shadow-xs shrink-0">
-            <div class="flex items-center gap-2.5">
-                <div class="w-8 h-8 rounded-[4px] bg-white/10 flex items-center justify-center text-white text-base">
-                    <i class="fa-solid fa-calendar-plus"></i>
-                </div>
-                <div>
-                    <h3 id="planned-drawer-title" class="font-bold text-sm leading-tight text-white">Tạo dự kiến lịch KSK</h3>
-                    <p class="text-[11px] text-sky-200 mt-0.5">Lập kế hoạch đợt khám & các lịch con nhanh chóng trên Calendar</p>
-                </div>
-            </div>
-            <button type="button" onclick="closeCreatePlannedModal()" class="w-8 h-8 rounded-[4px] hover:bg-white/10 text-white flex items-center justify-center transition-colors cursor-pointer" title="Đóng">
-                <i class="fa-solid fa-xmark text-base"></i>
-            </button>
-        </div>
-
-        <!-- Body Scrollable -->
-        <div class="p-5 overflow-y-auto flex-1 space-y-5 text-xs bg-[#F8FAFC] custom-scrollbar">
-
-            <!-- SECTION 1: THÔNG TIN CHUNG (MASTER) -->
-            <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] shadow-2xs space-y-3">
-                <div class="flex items-center justify-between border-b border-[#F0F3F7] pb-2 text-[#27496D]">
-                    <span class="font-bold text-xs uppercase flex items-center gap-1.5">
-                        <i class="fa-solid fa-building text-xs"></i> 1. Thông tin chung đợt khám
-                    </span>
-                    <span id="planned-master-code-badge" class="text-[11px] font-mono font-bold text-[#6B7280]">KAD019962025</span>
-                </div>
-
-                <!-- Row 1: Tên đơn vị / Khách hàng -->
-                <div class="space-y-1">
-                    <label class="font-semibold text-[#1F2937] block">Tên đơn vị / Khách hàng <span class="text-red-500">*</span></label>
-                    <input type="text" id="create-ten-don-vi" required placeholder="Nhập tên đơn vị (Ví dụ: Công ty CP ABC)" class="sys-input w-full text-xs text-[#1F2937] h-8 font-medium">
-                </div>
-
-                <!-- Row 2: Mã đối tượng & Người phụ trách -->
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="space-y-1">
-                        <label class="font-semibold text-[#1F2937] block">Mã đối tượng</label>
-                        <input type="text" id="create-ma-doi-tuong" placeholder="Tự động tạo mã..." class="sys-input w-full text-xs text-[#1F2937] h-8 font-mono">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="font-semibold text-[#1F2937] block">CBKD  <span class="text-red-500">*</span></label>
-                        <select id="create-cb-phu-trach" required class="sys-select w-full text-xs text-[#1F2937] h-8">
-                            <option value="Nguyễn Văn An" selected>Nguyễn Văn An</option>
-                            <option value="Trần Văn Bình">Trần Văn Bình</option>
-                            <option value="Phạm Minh Tuấn">Phạm Minh Tuấn</option>
-                            <option value="Lê Hoàng Nam">Lê Hoàng Nam</option>
-                            <option value="Đỗ Hải Đăng">Đỗ Hải Đăng</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Row 3: Thời gian dự kiến (Từ ngày - Đến ngày) -->
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="space-y-1">
-                        <label class="font-semibold text-[#1F2937] block">Thời gian dự kiến - Từ ngày <span class="text-red-500">*</span></label>
-                        <input type="date" id="create-tu-ngay" required class="sys-input w-full text-xs text-[#1F2937] h-8 font-mono">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="font-semibold text-[#1F2937] block">Thời gian dự kiến - Đến ngày <span class="text-red-500">*</span></label>
-                        <input type="date" id="create-den-ngay" required class="sys-input w-full text-xs text-[#1F2937] h-8 font-mono">
-                    </div>
-                </div>
-
-                <!-- Row 4: Loại hình công việc (Chips/Tags) -->
-                <div class="space-y-1">
-                    <label class="font-semibold text-[#1F2937] block">Loại hình công việc</label>
-                    <div class="border border-[#D9DEE5] rounded-[4px] p-2 bg-white flex flex-wrap items-center gap-1.5 min-h-[38px]">
-                        <div id="work-types-list" class="flex flex-wrap gap-1.5 items-center"></div>
-                        <input type="text" id="work-type-input" placeholder="+ Nhập thêm loại hình & bấm Enter..." class="outline-none text-xs text-[#1F2937] flex-1 min-w-[150px] py-0.5 px-1">
-                    </div>
-                    <p class="text-[11px] text-[#6B7280]">Ví dụ: Khám sức khỏe, Lấy mẫu, Khám bổ sung, v.v...</p>
-                </div>
-
-                <!-- Row 5: Ghi chú -->
-                <div class="space-y-1">
-                    <label class="font-semibold text-[#1F2937] block">Ghi chú đợt khám dự kiến</label>
-                    <textarea id="create-ghi-chu" rows="2" placeholder="Ghi chú thêm về yêu cầu đợt khám dự kiến..." class="sys-input w-full text-xs text-[#1F2937] p-2 h-14 resize-none"></textarea>
-                </div>
-            </div>
-
-            <!-- SECTION 2: LỊCH CON DỰ KIẾN (SUB-SCHEDULES) -->
-            <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] shadow-2xs space-y-3">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#F0F3F7] pb-2">
-                    <div>
-                        <span class="font-bold text-xs uppercase text-[#27496D] flex items-center gap-1.5">
-                            <i class="fa-solid fa-list-check text-xs"></i> 2. Lịch con dự kiến
-                        </span>
-                        <p class="text-[11px] text-[#6B7280] mt-0.5">Thêm một hoặc nhiều lịch con theo các loại hình</p>
-                    </div>
-                    <div class="flex items-center gap-1.5 shrink-0">
-                        <button type="button" onclick="openMiniSubForm('TAI_VIEN')" class="btn-secondary text-xs px-2.5 h-7 border-[#27496D] text-[#27496D] hover:bg-[#E8F1FB] font-bold cursor-pointer transition-colors">
-                            <i class="fa-solid fa-plus text-[10px] mr-1"></i>+ Tại viện
-                        </button>
-                        <button type="button" onclick="openMiniSubForm('NGOAI_VIEN')" class="btn-secondary text-xs px-2.5 h-7 border-[#ED6C02] text-[#E65100] hover:bg-[#FFF3E0] font-bold cursor-pointer transition-colors">
-                            <i class="fa-solid fa-plus text-[10px] mr-1"></i>+ Ngoại viện
-                        </button>
-                        <button type="button" onclick="openMiniSubForm('LICH_PHUONG')" class="btn-secondary text-xs px-2.5 h-7 border-[#7E22CE] text-[#6B21A8] hover:bg-[#F3E8FF] font-bold cursor-pointer transition-colors">
-                            <i class="fa-solid fa-plus text-[10px] mr-1"></i>+ Phường
-                        </button>
-                    </div>
-                </div>
-
-                <!-- MINI INLINE SUB-FORM PANEL -->
-                <div id="mini-sub-form-panel" class="hidden bg-[#F8FAFC] p-3.5 rounded-[4px] border-2 border-[#27496D] space-y-3 transition-all">
-                    <div class="flex items-center justify-between border-b border-[#D9DEE5] pb-2 text-[#27496D]">
-                        <span id="mini-sub-form-title" class="font-bold text-xs flex items-center gap-1.5">
-                            <i class="fa-solid fa-pen-to-square"></i> Thêm lịch con dự kiến
-                        </span>
-                        <button type="button" onclick="closeMiniSubForm()" class="text-[#6B7280] hover:text-[#1F2937] text-xs font-bold cursor-pointer">
-                            <i class="fa-solid fa-xmark"></i>
-                        </button>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="space-y-1">
-                            <label class="font-semibold text-[#1F2937] block">Ngày dự kiến <span class="text-red-500">*</span></label>
-                            <input type="date" id="mini-sub-ngay-kham" required class="sys-input w-full text-xs text-[#1F2937] h-8 font-mono">
-                        </div>
-                        <div class="space-y-1">
-                            <label class="font-semibold text-[#1F2937] block">Ca làm việc <span class="text-red-500">*</span></label>
-                            <select id="mini-sub-ca-kham" class="sys-select w-full text-xs text-[#1F2937] h-8">
-                                <option value="Sang" selected>Sáng (07:30 - 11:30)</option>
-                                <option value="Chieu">Chiều (13:30 - 17:00)</option>
-                                <option value="CaNgay">Cả ngày (07:30 - 17:00)</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Quantity Section: Nam + Nu = Tong (Readonly) -->
-                    <div class="bg-white p-2.5 rounded-[4px] border border-[#D9DEE5] grid grid-cols-3 gap-2">
-                        <div class="space-y-1">
-                            <label class="font-semibold text-[#1F2937] block">Số lượng Nam</label>
-                            <input type="number" id="mini-sub-nam" min="0" value="0" oninput="calculateMiniSubTotal()" class="sys-input w-full text-xs text-[#1F2937] h-8 font-bold">
-                        </div>
-                        <div class="space-y-1">
-                            <label class="font-semibold text-[#1F2937] block">Số lượng Nữ</label>
-                            <input type="number" id="mini-sub-nu" min="0" value="0" oninput="calculateMiniSubTotal()" class="sys-input w-full text-xs text-[#1F2937] h-8 font-bold">
-                        </div>
-                        <div class="space-y-1">
-                            <label class="font-semibold text-[#27496D] block">Tổng số lượng (Tự động)</label>
-                            <input type="number" id="mini-sub-tong" readonly value="0" class="sys-input w-full text-xs text-[#15803D] font-extrabold h-8 bg-[#F1F5F9] cursor-not-allowed">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="space-y-1">
-                            <label class="font-semibold text-[#1F2937] block">Cơ sở / Địa điểm thực hiện <span class="text-red-500">*</span></label>
-                            <input type="text" id="mini-sub-co-so" placeholder="Nhập cơ sở / địa điểm..." class="sys-input w-full text-xs text-[#1F2937] h-8">
-                        </div>
-                        <div class="space-y-1">
-                            <label class="font-semibold text-[#1F2937] block">Ghi chú lịch con</label>
-                            <input type="text" id="mini-sub-ghi-chu" placeholder="Ghi chú chi tiết cho lịch con..." class="sys-input w-full text-xs text-[#1F2937] h-8">
-                        </div>
-                    </div>
-
-                    <div class="pt-2 flex items-center justify-end gap-2 border-t border-[#D9DEE5]">
-                        <button type="button" onclick="closeMiniSubForm()" class="btn-secondary text-xs px-3 h-7 cursor-pointer">Hủy</button>
-                        <button type="button" onclick="saveMiniSubForm()" class="btn-primary text-xs px-3.5 h-7 font-semibold cursor-pointer">
-                            <i class="fa-solid fa-check text-[10px] mr-1"></i> Lưu lịch con
-                        </button>
-                    </div>
-                </div>
-
-                <!-- SUB-SCHEDULES LIST -->
-                <div id="planned-sub-schedules-list" class="space-y-2.5 min-h-[60px]">
-                    <!-- Rendered dynamically -->
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Footer -->
-        <div class="px-5 py-3 bg-white border-t border-[#D9DEE5] flex items-center justify-between shrink-0 shadow-2xs">
-            <div class="text-[11px] text-[#6B7280]" id="planned-drawer-summary-badge">
-                Tổng số <strong>0</strong> lịch con dự kiến
-            </div>
-            <div class="flex items-center gap-2">
-                <button type="button" onclick="closeCreatePlannedModal()" class="btn-secondary text-xs px-4 h-8 flex-btn-center cursor-pointer">
-                    Hủy
-                </button>
-                <button type="button" onclick="savePlannedSchedule()" class="btn-primary text-xs px-4 h-8 flex-btn-center font-bold cursor-pointer">
-                    <i class="fa-solid fa-floppy-disk text-xs mr-1.5"></i> Lưu dự kiến
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL POPUP: XEM TẤT CẢ LỊCH CỦA 1 NGÀY (DÙNG TRONG MONTH VIEW HOẶC DOUBLE CLICK) -->
-    <div id="modal-day-details" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-white w-[560px] max-w-full rounded-[6px] shadow-xl border border-[#D9DEE5] flex flex-col max-h-[85vh]">
-            <div class="px-4 py-3 bg-[#27496D] text-white flex items-center justify-between rounded-t-[5px]">
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-calendar-day"></i>
-                    <h3 id="modal-day-title" class="font-bold text-sm">Danh sách lịch dự kiến</h3>
-                </div>
-                <button type="button" onclick="closeDayDetailsModal()" class="w-7 h-7 rounded-[4px] hover:bg-white/10 text-white flex items-center justify-center transition-colors">
-                    <i class="fa-solid fa-xmark text-sm"></i>
-                </button>
-            </div>
-
-            <div id="modal-day-content" class="p-4 overflow-y-auto flex-1 space-y-2.5 bg-[#F8FAFC]">
-                <!-- Item list rendered dynamically -->
-            </div>
-
-            <div class="px-4 py-2.5 bg-white border-t border-[#D9DEE5] flex items-center justify-between text-xs text-[#6B7280] rounded-b-[5px]">
-                <span id="modal-day-count-summary" class="font-medium"></span>
-                <button type="button" onclick="closeDayDetailsModal()" class="btn-secondary text-xs">Đóng</button>
-            </div>
-        </div>
-    </div>
-
     <!-- MAIN JAVASCRIPT & DATA-STORE INTEGRATION -->
     <script src="../js/data-store.js"></script>
     <script src="../js/main.js"></script>
-    <script src="../du-kien-lich-ksk/utils/calendar-helper.js"></script>
-    <script src="../du-kien-lich-ksk/calendar.js"></script>
     <script>
         let currentPage = 1;
         let pageSize = 10;
@@ -978,6 +490,10 @@
         });
 
         function switchMainTab(tabKey) {
+            if (tabKey === 'du_kien' || tabKey === 'du-kien') {
+                window.location.href = '../du-kien-lich-ksk/calendar.html';
+                return;
+            }
             currentMainTab = tabKey;
 
             const btnMy = document.getElementById('tab-btn-my-schedules');
@@ -985,42 +501,25 @@
             const btnDuKien = document.getElementById('tab-btn-du-kien');
 
             const viewList = document.getElementById('view-container-list');
-            const viewDuKien = document.getElementById('view-container-du-kien');
 
             [btnMy, btnAll, btnDuKien].forEach(btn => {
                 if (!btn) return;
                 btn.className = 'main-tab-btn h-11 border-b-2 border-transparent text-[#6B7280] hover:text-[#1F2937] flex items-center gap-2 px-1 transition-colors cursor-pointer select-none';
             });
 
-            if (tabKey === 'du_kien') {
-                if (btnDuKien) btnDuKien.className = 'main-tab-btn h-11 border-b-2 border-[#27496D] text-[#27496D] font-bold flex items-center gap-2 px-1 transition-colors cursor-pointer select-none';
-                if (viewList) viewList.classList.add('hidden');
-                if (viewDuKien) viewDuKien.classList.remove('hidden');
+            if (viewList) viewList.classList.remove('hidden');
 
-                const url = new URL(window.location);
-                url.searchParams.set('tab', 'du_kien');
-                window.history.replaceState({}, '', url);
-
-                if (typeof renderCalendar === 'function') {
-                    if (typeof loadSchedulesData === 'function') loadSchedulesData();
-                    renderCalendar();
-                }
+            if (tabKey === 'my_schedules') {
+                if (btnMy) btnMy.className = 'main-tab-btn h-11 border-b-2 border-[#27496D] text-[#27496D] font-bold flex items-center gap-2 px-1 transition-colors cursor-pointer select-none';
             } else {
-                if (viewDuKien) viewDuKien.classList.add('hidden');
-                if (viewList) viewList.classList.remove('hidden');
-
-                if (tabKey === 'my_schedules') {
-                    if (btnMy) btnMy.className = 'main-tab-btn h-11 border-b-2 border-[#27496D] text-[#27496D] font-bold flex items-center gap-2 px-1 transition-colors cursor-pointer select-none';
-                } else {
-                    if (btnAll) btnAll.className = 'main-tab-btn h-11 border-b-2 border-[#27496D] text-[#27496D] font-bold flex items-center gap-2 px-1 transition-colors cursor-pointer select-none';
-                }
-
-                const url = new URL(window.location);
-                url.searchParams.set('tab', tabKey);
-                window.history.replaceState({}, '', url);
-
-                filterData();
+                if (btnAll) btnAll.className = 'main-tab-btn h-11 border-b-2 border-[#27496D] text-[#27496D] font-bold flex items-center gap-2 px-1 transition-colors cursor-pointer select-none';
             }
+
+            const url = new URL(window.location);
+            url.searchParams.set('tab', tabKey);
+            window.history.replaceState({}, '', url);
+
+            filterData();
         }
 
         function changePageSize(val) {
@@ -1653,10 +1152,11 @@
                     if (Array.isArray(item.step2Data[key])) {
                         item.step2Data[key].forEach(child => {
                             const keySt = MWKDataStore.normalizeScheduleStatusKey(child.trangThai || child.status);
-                            if (keySt === 'TAO_MOI' || keySt === 'TRA_LAI') {
+                            if (keySt === 'TAO_MOI' || keySt === 'TRA_LAI' || keySt === 'NHAP') {
                                 child.trangThai = 'CHO_TONG_HOP';
                                 child.status = 'Chờ tổng hợp';
                                 child.ngayGuiTongHop = new Date().toISOString();
+                                delete child.lyDoTra;
                             }
                         });
                     }

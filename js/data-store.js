@@ -1332,10 +1332,10 @@
                             updatedFields.nguoiTongHop = actorName;
                         }
                     }
-                    else if (targetStatus === 'Trả lại' || targetStatus === 'TRA_CHINH_SUA') {
+                    else if (targetStatus === 'Trả lại' || targetStatus === 'TRA_LAI' || targetStatus === 'TRA_CHINH_SUA') {
                         actionName = 'Trả lại CB Tổng hợp';
                         updatedFields.status = 'Trả lại';
-                        updatedFields.trangThai = 'TRA_CHINH_SUA';
+                        updatedFields.trangThai = 'TRA_LAI';
                         updatedFields.daGuiTongHop = false;
                     }
                     else if (targetStatus === 'Chờ duyệt' || targetStatus === 'CHO_DUYET') {

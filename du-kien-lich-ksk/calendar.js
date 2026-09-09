@@ -24,71 +24,83 @@ const filters = {
 // 1. MASTER UNITS & CHILD SCHEDULES DATA SEED (09/2026)
 // ==========================================================================
 const seedMasterUnits = [
-    // MASTER 1: Công ty CP ABC (4 child schedules on SAME DATE 15/09/2026: 2 Tại viện, 1 Ngoại viện, 1 Tại phường)
+    // MASTER 1: Công ty CP Tập đoàn FPT (3 child schedules with different multi-day date ranges)
     {
         unitId: "U-001",
         code: "LK-2026-001",
-        customerName: "Công ty CP ABC",
+        customerName: "Công ty CP Tập đoàn FPT",
+        tenDonVi: "Công ty CP Tập đoàn FPT",
+        phongKinhDoanh: "TTKD Hà Nội 1",
         personInCharge: "Nguyễn Văn An",
-        facility: "Cơ sở Mỹ Đình",
+        canBoPhuTrach: "Nguyễn Văn An",
+        cbPhuTrach: "Nguyễn Văn An",
         childSchedules: [
             {
-                scheduleId: "SCH-ABC-01",
+                scheduleId: "SCH-FPT-01",
                 scheduleType: "TAI_VIEN",
                 loaiLich: "Lịch tại viện",
-                examDate: "2026-09-15",
+                tuNgay: "2026-09-10",
+                denNgay: "2026-09-13",
+                examDate: "2026-09-10",
+                ngayKham: "2026-09-10",
                 ca: "Sang",
-                gioBatDau: "07:30",
-                gioKetThuc: "11:30",
-                soLuongKhach: 100,
-                tongNhanSu: 12,
-                coSo: "MEDLATEC Mỹ Đình",
-                diaDiemKham: "Bệnh viện Đa khoa MEDLATEC Mỹ Đình",
-                cbPhuTrach: "Nguyễn Văn An",
-                trangThai: "Dự kiến"
-            },
-            {
-                scheduleId: "SCH-ABC-02",
-                scheduleType: "TAI_VIEN",
-                loaiLich: "Lịch tại viện",
-                examDate: "2026-09-15",
-                ca: "Chieu",
-                gioBatDau: "13:30",
+                gioBatDau: "08:00",
                 gioKetThuc: "17:00",
-                soLuongKhach: 80,
-                tongNhanSu: 10,
-                coSo: "MEDLATEC Mỹ Đình",
+                gioTu: "08:00",
+                gioDen: "17:00",
+                soLuongNam: 50,
+                soLuongNu: 50,
+                soLuongKhach: 100,
+                tongSoLuong: 100,
+                tongNhanSu: 12,
+                coSo: "Bệnh viện Đa khoa MEDLATEC Mỹ Đình",
                 diaDiemKham: "Bệnh viện Đa khoa MEDLATEC Mỹ Đình",
                 cbPhuTrach: "Nguyễn Văn An",
                 trangThai: "Dự kiến"
             },
             {
-                scheduleId: "SCH-ABC-03",
+                scheduleId: "SCH-FPT-02",
                 scheduleType: "NGOAI_VIEN",
                 loaiLich: "Lịch ngoại viện",
+                tuNgay: "2026-09-15",
+                denNgay: "2026-09-17",
                 examDate: "2026-09-15",
+                ngayKham: "2026-09-15",
                 ca: "Sang",
-                gioBatDau: "07:00",
-                gioKetThuc: "12:00",
-                soLuongKhach: 100,
+                gioBatDau: "08:00",
+                gioKetThuc: "17:00",
+                gioTu: "08:00",
+                gioDen: "17:00",
+                soLuongNam: 40,
+                soLuongNu: 40,
+                soLuongKhach: 80,
+                tongSoLuong: 80,
                 tongNhanSu: 14,
                 coSo: "Ngoại viện",
-                diaDiemKham: "Tòa nhà ABC Tower, Cầu Giấy, Hà Nội",
+                diaDiemKham: "Tòa nhà FPT Tower, Cầu Giấy, Hà Nội",
                 cbPhuTrach: "Trần Văn Bình",
                 trangThai: "Dự kiến"
             },
             {
-                scheduleId: "SCH-ABC-04",
+                scheduleId: "SCH-FPT-03",
                 scheduleType: "LICH_PHUONG",
                 loaiLich: "Lịch phường",
-                examDate: "2026-09-15",
-                ca: "Chieu",
-                gioBatDau: "13:30",
+                tuNgay: "2026-09-20",
+                denNgay: "2026-09-22",
+                examDate: "2026-09-20",
+                ngayKham: "2026-09-20",
+                ca: "Sang",
+                gioBatDau: "08:00",
                 gioKetThuc: "17:00",
-                soLuongKhach: 70,
+                gioTu: "08:00",
+                gioDen: "17:00",
+                soLuongNam: 30,
+                soLuongNu: 30,
+                soLuongKhach: 60,
+                tongSoLuong: 60,
                 tongNhanSu: 8,
-                coSo: "MEDLATEC Mỹ Đình",
-                diaDiemKham: "Trạm Y tế Phường Mỹ Đình 1",
+                coSo: "Lịch phường",
+                diaDiemKham: "Phường Dịch Vọng Hậu · Nhà văn hóa",
                 cbPhuTrach: "Lê Hoàng Nam",
                 trangThai: "Dự kiến"
             }
@@ -1377,30 +1389,39 @@ let currentDraftSubSchedules = [];
 let editingSubId = null;
 let currentMiniSubScheduleType = 'TAI_VIEN';
 let workTypesList = ['Khám sức khỏe', 'Lấy mẫu'];
+let contextClickedDate = new Date().toISOString().split('T')[0];
 
 function bindWorkTypeTagEvents() {
-    const input = document.getElementById('work-type-input');
-    if (!input) return;
-    input.onkeydown = function(e) {
+    const inputElem = document.getElementById('work-type-input');
+    if (!inputElem) return;
+
+    inputElem.replaceWith(inputElem.cloneNode(true));
+    const newElem = document.getElementById('work-type-input');
+
+    newElem.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' || e.key === ',') {
             e.preventDefault();
-            const val = input.value.trim();
-            if (val && !workTypesList.includes(val)) {
-                workTypesList.push(val);
-                renderWorkTypes();
-                input.value = '';
+            const val = this.value.trim().replace(/,/g, '');
+            if (val) {
+                const exists = workTypesList.some(t => t.toLowerCase() === val.toLowerCase());
+                if (!exists) {
+                    workTypesList.push(val);
+                    renderWorkTypes();
+                }
+                this.value = '';
             }
         }
-    };
+    });
 }
 
 function renderWorkTypes() {
     const container = document.getElementById('work-types-list');
     if (!container) return;
+
     container.innerHTML = workTypesList.map((tag, idx) => `
         <span class="inline-flex items-center gap-1 bg-[#E8F1FB] text-[#27496D] px-2 py-0.5 rounded-[3px] text-xs font-bold border border-[#B4CBE5]">
             ${escapeHtml(tag)}
-            <button type="button" onclick="removeWorkTypeTag(${idx})" class="hover:text-red-600 font-bold ml-0.5">&times;</button>
+            <button type="button" onclick="removeWorkTypeTag(${idx})" class="hover:text-red-600 font-bold ml-0.5 cursor-pointer">&times;</button>
         </span>
     `).join('');
 }
@@ -1415,37 +1436,23 @@ function openCreatePlannedModalForDate(dateStr, event) {
         event.stopPropagation();
     }
 
+    contextClickedDate = dateStr || new Date().toISOString().split('T')[0];
     editingMasterId = null;
     editingSubId = null;
     currentDraftSubSchedules = [];
-    workTypesList = ['Khám sức khỏe', 'Lấy mẫu'];
 
     const titleElem = document.getElementById('planned-drawer-title');
     if (titleElem) titleElem.innerText = 'Tạo dự kiến lịch KSK';
 
-    const autoCode = 'KAD' + String(Date.now()).slice(-6);
-    const codeBadge = document.getElementById('planned-master-code-badge');
-    if (codeBadge) codeBadge.innerText = autoCode;
-    const inputCode = document.getElementById('create-ma-doi-tuong');
-    if (inputCode) inputCode.value = autoCode;
-
     const tenElem = document.getElementById('create-ten-don-vi');
     if (tenElem) tenElem.value = '';
 
-    const tuElem = document.getElementById('create-tu-ngay');
-    const denElem = document.getElementById('create-den-ngay');
-    const targetDate = dateStr || new Date().toISOString().split('T')[0];
-    if (tuElem) tuElem.value = targetDate;
-    if (denElem) denElem.value = targetDate;
+    const phongElem = document.getElementById('create-phong-kinh-doanh');
+    if (phongElem) phongElem.value = '';
 
     const cbElem = document.getElementById('create-cb-phu-trach');
     if (cbElem) cbElem.value = 'Nguyễn Văn An';
 
-    const noteElem = document.getElementById('create-ghi-chu');
-    if (noteElem) noteElem.value = '';
-
-    renderWorkTypes();
-    bindWorkTypeTagEvents();
     closeMiniSubForm();
     renderPlannedSubSchedulesList();
 
@@ -1464,47 +1471,39 @@ function openEditPlannedScheduleModal(unitId) {
     const titleElem = document.getElementById('planned-drawer-title');
     if (titleElem) titleElem.innerText = 'Chỉnh sửa dự kiến lịch KSK';
 
-    const code = master.customerCode || master.maDoiTuong || master.code || '';
-    const codeBadge = document.getElementById('planned-master-code-badge');
-    if (codeBadge) codeBadge.innerText = code;
-    const inputCode = document.getElementById('create-ma-doi-tuong');
-    if (inputCode) inputCode.value = code;
-
     const tenElem = document.getElementById('create-ten-don-vi');
     if (tenElem) tenElem.value = master.customerName || master.teamName || master.tenDonVi || '';
 
-    const tuElem = document.getElementById('create-tu-ngay');
-    const denElem = document.getElementById('create-den-ngay');
-    if (tuElem) tuElem.value = master.tuNgay || master.examDate || new Date().toISOString().split('T')[0];
-    if (denElem) denElem.value = master.denNgay || master.tuNgay || master.examDate || new Date().toISOString().split('T')[0];
+    const phongElem = document.getElementById('create-phong-kinh-doanh');
+    if (phongElem) phongElem.value = master.phongKinhDoanh || master.department || '';
 
     const cbElem = document.getElementById('create-cb-phu-trach');
-    if (cbElem) cbElem.value = master.personInCharge || master.cbPhuTrach || 'Nguyễn Văn An';
+    if (cbElem) cbElem.value = master.personInCharge || master.cbPhuTrach || master.canBoPhuTrach || 'Nguyễn Văn An';
 
-    const noteElem = document.getElementById('create-ghi-chu');
-    if (noteElem) noteElem.value = master.contractNote || master.generalNote || '';
-
-    workTypesList = Array.isArray(master.workTypes) && master.workTypes.length > 0 ? [...master.workTypes] : (master.loaiLich ? master.loaiLich.split(',').map(s => s.trim()) : ['Khám sức khỏe']);
-    renderWorkTypes();
-    bindWorkTypeTagEvents();
-
-    // Reconstruct currentDraftSubSchedules from master
     currentDraftSubSchedules = [];
     if (master.step2Data) {
         const parseSubGroup = (list, scheduleType, loaiLich) => {
             if (Array.isArray(list)) {
                 list.forEach((sub, idx) => {
+                    const tuVal = sub.tuNgay || sub.ngayKham || sub.examDate || master.tuNgay || new Date().toISOString().split('T')[0];
+                    const denVal = sub.denNgay || sub.tuNgay || sub.ngayKham || sub.examDate || master.denNgay || tuVal;
                     currentDraftSubSchedules.push({
                         id: sub.id || sub.scheduleId || `SUB-${Date.now()}-${idx}`,
                         scheduleType: scheduleType,
                         loaiLich: sub.loaiLich || loaiLich,
-                        ngayKham: sub.ngayKham || sub.examDate || master.tuNgay || new Date().toISOString().split('T')[0],
-                        ca: sub.ca || (sub.session === 'Chiều' ? 'Chieu' : 'Sang'),
+                        tuNgay: tuVal,
+                        denNgay: denVal,
+                        ngayKham: tuVal,
+                        examDate: tuVal,
+                        gioTu: sub.gioTu || sub.gioBatDau || '08:00',
+                        gioDen: sub.gioDen || sub.gioKetThuc || '11:30',
                         soLuongNam: Number(sub.soLuongNam || sub.nam || 0),
                         soLuongNu: Number(sub.soLuongNu || sub.nu || 0),
                         soLuongKhach: Number(sub.soLuongKhach || sub.quantity || sub.soLuong || 0),
-                        coSo: sub.coSo || sub.facility || sub.location || 'MEDLATEC Ba Đình',
-                        diaDiemKham: sub.diaDiemKham || sub.location || 'Địa điểm khám',
+                        coSo: sub.coSo || sub.facility || sub.location || 'Bệnh viện Đa khoa MEDLATEC Mỹ Đình',
+                        diaDiemToChuc: sub.diaDiemToChuc || sub.diaDiemKham || sub.location || '',
+                        phuongDiaBan: sub.phuongDiaBan || '',
+                        nguoiPhuTrach: sub.nguoiPhuTrach || sub.cbPhuTrach || master.personInCharge || 'Nguyễn Văn An',
                         ghiChu: sub.ghiChu || sub.note || ''
                     });
                 });
@@ -1521,17 +1520,25 @@ function openEditPlannedScheduleModal(unitId) {
                 else if ((sub.loaiLich || '').includes('phường')) st = 'LICH_PHUONG';
                 else st = 'TAI_VIEN';
             }
+            const tuVal = sub.tuNgay || sub.ngayKham || sub.examDate || master.tuNgay || new Date().toISOString().split('T')[0];
+            const denVal = sub.denNgay || sub.tuNgay || sub.ngayKham || sub.examDate || master.denNgay || tuVal;
             currentDraftSubSchedules.push({
                 id: sub.id || sub.scheduleId || `SUB-${Date.now()}-${idx}`,
                 scheduleType: st,
                 loaiLich: sub.loaiLich || (st === 'NGOAI_VIEN' ? 'Lịch ngoại viện' : (st === 'LICH_PHUONG' ? 'Lịch phường' : 'Lịch tại viện')),
-                ngayKham: sub.ngayKham || sub.examDate || master.tuNgay || new Date().toISOString().split('T')[0],
-                ca: sub.ca || 'Sang',
+                tuNgay: tuVal,
+                denNgay: denVal,
+                ngayKham: tuVal,
+                examDate: tuVal,
+                gioTu: sub.gioTu || sub.gioBatDau || '08:00',
+                gioDen: sub.gioDen || sub.gioKetThuc || '11:30',
                 soLuongNam: Number(sub.soLuongNam || 0),
                 soLuongNu: Number(sub.soLuongNu || 0),
                 soLuongKhach: Number(sub.soLuongKhach || sub.quantity || sub.soLuong || 0),
-                coSo: sub.coSo || sub.facility || 'MEDLATEC Ba Đình',
-                diaDiemKham: sub.diaDiemKham || sub.location || 'Địa điểm khám',
+                coSo: sub.coSo || sub.facility || 'Bệnh viện Đa khoa MEDLATEC Mỹ Đình',
+                diaDiemToChuc: sub.diaDiemToChuc || sub.diaDiemKham || '',
+                phuongDiaBan: sub.phuongDiaBan || '',
+                nguoiPhuTrach: sub.nguoiPhuTrach || sub.cbPhuTrach || master.personInCharge || 'Nguyễn Văn An',
                 ghiChu: sub.ghiChu || ''
             });
         });
@@ -1571,17 +1578,43 @@ function closeCreatePlannedModal() {
 }
 
 // Mini Sub Form Handlers
+function handleSubTuNgayChange() {
+    const tuElem = document.getElementById('mini-sub-tu-ngay');
+    const denElem = document.getElementById('mini-sub-den-ngay');
+    if (!tuElem || !denElem) return;
+    const tuVal = tuElem.value;
+    const denVal = denElem.value;
+    if (tuVal && (!denVal || denVal < tuVal)) {
+        denElem.value = tuVal;
+    }
+}
+
 function openMiniSubForm(typeCode, subId = null) {
     currentMiniSubScheduleType = typeCode;
     editingSubId = subId;
 
     const panel = document.getElementById('mini-sub-form-panel');
     const titleElem = document.getElementById('mini-sub-form-title');
-    const masterTuDate = document.getElementById('create-tu-ngay')?.value || new Date().toISOString().split('T')[0];
+    const masterPic = document.getElementById('create-cb-phu-trach')?.value || 'Nguyễn Văn An';
 
-    let typeLabel = 'Lịch tại viện';
-    if (typeCode === 'NGOAI_VIEN') typeLabel = 'Lịch ngoại viện';
-    else if (typeCode === 'LICH_PHUONG') typeLabel = 'Lịch phường';
+    const locTaiVien = document.getElementById('mini-sub-location-tai-vien');
+    const locNgoaiVien = document.getElementById('mini-sub-location-ngoai-vien');
+    const locPhuong = document.getElementById('mini-sub-location-phuong');
+
+    if (locTaiVien) locTaiVien.classList.add('hidden');
+    if (locNgoaiVien) locNgoaiVien.classList.add('hidden');
+    if (locPhuong) locPhuong.classList.add('hidden');
+
+    let typeLabel = '🏥 LỊCH TẠI VIỆN';
+    if (typeCode === 'NGOAI_VIEN') {
+        typeLabel = '🚐 LỊCH NGOẠI VIỆN';
+        if (locNgoaiVien) locNgoaiVien.classList.remove('hidden');
+    } else if (typeCode === 'LICH_PHUONG') {
+        typeLabel = '🏘 LỊCH PHƯỜNG';
+        if (locPhuong) locPhuong.classList.remove('hidden');
+    } else {
+        if (locTaiVien) locTaiVien.classList.remove('hidden');
+    }
 
     if (titleElem) {
         titleElem.innerText = subId ? `Chỉnh sửa: ${typeLabel}` : `Thêm mới: ${typeLabel}`;
@@ -1590,19 +1623,35 @@ function openMiniSubForm(typeCode, subId = null) {
     if (subId) {
         const sub = currentDraftSubSchedules.find(s => String(s.id) === String(subId));
         if (sub) {
-            if (document.getElementById('mini-sub-ngay-kham')) document.getElementById('mini-sub-ngay-kham').value = sub.ngayKham || masterTuDate;
-            if (document.getElementById('mini-sub-ca-kham')) document.getElementById('mini-sub-ca-kham').value = sub.ca || 'Sang';
+            const tuVal = sub.tuNgay || sub.ngayKham || sub.examDate || contextClickedDate;
+            const denVal = sub.denNgay || sub.tuNgay || sub.ngayKham || sub.examDate || contextClickedDate;
+            if (document.getElementById('mini-sub-tu-ngay')) document.getElementById('mini-sub-tu-ngay').value = tuVal;
+            if (document.getElementById('mini-sub-den-ngay')) document.getElementById('mini-sub-den-ngay').value = denVal;
+            if (document.getElementById('mini-sub-ngay-kham')) document.getElementById('mini-sub-ngay-kham').value = tuVal;
+            if (document.getElementById('mini-sub-gio-tu')) document.getElementById('mini-sub-gio-tu').value = sub.gioTu || '08:00';
+            if (document.getElementById('mini-sub-gio-den')) document.getElementById('mini-sub-gio-den').value = sub.gioDen || '11:30';
             if (document.getElementById('mini-sub-nam')) document.getElementById('mini-sub-nam').value = sub.soLuongNam || 0;
             if (document.getElementById('mini-sub-nu')) document.getElementById('mini-sub-nu').value = sub.soLuongNu || 0;
-            if (document.getElementById('mini-sub-co-so')) document.getElementById('mini-sub-co-so').value = sub.coSo || sub.diaDiemKham || '';
+            if (document.getElementById('mini-sub-co-so-tai-vien')) document.getElementById('mini-sub-co-so-tai-vien').value = sub.coSo || 'Bệnh viện Đa khoa MEDLATEC Mỹ Đình';
+            if (document.getElementById('mini-sub-dia-diem-ngoai-vien')) document.getElementById('mini-sub-dia-diem-ngoai-vien').value = sub.diaDiemToChuc || sub.diaDiemKham || '';
+            if (document.getElementById('mini-sub-phuong-dia-ban')) document.getElementById('mini-sub-phuong-dia-ban').value = sub.phuongDiaBan || '';
+            if (document.getElementById('mini-sub-dia-diem-phuong')) document.getElementById('mini-sub-dia-diem-phuong').value = sub.diaDiemToChuc || '';
+            if (document.getElementById('mini-sub-nguoi-phu-trach')) document.getElementById('mini-sub-nguoi-phu-trach').value = sub.nguoiPhuTrach || masterPic;
             if (document.getElementById('mini-sub-ghi-chu')) document.getElementById('mini-sub-ghi-chu').value = sub.ghiChu || '';
         }
     } else {
-        if (document.getElementById('mini-sub-ngay-kham')) document.getElementById('mini-sub-ngay-kham').value = masterTuDate;
-        if (document.getElementById('mini-sub-ca-kham')) document.getElementById('mini-sub-ca-kham').value = 'Sang';
+        if (document.getElementById('mini-sub-tu-ngay')) document.getElementById('mini-sub-tu-ngay').value = contextClickedDate;
+        if (document.getElementById('mini-sub-den-ngay')) document.getElementById('mini-sub-den-ngay').value = contextClickedDate;
+        if (document.getElementById('mini-sub-ngay-kham')) document.getElementById('mini-sub-ngay-kham').value = contextClickedDate;
+        if (document.getElementById('mini-sub-gio-tu')) document.getElementById('mini-sub-gio-tu').value = '08:00';
+        if (document.getElementById('mini-sub-gio-den')) document.getElementById('mini-sub-gio-den').value = '11:30';
         if (document.getElementById('mini-sub-nam')) document.getElementById('mini-sub-nam').value = 50;
         if (document.getElementById('mini-sub-nu')) document.getElementById('mini-sub-nu').value = 50;
-        if (document.getElementById('mini-sub-co-so')) document.getElementById('mini-sub-co-so').value = typeCode === 'TAI_VIEN' ? 'MEDLATEC Ba Đình' : (typeCode === 'NGOAI_VIEN' ? 'Ngoại viện' : 'MEDLATEC Ba Đình');
+        if (document.getElementById('mini-sub-co-so-tai-vien')) document.getElementById('mini-sub-co-so-tai-vien').value = 'Bệnh viện Đa khoa MEDLATEC Mỹ Đình';
+        if (document.getElementById('mini-sub-dia-diem-ngoai-vien')) document.getElementById('mini-sub-dia-diem-ngoai-vien').value = '';
+        if (document.getElementById('mini-sub-phuong-dia-ban')) document.getElementById('mini-sub-phuong-dia-ban').value = '';
+        if (document.getElementById('mini-sub-dia-diem-phuong')) document.getElementById('mini-sub-dia-diem-phuong').value = '';
+        if (document.getElementById('mini-sub-nguoi-phu-trach')) document.getElementById('mini-sub-nguoi-phu-trach').value = masterPic;
         if (document.getElementById('mini-sub-ghi-chu')) document.getElementById('mini-sub-ghi-chu').value = '';
     }
 
@@ -1611,9 +1660,19 @@ function openMiniSubForm(typeCode, subId = null) {
 }
 
 function calculateMiniSubTotal() {
-    const nam = parseInt(document.getElementById('mini-sub-nam')?.value, 10) || 0;
-    const nu = parseInt(document.getElementById('mini-sub-nu')?.value, 10) || 0;
+    const namInput = document.getElementById('mini-sub-nam');
+    const nuInput = document.getElementById('mini-sub-nu');
     const tongInput = document.getElementById('mini-sub-tong');
+
+    let nam = parseInt(namInput?.value, 10);
+    let nu = parseInt(nuInput?.value, 10);
+
+    if (isNaN(nam) || nam < 0) nam = 0;
+    if (isNaN(nu) || nu < 0) nu = 0;
+
+    if (namInput && String(namInput.value) !== String(nam)) namInput.value = nam;
+    if (nuInput && String(nuInput.value) !== String(nu)) nuInput.value = nu;
+
     if (tongInput) tongInput.value = nam + nu;
 }
 
@@ -1624,35 +1683,77 @@ function closeMiniSubForm() {
 }
 
 function saveMiniSubForm() {
-    const ngayKham = document.getElementById('mini-sub-ngay-kham')?.value || '';
-    const ca = document.getElementById('mini-sub-ca-kham')?.value || 'Sang';
-    const nam = parseInt(document.getElementById('mini-sub-nam')?.value, 10) || 0;
-    const nu = parseInt(document.getElementById('mini-sub-nu')?.value, 10) || 0;
+    const tuNgay = document.getElementById('mini-sub-tu-ngay')?.value || document.getElementById('mini-sub-ngay-kham')?.value || '';
+    const denNgay = document.getElementById('mini-sub-den-ngay')?.value || tuNgay;
+    const gioTu = document.getElementById('mini-sub-gio-tu')?.value || '08:00';
+    const gioDen = document.getElementById('mini-sub-gio-den')?.value || '11:30';
+    const nam = Math.max(0, parseInt(document.getElementById('mini-sub-nam')?.value, 10) || 0);
+    const nu = Math.max(0, parseInt(document.getElementById('mini-sub-nu')?.value, 10) || 0);
     const tong = nam + nu;
-    const coSo = document.getElementById('mini-sub-co-so')?.value.trim() || 'MEDLATEC';
+    const nguoiPhuTrach = document.getElementById('mini-sub-nguoi-phu-trach')?.value.trim() || '';
     const ghiChu = document.getElementById('mini-sub-ghi-chu')?.value.trim() || '';
 
-    if (!ngayKham) {
-        if (window.showToast) window.showToast('Vui lòng chọn Ngày dự kiến cho lịch con!', 'error');
-        else alert('Vui lòng chọn Ngày dự kiến cho lịch con!');
+    if (!tuNgay || !denNgay) {
+        if (window.showToast) window.showToast('Vui lòng chọn Từ ngày và Đến ngày dự kiến!', 'error');
+        else alert('Vui lòng chọn Từ ngày và Đến ngày dự kiến!');
+        return;
+    }
+
+    if (denNgay < tuNgay) {
+        if (window.showToast) window.showToast('Đến ngày phải lớn hơn hoặc bằng Từ ngày.', 'error');
+        else alert('Đến ngày phải lớn hơn hoặc bằng Từ ngày.');
         return;
     }
 
     let typeLabel = 'Lịch tại viện';
-    if (currentMiniSubScheduleType === 'NGOAI_VIEN') typeLabel = 'Lịch ngoại viện';
-    else if (currentMiniSubScheduleType === 'LICH_PHUONG') typeLabel = 'Lịch phường';
+    let coSo = 'Bệnh viện Đa khoa MEDLATEC Mỹ Đình';
+    let diaDiemToChuc = '';
+    let phuongDiaBan = '';
+    let diaDiemKham = '';
+
+    if (currentMiniSubScheduleType === 'NGOAI_VIEN') {
+        typeLabel = 'Lịch ngoại viện';
+        coSo = 'Ngoại viện';
+        diaDiemToChuc = document.getElementById('mini-sub-dia-diem-ngoai-vien')?.value.trim() || 'Trụ sở đơn vị';
+        diaDiemKham = diaDiemToChuc;
+        if (!diaDiemToChuc) {
+            if (window.showToast) window.showToast('Vui lòng nhập Địa điểm tổ chức KSK!', 'error');
+            else alert('Vui lòng nhập Địa điểm tổ chức KSK!');
+            return;
+        }
+    } else if (currentMiniSubScheduleType === 'LICH_PHUONG') {
+        typeLabel = 'Lịch phường';
+        coSo = 'Lịch phường';
+        phuongDiaBan = document.getElementById('mini-sub-phuong-dia-ban')?.value.trim() || '';
+        diaDiemToChuc = document.getElementById('mini-sub-dia-diem-phuong')?.value.trim() || '';
+        diaDiemKham = phuongDiaBan && diaDiemToChuc ? `${phuongDiaBan} · ${diaDiemToChuc}` : (phuongDiaBan || diaDiemToChuc || 'Trạm y tế phường');
+        if (!phuongDiaBan || !diaDiemToChuc) {
+            if (window.showToast) window.showToast('Vui lòng nhập Phường / địa bàn và Địa điểm tổ chức!', 'error');
+            else alert('Vui lòng nhập Phường / địa bàn và Địa điểm tổ chức!');
+            return;
+        }
+    } else {
+        coSo = document.getElementById('mini-sub-co-so-tai-vien')?.value || 'Bệnh viện Đa khoa MEDLATEC Mỹ Đình';
+        diaDiemKham = coSo;
+    }
 
     if (editingSubId) {
         const sub = currentDraftSubSchedules.find(s => String(s.id) === String(editingSubId));
         if (sub) {
-            sub.ngayKham = ngayKham;
-            sub.examDate = ngayKham;
-            sub.ca = ca;
+            sub.tuNgay = tuNgay;
+            sub.denNgay = denNgay;
+            sub.ngayKham = tuNgay;
+            sub.examDate = tuNgay;
+            sub.gioTu = gioTu;
+            sub.gioDen = gioDen;
             sub.soLuongNam = nam;
             sub.soLuongNu = nu;
             sub.soLuongKhach = tong;
             sub.coSo = coSo;
-            sub.diaDiemKham = coSo;
+            sub.diaDiemToChuc = diaDiemToChuc;
+            sub.phuongDiaBan = phuongDiaBan;
+            sub.diaDiemKham = diaDiemKham;
+            sub.nguoiPhuTrach = nguoiPhuTrach;
             sub.ghiChu = ghiChu;
         }
     } else {
@@ -1663,14 +1764,20 @@ function saveMiniSubForm() {
             maLich: newId,
             scheduleType: currentMiniSubScheduleType,
             loaiLich: typeLabel,
-            ngayKham: ngayKham,
-            examDate: ngayKham,
-            ca: ca,
+            tuNgay: tuNgay,
+            denNgay: denNgay,
+            ngayKham: tuNgay,
+            examDate: tuNgay,
+            gioTu: gioTu,
+            gioDen: gioDen,
             soLuongNam: nam,
             soLuongNu: nu,
             soLuongKhach: tong,
             coSo: coSo,
-            diaDiemKham: coSo,
+            diaDiemToChuc: diaDiemToChuc,
+            phuongDiaBan: phuongDiaBan,
+            diaDiemKham: diaDiemKham,
+            nguoiPhuTrach: nguoiPhuTrach,
             ghiChu: ghiChu
         });
     }
@@ -1678,13 +1785,48 @@ function saveMiniSubForm() {
     closeMiniSubForm();
     renderPlannedSubSchedulesList();
 
-    if (window.showToast) window.showToast(`Đã lưu thông tin ${typeLabel}!`, 'success');
+    if (window.showToast) window.showToast(`Đã lưu ${typeLabel}!`, 'success');
 }
 
 function deletePlannedSubSchedule(subId) {
-    if (confirm('Bạn có chắc chắn muốn xóa lịch con này không?')) {
-        currentDraftSubSchedules = currentDraftSubSchedules.filter(s => String(s.id) !== String(subId));
+    if (confirm('Bạn có chắc muốn xóa lịch con dự kiến này không?')) {
+        currentDraftSubSchedules = currentDraftSubSchedules.filter(s => String(s.id) !== String(subId) && String(s.scheduleId) !== String(subId));
         renderPlannedSubSchedulesList();
+        
+        let masterChanged = false;
+        if (window.MWKDataStore && typeof window.MWKDataStore.getKskSchedules === 'function') {
+            const allSchedules = MWKDataStore.getKskSchedules();
+            for (const master of allSchedules) {
+                if (master.childSchedules && Array.isArray(master.childSchedules)) {
+                    const idx = master.childSchedules.findIndex(cs => String(cs.scheduleId || cs.id) === String(subId));
+                    if (idx >= 0) {
+                        master.childSchedules.splice(idx, 1);
+                        master.estimatedCount = master.childSchedules.reduce((sum, s) => sum + (parseInt(s.soLuongKhach || s.tongSoLuong) || 0), 0);
+                        MWKDataStore.updateKskSchedule(master.id, master);
+                        masterChanged = true;
+                        break;
+                    }
+                }
+            }
+        }
+        for (const master of seedMasterUnits) {
+            if (master.childSchedules && Array.isArray(master.childSchedules)) {
+                const idx = master.childSchedules.findIndex(cs => String(cs.scheduleId || cs.id) === String(subId));
+                if (idx >= 0) {
+                    master.childSchedules.splice(idx, 1);
+                    master.estimatedCount = master.childSchedules.reduce((sum, s) => sum + (parseInt(s.soLuongKhach || s.tongSoLuong) || 0), 0);
+                    masterChanged = true;
+                    break;
+                }
+            }
+        }
+
+        if (masterChanged) {
+            closeDayDetailsModal();
+            loadSchedulesData();
+            renderCalendar();
+        }
+
         if (window.showToast) window.showToast('Đã xóa lịch con dự kiến', 'info');
     }
 }
@@ -1704,7 +1846,7 @@ function renderPlannedSubSchedulesList() {
         listElem.innerHTML = `
             <div class="text-center py-6 text-[#9CA3AF] italic border border-dashed border-[#CBD5E1] rounded-[4px] bg-[#F8FAFC]">
                 <i class="fa-solid fa-list-check text-2xl mb-1 text-[#CBD5E1]"></i>
-                <p>Chưa có lịch con dự kiến nào. Nhấn một trong 3 nút trên để thêm lịch con.</p>
+                <p>Chưa có lịch con dự kiến nào. Nhấn nút [ + Tại viện ], [ + Ngoại viện ] hoặc [ + Phường ] để thêm lịch con.</p>
             </div>
         `;
         return;
@@ -1712,9 +1854,8 @@ function renderPlannedSubSchedulesList() {
 
     listElem.innerHTML = currentDraftSubSchedules.map(item => {
         const style = CalendarHelper.getScheduleTypeStyle(item.loaiLich);
-        const shiftLabel = item.ca === 'Chieu' ? 'Chiều (13:30 - 17:00)' : (item.ca === 'CaNgay' ? 'Cả ngày' : 'Sáng (07:30 - 11:30)');
-        const dParts = (item.ngayKham || '').split('-');
-        const dateFmt = dParts.length === 3 ? `${dParts[2]}/${dParts[1]}/${dParts[0]}` : item.ngayKham;
+        const timeFmt = `${item.gioTu || '08:00'} - ${item.gioDen || '11:30'}`;
+        const dateFmt = CalendarHelper.formatPlanningDateRange(item.tuNgay || item.ngayKham, item.denNgay || item.tuNgay || item.ngayKham);
 
         return `
             <div class="bg-white p-3 rounded-[4px] border border-[#D9DEE5] hover:border-[#27496D] shadow-2xs space-y-2 transition-all">
@@ -1723,20 +1864,20 @@ function renderPlannedSubSchedulesList() {
                         ${style.label}
                     </span>
                     <div class="flex items-center gap-1">
-                        <button type="button" onclick="openMiniSubForm('${item.scheduleType}', '${item.id}')" class="text-xs text-[#27496D] hover:underline font-bold px-2 py-0.5 rounded hover:bg-[#E8F1FB]">
-                            <i class="fa-solid fa-pen text-[10px] mr-1"></i>Sửa
+                        <button type="button" onclick="openMiniSubForm('${item.scheduleType}', '${item.id}')" class="text-xs text-[#27496D] hover:underline font-bold px-2 py-0.5 rounded hover:bg-[#E8F1FB] cursor-pointer">
+                            Sửa
                         </button>
-                        <button type="button" onclick="deletePlannedSubSchedule('${item.id}')" class="text-xs text-red-600 hover:underline font-bold px-2 py-0.5 rounded hover:bg-red-50">
-                            <i class="fa-solid fa-trash text-[10px] mr-1"></i>Xóa
+                        <button type="button" onclick="deletePlannedSubSchedule('${item.id}')" class="text-xs text-red-600 hover:underline font-bold px-2 py-0.5 rounded hover:bg-red-50 cursor-pointer">
+                            Xóa
                         </button>
                     </div>
                 </div>
                 <div class="flex items-center justify-between text-xs text-[#4B5563]">
-                    <div><i class="fa-solid fa-calendar-day text-[10px] mr-1 text-[#27496D]"></i><strong>${dateFmt}</strong> (${shiftLabel})</div>
-                    <div><i class="fa-solid fa-users text-[10px] mr-1 text-[#15803D]"></i><strong class="text-[#15803D]">${item.soLuongKhach} KH</strong> (${item.soLuongNam || 0} Nam / ${item.soLuongNu || 0} Nữ)</div>
+                    <div><i class="fa-solid fa-calendar-day text-[10px] mr-1 text-[#27496D]"></i><strong>${dateFmt}</strong> · ${timeFmt}</div>
+                    <div><i class="fa-solid fa-users text-[10px] mr-1 text-[#15803D]"></i><strong class="text-[#15803D]">${item.soLuongKhach} người</strong> (${item.soLuongNam || 0} Nam / ${item.soLuongNu || 0} Nữ)</div>
                 </div>
                 <div class="text-xs text-[#4B5563]">
-                    <i class="fa-solid fa-location-dot text-[10px] mr-1 text-[#27496D]"></i>${escapeHtml(item.coSo)}
+                    <i class="fa-solid fa-location-dot text-[10px] mr-1 text-[#27496D]"></i>${escapeHtml(item.diaDiemKham || item.coSo)}
                 </div>
             </div>
         `;
@@ -1744,29 +1885,21 @@ function renderPlannedSubSchedulesList() {
 }
 
 function handleMasterDateChange() {
-    const tuNgay = document.getElementById('create-tu-ngay')?.value;
-    const denNgayElem = document.getElementById('create-den-ngay');
-    if (tuNgay && denNgayElem && (!denNgayElem.value || denNgayElem.value < tuNgay)) {
-        denNgayElem.value = tuNgay;
-    }
+    // Retained for backward compatibility
 }
 
 // Master Save Function
 function savePlannedSchedule() {
     const tenDonVi = (document.getElementById('create-ten-don-vi')?.value || '').trim();
-    const maDoiTuong = (document.getElementById('create-ma-doi-tuong')?.value || '').trim() || ('KAD' + String(Date.now()).slice(-6));
-    const tuNgay = document.getElementById('create-tu-ngay')?.value || new Date().toISOString().split('T')[0];
-    const denNgay = document.getElementById('create-den-ngay')?.value || tuNgay;
+    const phongKinhDoanh = (document.getElementById('create-phong-kinh-doanh')?.value || '').trim();
     const cbPhuTrach = document.getElementById('create-cb-phu-trach')?.value || 'Nguyễn Văn An';
-    const ghiChu = (document.getElementById('create-ghi-chu')?.value || '').trim();
 
     if (!tenDonVi) {
-        if (window.showToast) window.showToast('Vui lòng nhập Tên đơn vị / Khách hàng!', 'error');
-        else alert('Vui lòng nhập Tên đơn vị / Khách hàng!');
+        if (window.showToast) window.showToast('Vui lòng nhập Tên đơn vị / khách hàng *', 'error');
+        else alert('Vui lòng nhập Tên đơn vị / khách hàng *');
         return;
     }
 
-    // Auto-create 1 fallback sub-schedule if list is empty
     if (currentDraftSubSchedules.length === 0) {
         const fallbackId = `SUB-${Date.now()}`;
         currentDraftSubSchedules.push({
@@ -1774,46 +1907,37 @@ function savePlannedSchedule() {
             scheduleId: fallbackId,
             scheduleType: 'TAI_VIEN',
             loaiLich: 'Lịch tại viện',
-            ngayKham: tuNgay,
-            examDate: tuNgay,
-            ca: 'Sang',
+            tuNgay: contextClickedDate,
+            denNgay: contextClickedDate,
+            ngayKham: contextClickedDate,
+            examDate: contextClickedDate,
+            gioTu: '08:00',
+            gioDen: '11:30',
             soLuongNam: 50,
             soLuongNu: 50,
             soLuongKhach: 100,
-            coSo: 'MEDLATEC Ba Đình',
-            diaDiemKham: 'MEDLATEC Ba Đình',
-            ghiChu: ghiChu
+            coSo: 'Bệnh viện Đa khoa MEDLATEC Mỹ Đình',
+            diaDiemKham: 'Bệnh viện Đa khoa MEDLATEC Mỹ Đình',
+            nguoiPhuTrach: cbPhuTrach,
+            ghiChu: ''
         });
     }
 
     const masterId = editingMasterId || `PLAN-${Date.now()}`;
-    const masterCode = maDoiTuong.startsWith('LK-') ? maDoiTuong : `LK-2026-${Math.floor(100 + Math.random()*900)}`;
-
     const totalGuests = currentDraftSubSchedules.reduce((sum, s) => sum + (parseInt(s.soLuongKhach) || 0), 0);
-    const loaiLichTypes = Array.from(new Set(currentDraftSubSchedules.map(s => s.loaiLich)));
 
     const masterObj = {
         id: masterId,
         unitId: masterId,
-        code: masterCode,
-        customerCode: maDoiTuong,
-        maDoiTuong: maDoiTuong,
         customerName: tenDonVi,
         teamName: tenDonVi,
         tenDonVi: tenDonVi,
+        phongKinhDoanh: phongKinhDoanh,
         personInCharge: cbPhuTrach,
+        canBoPhuTrach: cbPhuTrach,
         cbPhuTrach: cbPhuTrach,
-        facility: currentDraftSubSchedules[0]?.coSo || 'MEDLATEC Ba Đình',
-        tuNgay: tuNgay,
-        denNgay: denNgay,
-        examDate: tuNgay,
-        workTypes: workTypesList,
-        loaiLich: loaiLichTypes.join(', '),
-        loaiLichTypes: loaiLichTypes,
         estimatedCount: totalGuests,
         soLuong: totalGuests,
-        contractNote: ghiChu,
-        generalNote: ghiChu,
         isDuKien: true,
         recordType: 'DU_KIEN',
         trangThai: 'DU_KIEN',
@@ -1835,7 +1959,7 @@ function savePlannedSchedule() {
             MWKDataStore.addKskSchedule(masterRecordToStore(masterObj));
         }
     } else {
-        const existingIdx = seedMasterUnits.findIndex(s => String(s.unitId) === String(masterId));
+        const existingIdx = seedMasterUnits.findIndex(s => String(s.unitId || s.id) === String(masterId));
         if (existingIdx >= 0) seedMasterUnits[existingIdx] = masterObj;
         else seedMasterUnits.unshift(masterObj);
     }
@@ -1861,7 +1985,7 @@ function masterRecordToStore(obj) {
 
 function deletePlannedMasterSchedule(unitId) {
     if (confirm('Bạn có chắc chắn muốn xóa đợt khám dự kiến này không?')) {
-        if (window.MWKDataStore && typeof MWKDataStore.deleteKskSchedule === 'function') {
+        if (window.MWKDataStore && typeof window.MWKDataStore.deleteKskSchedule === 'function') {
             MWKDataStore.deleteKskSchedule(unitId);
         } else {
             const idx = seedMasterUnits.findIndex(s => String(s.unitId || s.id) === String(unitId));
@@ -1900,10 +2024,9 @@ function openGroupDetailModal(unitId, dateISO) {
     const countSummary = document.getElementById('modal-day-count-summary');
 
     const unitName = master ? (master.customerName || master.teamName || master.tenDonVi) : (unitChilds[0]?.tenDonVi || 'Đơn vị KSK');
-    const totalGuests = unitChilds.reduce((sum, i) => sum + (parseInt(i.soLuongKhach) || 0), 0);
 
     if (titleElem) {
-        titleElem.innerHTML = `<span class="font-bold text-[#27496D]">${escapeHtml(unitName)}</span> <span class="bg-[#E8F1FB] text-[#27496D] text-[10px] font-bold px-2 py-0.5 rounded-[3px] ml-2 border border-[#B4CBE5]">DỰ KIẾN</span>`;
+        titleElem.innerHTML = `<span class="font-bold text-[#27496D]">${escapeHtml(unitName)}</span> <span class="bg-[#E8F1FB] text-[#27496D] text-[10px] font-bold px-2 py-0.5 rounded-[3px] ml-2 border border-[#B4CBE5]">THÔNG TIN DỰ KIẾN</span>`;
     }
 
     if (countSummary) {
@@ -1920,7 +2043,23 @@ function openGroupDetailModal(unitId, dateISO) {
     }
 
     if (contentElem) {
-        renderModalGroupedContent(contentElem, unitChilds.length > 0 ? unitChilds : (master ? master.childSchedules || [] : []));
+        const masterDetailsHeader = `
+            <div class="bg-white p-3 rounded-[4px] border border-[#D9DEE5] shadow-2xs space-y-2 mb-3 text-xs">
+                <div class="font-bold text-[#27496D] border-b border-[#F0F3F7] pb-1 uppercase tracking-wide text-[11px] flex items-center justify-between">
+                    <span><i class="fa-solid fa-building mr-1"></i> THÔNG TIN CHUNG</span>
+                    <span class="bg-[#E8F1FB] text-[#27496D] px-2 py-0.5 rounded text-[10px] font-bold">KẾ HOẠCH DỰ KIẾN</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[#4B5563]">
+                    <div>Tên đơn vị: <strong class="text-[#1F2937]">${escapeHtml(unitName)}</strong></div>
+                    <div>Phòng Kinh doanh: <strong class="text-[#1F2937]">${escapeHtml(master?.phongKinhDoanh || 'TTKD Hà Nội 1')}</strong></div>
+                    <div class="sm:col-span-2">Cán bộ phụ trách: <strong class="text-[#1F2937]">${escapeHtml(master?.personInCharge || master?.cbPhuTrach || master?.canBoPhuTrach || 'Nguyễn Văn An')}</strong></div>
+                </div>
+            </div>
+        `;
+
+        let childContent = '';
+        renderModalGroupedContent({ set innerHTML(val) { childContent = val; } }, unitChilds.length > 0 ? unitChilds : (master ? master.childSchedules || [] : []));
+        contentElem.innerHTML = masterDetailsHeader + childContent;
     }
 
     if (modal) modal.classList.remove('hidden');
@@ -1967,16 +2106,15 @@ function renderModalGroupedContent(containerElem, childList) {
 
     let html = '';
 
-    // Section 1: LỊCH TẠI VIỆN
     if (taiVienList.length > 0) {
         const tvCount = taiVienList.reduce((s, i) => s + (parseInt(i.soLuongKhach) || 0), 0);
         html += `
-            <div class="bg-white rounded-[4px] border border-[#D9DEE5] overflow-hidden shadow-2xs space-y-2">
+            <div class="bg-white rounded-[4px] border border-[#D9DEE5] overflow-hidden shadow-2xs space-y-2 mb-2">
                 <div class="bg-[#E8F1FB] px-3.5 py-2 border-b border-[#B4CBE5] flex items-center justify-between text-[#27496D]">
                     <span class="font-bold uppercase text-xs flex items-center gap-1.5">
                         <span class="w-2.5 h-2.5 rounded-full bg-[#27496D]"></span> LỊCH TẠI VIỆN
                     </span>
-                    <span class="font-extrabold text-xs">${taiVienList.length} lịch (${tvCount.toLocaleString('vi-VN')} KH)</span>
+                    <span class="font-extrabold text-xs">${taiVienList.length} lịch (${tvCount.toLocaleString('vi-VN')} người)</span>
                 </div>
                 <div class="p-3 space-y-2">
                     ${renderModalChildItems(taiVienList)}
@@ -1985,16 +2123,15 @@ function renderModalGroupedContent(containerElem, childList) {
         `;
     }
 
-    // Section 2: LỊCH NGOẠI VIỆN
     if (ngoaiVienList.length > 0) {
         const nvCount = ngoaiVienList.reduce((s, i) => s + (parseInt(i.soLuongKhach) || 0), 0);
         html += `
-            <div class="bg-white rounded-[4px] border border-[#D9DEE5] overflow-hidden shadow-2xs space-y-2">
+            <div class="bg-white rounded-[4px] border border-[#D9DEE5] overflow-hidden shadow-2xs space-y-2 mb-2">
                 <div class="bg-[#FFF3E0] px-3.5 py-2 border-b border-[#FFE0B2] flex items-center justify-between text-[#E65100]">
                     <span class="font-bold uppercase text-xs flex items-center gap-1.5">
                         <span class="w-2.5 h-2.5 rounded-full bg-[#ED6C02]"></span> LỊCH NGOẠI VIỆN
                     </span>
-                    <span class="font-extrabold text-xs">${ngoaiVienList.length} lịch (${nvCount.toLocaleString('vi-VN')} KH)</span>
+                    <span class="font-extrabold text-xs">${ngoaiVienList.length} lịch (${nvCount.toLocaleString('vi-VN')} người)</span>
                 </div>
                 <div class="p-3 space-y-2">
                     ${renderModalChildItems(ngoaiVienList)}
@@ -2003,16 +2140,15 @@ function renderModalGroupedContent(containerElem, childList) {
         `;
     }
 
-    // Section 3: LỊCH TẠI PHƯỜNG
     if (phuongList.length > 0) {
         const tpCount = phuongList.reduce((s, i) => s + (parseInt(i.soLuongKhach) || 0), 0);
         html += `
-            <div class="bg-white rounded-[4px] border border-[#D9DEE5] overflow-hidden shadow-2xs space-y-2">
+            <div class="bg-white rounded-[4px] border border-[#D9DEE5] overflow-hidden shadow-2xs space-y-2 mb-2">
                 <div class="bg-[#F3E8FF] px-3.5 py-2 border-b border-[#E9D5FF] flex items-center justify-between text-[#6B21A8]">
                     <span class="font-bold uppercase text-xs flex items-center gap-1.5">
                         <span class="w-2.5 h-2.5 rounded-full bg-[#7E22CE]"></span> LỊCH TẠI PHƯỜNG
                     </span>
-                    <span class="font-extrabold text-xs">${phuongList.length} lịch (${tpCount.toLocaleString('vi-VN')} KH)</span>
+                    <span class="font-extrabold text-xs">${phuongList.length} lịch (${tpCount.toLocaleString('vi-VN')} người)</span>
                 </div>
                 <div class="p-3 space-y-2">
                     ${renderModalChildItems(phuongList)}
@@ -2026,22 +2162,30 @@ function renderModalGroupedContent(containerElem, childList) {
 
 function renderModalChildItems(items) {
     return items.map(item => {
-        const dParts = (item.ngayKham || '').split('-');
-        const dateFormatted = dParts.length === 3 ? `${dParts[2]}/${dParts[1]}/${dParts[0]}` : item.ngayKham;
+        const dateFormatted = CalendarHelper.formatPlanningDateRange(item.tuNgay || item.ngayKham, item.denNgay || item.tuNgay || item.ngayKham);
         const style = CalendarHelper.getScheduleTypeStyle(item.loaiLich);
+        const timeFmt = `${item.gioTu || '08:00'} - ${item.gioDen || '11:30'}`;
 
         return `
             <div class="bg-[#F8FAFC] p-3 rounded-[4px] border border-[#D9DEE5] hover:border-[#27496D] space-y-2 transition-all">
                 <div class="flex items-center justify-between">
-                    <span class="font-bold text-xs text-[#1F2937]">Mã lịch con: <strong class="font-mono text-[#27496D] font-extrabold">${escapeHtml(item.scheduleId || item.id)}</strong></span>
-                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-[3px] ${style.badgeClass}">${style.label}</span>
+                    <span class="font-bold text-xs text-[#1F2937]">Lịch con: <strong class="font-mono text-[#27496D] font-extrabold">${escapeHtml(item.scheduleId || item.id)}</strong></span>
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-[3px] ${style.badgeClass}">${style.label}</span>
+                        <button type="button" onclick="openEditPlannedScheduleModal('${escapeHtml(item.unitId || item.rawMasterObject?.unitId || item.rawMasterObject?.id)}')" class="text-xs text-[#27496D] hover:underline font-bold px-2 py-0.5 rounded hover:bg-[#E8F1FB] cursor-pointer" title="Sửa đợt khám">
+                            Sửa
+                        </button>
+                        <button type="button" onclick="deletePlannedSubSchedule('${item.scheduleId || item.id}')" class="text-xs text-red-600 hover:underline font-bold px-2 py-0.5 rounded hover:bg-red-50 cursor-pointer" title="Xóa lịch con này">
+                            Xóa
+                        </button>
+                    </div>
                 </div>
                 <div class="flex items-center justify-between text-xs text-[#4B5563]">
-                    <div><i class="fa-solid fa-calendar-day text-[10px] mr-1 text-[#27496D]"></i>${dateFormatted} (${item.gioBatDau || '07:30'} - ${item.gioKetThuc || '11:30'})</div>
-                    <div><i class="fa-solid fa-users text-[10px] mr-1 text-[#15803D]"></i><strong class="text-[#15803D]">${item.soLuongKhach} KH</strong></div>
+                    <div><i class="fa-solid fa-calendar-day text-[10px] mr-1 text-[#27496D]"></i>${dateFormatted} · ${timeFmt}</div>
+                    <div><i class="fa-solid fa-users text-[10px] mr-1 text-[#15803D]"></i><strong class="text-[#15803D]">${item.soLuongKhach} người</strong></div>
                 </div>
                 <div class="text-xs text-[#4B5563]">
-                    <i class="fa-solid fa-hospital text-[10px] mr-1 text-[#27496D]"></i>${escapeHtml(item.coSo)} • ${escapeHtml(item.diaDiemKham)}
+                    <i class="fa-solid fa-location-dot text-[10px] mr-1 text-[#27496D]"></i>${escapeHtml(item.diaDiemKham || item.coSo)}
                 </div>
             </div>
         `;
@@ -2072,6 +2216,7 @@ window.savePlannedSchedule = savePlannedSchedule;
 window.openMiniSubForm = openMiniSubForm;
 window.closeMiniSubForm = closeMiniSubForm;
 window.saveMiniSubForm = saveMiniSubForm;
+window.handleSubTuNgayChange = handleSubTuNgayChange;
 window.calculateMiniSubTotal = calculateMiniSubTotal;
 window.deletePlannedSubSchedule = deletePlannedSubSchedule;
 window.deletePlannedMasterSchedule = deletePlannedMasterSchedule;
@@ -2081,3 +2226,4 @@ window.openGroupDetailModal = openGroupDetailModal;
 window.openDayDetailsModal = openDayDetailsModal;
 window.closeDayDetailsModal = closeDayDetailsModal;
 window.handleCellDoubleClick = handleCellDoubleClick;
+

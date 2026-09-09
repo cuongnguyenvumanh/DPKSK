@@ -21,8 +21,8 @@
 
             // 2. Phòng Kinh doanh *
             const phongKinhDoanh = document.getElementById('phongKinhDoanh');
-            if (phongKinhDoanh && !phongKinhDoanh.value) {
-                this.showFieldError('phongKinhDoanh', 'Vui lòng chọn Phòng Kinh doanh.');
+            if (phongKinhDoanh && !phongKinhDoanh.value.trim()) {
+                this.showFieldError('phongKinhDoanh', 'Vui lòng nhập Phòng Kinh doanh.');
                 isValid = false;
             } else {
                 this.hideFieldError('phongKinhDoanh');
@@ -183,6 +183,13 @@
                 scheduleId: existingId || ('SCH_' + Date.now()),
                 scheduleType: scheduleType,
                 loaiLich: cfg.typeLabel || 'Lịch khám',
+
+                // Status & Return preservation
+                trangThai: existingItem?.trangThai || 'TAO_MOI',
+                status: existingItem?.status || 'Tạo mới',
+                lyDoTra: existingItem?.lyDoTra || '',
+                ngayTra: existingItem?.ngayTra || null,
+                nguoiTra: existingItem?.nguoiTra || null,
 
                 // Section 1
                 ngayDienLich: document.getElementById('ngayDienLich')?.value || '',

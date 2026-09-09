@@ -62,6 +62,22 @@
                     </div>
                 </div>
 
+                <!-- 3 MAIN TABS CONTROL SYSTEM -->
+                <div class="bg-white rounded-[4px] border border-[#D9DEE5] px-4 flex items-center gap-6 text-xs font-bold shadow-2xs">
+                    <a href="../tao-lich-ksk/index.html?tab=my_schedules" class="main-tab-btn h-11 border-b-2 border-transparent text-[#6B7280] hover:text-[#1F2937] flex items-center gap-2 px-1 transition-colors select-none">
+                        <i class="fa-solid fa-user-gear text-sm"></i>
+                        <span>Lịch khám sức khỏe tạo bởi tôi</span>
+                    </a>
+                    <a href="../tao-lich-ksk/index.html?tab=all_schedules" class="main-tab-btn h-11 border-b-2 border-transparent text-[#6B7280] hover:text-[#1F2937] flex items-center gap-2 px-1 transition-colors select-none">
+                        <i class="fa-solid fa-layer-group text-sm"></i>
+                        <span>Tất cả lịch KSK</span>
+                    </a>
+                    <a href="#" class="main-tab-btn h-11 border-b-2 border-[#27496D] text-[#27496D] flex items-center gap-2 px-1 transition-colors select-none">
+                        <i class="fa-solid fa-calendar-days text-sm"></i>
+                        <span>Dự kiến lịch KSK</span>
+                    </a>
+                </div>
+
                 <!-- 2. SUMMARY METRIC CARDS (5 CARDS UNIFORM HEIGHT 96px) -->
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
                     <!-- CARD 1: TỔNG LỊCH DỰ KIẾN -->
@@ -333,25 +349,24 @@
             <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] shadow-2xs space-y-3">
                 <div class="flex items-center justify-between border-b border-[#F0F3F7] pb-2 text-[#27496D]">
                     <span class="font-bold text-xs uppercase flex items-center gap-1.5">
-                        <i class="fa-solid fa-building text-xs"></i> 1. Thông tin chung đợt khám
+                        <i class="fa-solid fa-building text-xs"></i> THÔNG TIN CHUNG
                     </span>
-                    <span id="planned-master-code-badge" class="text-[11px] font-mono font-bold text-[#6B7280]">KAD019962025</span>
                 </div>
 
-                <!-- Row 1: Tên đơn vị / Khách hàng -->
+                <!-- Row 1: Tên đơn vị / Khách hàng * -->
                 <div class="space-y-1">
-                    <label class="font-semibold text-[#1F2937] block">Tên đơn vị / Khách hàng <span class="text-red-500">*</span></label>
-                    <input type="text" id="create-ten-don-vi" required placeholder="Nhập tên đơn vị (Ví dụ: Công ty CP ABC)" class="sys-input w-full text-xs text-[#1F2937] h-8 font-medium">
+                    <label class="font-semibold text-[#1F2937] block">Tên đơn vị / khách hàng <span class="text-red-500">*</span></label>
+                    <input type="text" id="create-ten-don-vi" required placeholder="Nhập tên đơn vị / khách hàng..." class="sys-input w-full text-xs text-[#1F2937] h-8 font-medium">
                 </div>
 
-                <!-- Row 2: Mã đối tượng & Người phụ trách -->
+                <!-- Row 2: Phòng Kinh doanh / TTKD & Cán bộ phụ trách * -->
                 <div class="grid grid-cols-2 gap-3">
                     <div class="space-y-1">
-                        <label class="font-semibold text-[#1F2937] block">Mã đối tượng</label>
-                        <input type="text" id="create-ma-doi-tuong" placeholder="Tự động tạo mã..." class="sys-input w-full text-xs text-[#1F2937] h-8 font-mono">
+                        <label class="font-semibold text-[#1F2937] block">Phòng Kinh doanh / TTKD</label>
+                        <input type="text" id="create-phong-kinh-doanh" placeholder="Nhập phòng kinh doanh / TTKD..." class="sys-input w-full text-xs text-[#1F2937] h-8">
                     </div>
                     <div class="space-y-1">
-                        <label class="font-semibold text-[#1F2937] block">CBKD <span class="text-red-500">*</span></label>
+                        <label class="font-semibold text-[#1F2937] block">Cán bộ phụ trách <span class="text-red-500">*</span></label>
                         <select id="create-cb-phu-trach" required class="sys-select w-full text-xs text-[#1F2937] h-8">
                             <option value="Nguyễn Văn An" selected>Nguyễn Văn An</option>
                             <option value="Trần Văn Bình">Trần Văn Bình</option>
@@ -361,34 +376,6 @@
                         </select>
                     </div>
                 </div>
-
-                <!-- Row 3: Thời gian dự kiến (Từ ngày - Đến ngày) -->
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="space-y-1">
-                        <label class="font-semibold text-[#1F2937] block">Thời gian dự kiến - Từ ngày <span class="text-red-500">*</span></label>
-                        <input type="date" id="create-tu-ngay" required class="sys-input w-full text-xs text-[#1F2937] h-8 font-mono">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="font-semibold text-[#1F2937] block">Thời gian dự kiến - Đến ngày <span class="text-red-500">*</span></label>
-                        <input type="date" id="create-den-ngay" required class="sys-input w-full text-xs text-[#1F2937] h-8 font-mono">
-                    </div>
-                </div>
-
-                <!-- Row 4: Loại hình công việc (Chips/Tags) -->
-                <div class="space-y-1">
-                    <label class="font-semibold text-[#1F2937] block">Loại hình công việc</label>
-                    <div class="border border-[#D9DEE5] rounded-[4px] p-2 bg-white flex flex-wrap items-center gap-1.5 min-h-[38px]">
-                        <div id="work-types-list" class="flex flex-wrap gap-1.5 items-center"></div>
-                        <input type="text" id="work-type-input" placeholder="+ Nhập thêm loại hình & bấm Enter..." class="outline-none text-xs text-[#1F2937] flex-1 min-w-[150px] py-0.5 px-1">
-                    </div>
-                    <p class="text-[11px] text-[#6B7280]">Ví dụ: Khám sức khỏe, Lấy mẫu, Khám bổ sung, v.v...</p>
-                </div>
-
-                <!-- Row 5: Ghi chú -->
-                <div class="space-y-1">
-                    <label class="font-semibold text-[#1F2937] block">Ghi chú đợt khám dự kiến</label>
-                    <textarea id="create-ghi-chu" rows="2" placeholder="Ghi chú thêm về yêu cầu đợt khám dự kiến..." class="sys-input w-full text-xs text-[#1F2937] p-2 h-14 resize-none"></textarea>
-                </div>
             </div>
 
             <!-- SECTION 2: LỊCH CON DỰ KIẾN (SUB-SCHEDULES) -->
@@ -396,19 +383,19 @@
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#F0F3F7] pb-2">
                     <div>
                         <span class="font-bold text-xs uppercase text-[#27496D] flex items-center gap-1.5">
-                            <i class="fa-solid fa-list-check text-xs"></i> 2. Lịch con dự kiến
+                            <i class="fa-solid fa-list-check text-xs"></i> LỊCH CON DỰ KIẾN
                         </span>
                         <p class="text-[11px] text-[#6B7280] mt-0.5">Thêm một hoặc nhiều lịch con theo các loại hình</p>
                     </div>
                     <div class="flex items-center gap-1.5 shrink-0">
                         <button type="button" onclick="openMiniSubForm('TAI_VIEN')" class="btn-secondary text-xs px-2.5 h-7 border-[#27496D] text-[#27496D] hover:bg-[#E8F1FB] font-bold cursor-pointer transition-colors">
-                            <i class="fa-solid fa-plus text-[10px] mr-1"></i>+ Tại viện
+                            <i class="fa-solid fa-plus text-[10px] mr-1"></i> Tại viện
                         </button>
                         <button type="button" onclick="openMiniSubForm('NGOAI_VIEN')" class="btn-secondary text-xs px-2.5 h-7 border-[#ED6C02] text-[#E65100] hover:bg-[#FFF3E0] font-bold cursor-pointer transition-colors">
-                            <i class="fa-solid fa-plus text-[10px] mr-1"></i>+ Ngoại viện
+                            <i class="fa-solid fa-plus text-[10px] mr-1"></i> Ngoại viện
                         </button>
                         <button type="button" onclick="openMiniSubForm('LICH_PHUONG')" class="btn-secondary text-xs px-2.5 h-7 border-[#7E22CE] text-[#6B21A8] hover:bg-[#F3E8FF] font-bold cursor-pointer transition-colors">
-                            <i class="fa-solid fa-plus text-[10px] mr-1"></i>+ Phường
+                            <i class="fa-solid fa-plus text-[10px] mr-1"></i> Phường
                         </button>
                     </div>
                 </div>
@@ -424,52 +411,87 @@
                         </button>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="space-y-1">
-                            <label class="font-semibold text-[#1F2937] block">Ngày dự kiến <span class="text-red-500">*</span></label>
-                            <input type="date" id="mini-sub-ngay-kham" required class="sys-input w-full text-xs text-[#1F2937] h-8 font-mono">
+                    <!-- Row 1: Từ ngày *, Đến ngày *, Giờ bắt đầu & Giờ kết thúc -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div class="space-y-1 min-w-0">
+                            <label class="font-semibold text-[#1F2937] block text-xs">Từ ngày <span class="text-red-500">*</span></label>
+                            <input type="date" id="mini-sub-tu-ngay" required onchange="handleSubTuNgayChange()" class="sys-input w-full text-xs text-[#1F2937] h-8 font-mono">
                         </div>
-                        <div class="space-y-1">
-                            <label class="font-semibold text-[#1F2937] block">Ca làm việc <span class="text-red-500">*</span></label>
-                            <select id="mini-sub-ca-kham" class="sys-select w-full text-xs text-[#1F2937] h-8">
-                                <option value="Sang" selected>Sáng (07:30 - 11:30)</option>
-                                <option value="Chieu">Chiều (13:30 - 17:00)</option>
-                                <option value="CaNgay">Cả ngày (07:30 - 17:00)</option>
-                            </select>
+                        <div class="space-y-1 min-w-0">
+                            <label class="font-semibold text-[#1F2937] block text-xs">Đến ngày <span class="text-red-500">*</span></label>
+                            <input type="date" id="mini-sub-den-ngay" required class="sys-input w-full text-xs text-[#1F2937] h-8 font-mono">
+                        </div>
+                        <div class="space-y-1 min-w-0">
+                            <label class="font-semibold text-[#1F2937] block text-xs">Giờ bắt đầu</label>
+                            <input type="time" id="mini-sub-gio-tu" value="08:00" class="sys-input w-full text-xs text-[#1F2937] h-8 font-mono">
+                        </div>
+                        <div class="space-y-1 min-w-0">
+                            <label class="font-semibold text-[#1F2937] block text-xs">Giờ kết thúc</label>
+                            <input type="time" id="mini-sub-gio-den" value="11:30" class="sys-input w-full text-xs text-[#1F2937] h-8 font-mono">
                         </div>
                     </div>
 
-                    <!-- Quantity Section: Nam + Nu = Tong (Readonly) -->
-                    <div class="bg-white p-2.5 rounded-[4px] border border-[#D9DEE5] grid grid-cols-3 gap-2">
-                        <div class="space-y-1">
-                            <label class="font-semibold text-[#1F2937] block">Số lượng Nam</label>
+                    <!-- Location Fields for TẠI VIỆN -->
+                    <div id="mini-sub-location-tai-vien" class="space-y-1 w-full max-w-full">
+                        <label class="font-semibold text-[#1F2937] block text-xs">Cơ sở dự kiến <span class="text-red-500">*</span></label>
+                        <select id="mini-sub-co-so-tai-vien" class="sys-select w-full text-xs text-[#1F2937] h-8">
+                            <option value="Bệnh viện Đa khoa MEDLATEC Ba Đình">Bệnh viện Đa khoa MEDLATEC Ba Đình</option>
+                            <option value="Bệnh viện Đa khoa MEDLATEC Mỹ Đình" selected>Bệnh viện Đa khoa MEDLATEC Mỹ Đình</option>
+                            <option value="Phòng khám Đa khoa MEDLATEC Tây Hồ">Phòng khám Đa khoa MEDLATEC Tây Hồ</option>
+                            <option value="Phòng khám Đa khoa MEDLATEC Thanh Xuân">Phòng khám Đa khoa MEDLATEC Thanh Xuân</option>
+                        </select>
+                    </div>
+
+                    <!-- Location Fields for NGOẠI VIỆN -->
+                    <div id="mini-sub-location-ngoai-vien" class="space-y-1 w-full max-w-full hidden">
+                        <label class="font-semibold text-[#1F2937] block text-xs">Địa điểm tổ chức KSK <span class="text-red-500">*</span></label>
+                        <input type="text" id="mini-sub-dia-diem-ngoai-vien" placeholder="Trụ sở Công ty ABC..." class="sys-input w-full text-xs text-[#1F2937] h-8">
+                    </div>
+
+                    <!-- Location Fields for PHƯỜNG -->
+                    <div id="mini-sub-location-phuong" class="grid grid-cols-1 sm:grid-cols-2 gap-3 hidden">
+                        <div class="space-y-1 min-w-0">
+                            <label class="font-semibold text-[#1F2937] block text-xs">Phường / địa bàn <span class="text-red-500">*</span></label>
+                            <input type="text" id="mini-sub-phuong-dia-ban" placeholder="Phường X..." class="sys-input w-full text-xs text-[#1F2937] h-8">
+                        </div>
+                        <div class="space-y-1 min-w-0">
+                            <label class="font-semibold text-[#1F2937] block text-xs">Địa điểm tổ chức <span class="text-red-500">*</span></label>
+                            <input type="text" id="mini-sub-dia-diem-phuong" placeholder="Nhà văn hóa Y..." class="sys-input w-full text-xs text-[#1F2937] h-8">
+                        </div>
+                    </div>
+
+                    <!-- Quantity Section: Nam + Nữ = Tổng 🔒 -->
+                    <div class="bg-white p-2.5 rounded-[4px] border border-[#D9DEE5] grid grid-cols-3 gap-2.5 sm:gap-3">
+                        <div class="space-y-1 min-w-0">
+                            <label class="font-semibold text-[#1F2937] block text-xs">Số lượng Nam</label>
                             <input type="number" id="mini-sub-nam" min="0" value="0" oninput="calculateMiniSubTotal()" class="sys-input w-full text-xs text-[#1F2937] h-8 font-bold">
                         </div>
-                        <div class="space-y-1">
-                            <label class="font-semibold text-[#1F2937] block">Số lượng Nữ</label>
+                        <div class="space-y-1 min-w-0">
+                            <label class="font-semibold text-[#1F2937] block text-xs">Số lượng Nữ</label>
                             <input type="number" id="mini-sub-nu" min="0" value="0" oninput="calculateMiniSubTotal()" class="sys-input w-full text-xs text-[#1F2937] h-8 font-bold">
                         </div>
-                        <div class="space-y-1">
-                            <label class="font-semibold text-[#27496D] block">Tổng số lượng (Tự động)</label>
+                        <div class="space-y-1 min-w-0">
+                            <label class="font-semibold text-[#27496D] block text-xs">Tổng số lượng 🔒</label>
                             <input type="number" id="mini-sub-tong" readonly value="0" class="sys-input w-full text-xs text-[#15803D] font-extrabold h-8 bg-[#F1F5F9] cursor-not-allowed">
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="space-y-1">
-                            <label class="font-semibold text-[#1F2937] block">Cơ sở / Địa điểm thực hiện <span class="text-red-500">*</span></label>
-                            <input type="text" id="mini-sub-co-so" placeholder="Nhập cơ sở / địa điểm..." class="sys-input w-full text-xs text-[#1F2937] h-8">
+                    <!-- Row: Người phụ trách & Ghi chú -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="space-y-1 min-w-0">
+                            <label class="font-semibold text-[#1F2937] block text-xs">Người phụ trách</label>
+                            <input type="text" id="mini-sub-nguoi-phu-trach" placeholder="Người phụ trách..." class="sys-input w-full text-xs text-[#1F2937] h-8">
                         </div>
-                        <div class="space-y-1">
-                            <label class="font-semibold text-[#1F2937] block">Ghi chú lịch con</label>
-                            <input type="text" id="mini-sub-ghi-chu" placeholder="Ghi chú chi tiết cho lịch con..." class="sys-input w-full text-xs text-[#1F2937] h-8">
+                        <div class="space-y-1 min-w-0">
+                            <label class="font-semibold text-[#1F2937] block text-xs">Ghi chú</label>
+                            <input type="text" id="mini-sub-ghi-chu" placeholder="Ghi chú lịch con..." class="sys-input w-full text-xs text-[#1F2937] h-8">
                         </div>
                     </div>
 
-                    <div class="pt-2 flex items-center justify-end gap-2 border-t border-[#D9DEE5]">
+                    <div class="pt-2.5 flex items-center justify-end gap-2 border-t border-[#D9DEE5]">
                         <button type="button" onclick="closeMiniSubForm()" class="btn-secondary text-xs px-3 h-7 cursor-pointer">Hủy</button>
                         <button type="button" onclick="saveMiniSubForm()" class="btn-primary text-xs px-3.5 h-7 font-semibold cursor-pointer">
-                            <i class="fa-solid fa-check text-[10px] mr-1"></i> Lưu lịch con
+                            <i class="fa-solid fa-check text-[10px] mr-1"></i> Thêm lịch
                         </button>
                     </div>
                 </div>

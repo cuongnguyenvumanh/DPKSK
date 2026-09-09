@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     if (navTongHopLichKsk) navTongHopLichKsk.href = basePath + 'tong-hop-lich-ksk/tong-hop.html';
     if (navBangTongHopLichKham) navBangTongHopLichKham.href = basePath + 'modules/bang-tong-hop-lich-kham/bang-tong-hop.html';
     if (navCbDuyetLichKsk) navCbDuyetLichKsk.href = basePath + 'modules/cb-duyet-lich-ksk/cb-duyet.html';
-    if (navDuKienLichKsk) navDuKienLichKsk.href = basePath + 'tao-lich-ksk/index.html?tab=du_kien';
+    if (navDuKienLichKsk) navDuKienLichKsk.href = basePath + 'du-kien-lich-ksk/calendar.html';
     if (navReportDoanKham) navReportDoanKham.href = basePath + 'bao-cao-thong-ke/bao-cao-doan-kham/bao-cao-doan-kham.html';
     if (navReportDoanKham) navReportDoanKham.href = basePath + 'bao-cao-thong-ke/bao-cao-doan-kham/bao-cao-doan-kham.html';
     if (navReportNhanSu) navReportNhanSu.href = basePath + 'bao-cao-thong-ke/bao-cao-nhan-su/bao-cao-nhan-su.html';
