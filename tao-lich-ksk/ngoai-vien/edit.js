@@ -79,12 +79,19 @@ function loadSubScheduleData() {
         try { draft = JSON.parse(draftJson); } catch (e) {}
     }
 
-    const list = draft.step2Data && draft.step2Data.ngoaiVien ? draft.step2Data.ngoaiVien : [];
-    const item = list.find(s => String(s.id) === String(currentSubId)) || list[0];
+    let list = draft.step2Data && draft.step2Data.ngoaiVien ? draft.step2Data.ngoaiVien : [];
+    if (list.length === 0 && editId && window.MWKDataStore) {
+        const master = MWKDataStore.getKskScheduleById(editId);
+        if (master && master.step2Data && master.step2Data.ngoaiVien) {
+            list = master.step2Data.ngoaiVien;
+        }
+    }
+
+    const item = currentSubId ? list.find(s => String(s.id) === String(currentSubId) || String(s.scheduleId) === String(currentSubId)) : list[0];
 
     if (item) {
         const examDateElem = document.getElementById('examDate');
-        if (examDateElem && item.ngayKham) examDateElem.value = item.ngayKham;
+        if (examDateElem && (item.ngayKham || item.examDate)) examDateElem.value = item.ngayKham || item.examDate;
 
         const checkSang = document.getElementById('check-shift-sang');
         const checkChieu = document.getElementById('check-shift-chieu');
@@ -95,7 +102,7 @@ function loadSubScheduleData() {
         if (guestInput) guestInput.value = item.soLuongKhach || item.guests || 180;
 
         const facInput = document.getElementById('facility');
-        if (facInput && item.diaDiemKham) facInput.value = item.diaDiemKham;
+        if (facInput && (item.diaDiemKham || item.facility)) facInput.value = item.diaDiemKham || item.facility;
 
         if (item.danhMucKham && item.danhMucKham.length > 0) {
             categoryRows = item.danhMucKham;
@@ -266,7 +273,35 @@ function updateRealtimeSummary() {
 function handleSaveEdit() {
     const params = new URLSearchParams(window.location.search);
     const editId = params.get('editId');
-    const targetUrl = editId ? `../edit/edit.html?id=${editId}&step=2` : '../create/create.html?step=2';
+    
+    if (editId && window.MWKDataStore) {
+        const master = MWKDataStore.getKskScheduleById(editId);
+        if (master && master.step2Data) {
+            const typeKey = 'ngoaiVien';
+            if (Array.isArray(master.step2Data[typeKey])) {
+                const subIdx = master.step2Data[typeKey].findIndex(s => String(s.id) === String(currentSubId) || String(s.scheduleId) === String(currentSubId));
+                if (subIdx !== -1) {
+                    const examDateElem = document.getElementById('examDate');
+                    if (examDateElem && examDateElem.value) {
+                        master.step2Data[typeKey][subIdx].ngayKham = examDateElem.value;
+                        master.step2Data[typeKey][subIdx].examDate = examDateElem.value;
+                    }
+                    const guestInput = document.getElementById('guestCount');
+                    if (guestInput && guestInput.value) {
+                        master.step2Data[typeKey][subIdx].soLuongKhach = parseInt(guestInput.value) || master.step2Data[typeKey][subIdx].soLuongKhach;
+                    }
+                    const facInput = document.getElementById('facility');
+                    if (facInput && facInput.value) {
+                        master.step2Data[typeKey][subIdx].diaDiemKham = facInput.value;
+                        master.step2Data[typeKey][subIdx].facility = facInput.value;
+                    }
+                    MWKDataStore.updateKskSchedule(master.id, { step2Data: master.step2Data });
+                }
+            }
+        }
+    }
+
+    const targetUrl = editId ? `../detail/detail.html?id=${editId}` : '../create/create.html?step=2';
 
     if (window.showToast) {
         window.showToast('Đã cập nhật lịch khám ngoại viện!', 'success');
@@ -280,6 +315,6 @@ function handleSaveEdit() {
 function handleExitEdit() {
     const params = new URLSearchParams(window.location.search);
     const editId = params.get('editId');
-    const targetUrl = editId ? `../edit/edit.html?id=${editId}&step=2` : '../create/create.html?step=2';
+    const targetUrl = editId ? `../detail/detail.html?id=${editId}` : '../create/create.html?step=2';
     window.location.href = targetUrl;
 }

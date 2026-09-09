@@ -54,9 +54,17 @@
                                 <p class="text-xs text-[#6B7280] mt-0.5">Hiển thị đầy đủ bộ dữ liệu nghiệp vụ chi tiết của ca khám tại viện</p>
                             </div>
                         </div>
-                        <button type="button" onclick="history.back()" class="btn-secondary text-xs">
-                            <i class="fa-solid fa-arrow-left text-xs"></i> Quay lại
-                        </button>
+                        <div class="flex items-center gap-2">
+                            <a id="btn-edit-sub-schedule" href="javascript:void(0)" class="btn-primary text-xs flex items-center gap-1.5">
+                                <i class="fa-regular fa-pen-to-square text-xs"></i> Chỉnh sửa
+                            </a>
+                            <button type="button" id="btn-delete-sub-schedule" class="btn-secondary text-xs text-[#D32F2F] border-red-200 hover:bg-red-50 cursor-pointer">
+                                <i class="fa-regular fa-trash-can text-xs"></i> Xóa
+                            </button>
+                            <button type="button" onclick="history.back()" class="btn-secondary text-xs">
+                                <i class="fa-solid fa-arrow-left text-xs"></i> Quay lại
+                            </button>
+                        </div>
                     </div>
 
                     <!-- DETAIL CONTAINER -->
@@ -80,31 +88,27 @@
             const subIndex = params.get('subIndex');
 
             let itemData = null;
-            const draftJson = (editId ? sessionStorage.getItem(`mwk_edit_schedule_draft_${editId}`) : null) || sessionStorage.getItem('mwk_create_schedule_draft');
-            if (draftJson) {
-                try {
-                    const draft = JSON.parse(draftJson);
-                    if (draft.step2Data && draft.step2Data.taiVien) {
-                        const list = draft.step2Data.taiVien;
-                        if (subId) {
-                            itemData = list.find(s => String(s.id) === String(subId) || String(s.scheduleId) === String(subId));
-                        }
-                        if (!itemData && subIndex !== null && subIndex !== undefined && list[subIndex]) {
-                            itemData = list[subIndex];
-                        }
-                        if (!itemData && list.length > 0) itemData = list[0];
-                    }
-                } catch(e) {}
-            }
-
-            if (!itemData && editId && window.MWKDataStore) {
-                const schedules = MWKDataStore.getKskSchedules();
-                const master = schedules.find(s => String(s.id) === String(editId) || String(s.code) === String(editId));
+            if (editId && window.MWKDataStore) {
+                const master = MWKDataStore.getKskScheduleById(editId);
                 if (master && master.step2Data && master.step2Data.taiVien) {
                     const list = master.step2Data.taiVien;
-                    if (subId) itemData = list.find(s => String(s.id) === String(subId) || String(s.scheduleId) === String(subId));
-                    if (!itemData && subIndex !== null && list[subIndex]) itemData = list[subIndex];
-                    if (!itemData && list.length > 0) itemData = list[0];
+                    if (subId) itemData = list.find(s => String(s.id) === String(subId) || String(s.scheduleId) === String(subId) || String(s.maLich) === String(subId));
+                    if (!itemData && subIndex !== null && subIndex !== undefined && list[subIndex]) itemData = list[subIndex];
+                }
+            }
+
+            if (!itemData) {
+                const draftJson = (editId ? sessionStorage.getItem(`mwk_edit_schedule_draft_${editId}`) : null) || sessionStorage.getItem('mwk_create_schedule_draft');
+                if (draftJson) {
+                    try {
+                        const draft = JSON.parse(draftJson);
+                        if (draft.step2Data && draft.step2Data.taiVien) {
+                            const list = draft.step2Data.taiVien;
+                            if (subId) itemData = list.find(s => String(s.id) === String(subId) || String(s.scheduleId) === String(subId) || String(s.maLich) === String(subId));
+                            if (!itemData && subIndex !== null && subIndex !== undefined && list[subIndex]) itemData = list[subIndex];
+                            if (!itemData && !subId && list.length > 0) itemData = list[0];
+                        }
+                    } catch(e) {}
                 }
             }
 
@@ -113,6 +117,28 @@
             }
 
             SubScheduleDetailHelper.renderDetailView('sub-schedule-detail-container', itemData);
+
+            const btnEdit = document.getElementById('btn-edit-sub-schedule');
+            if (btnEdit && subId && editId) {
+                btnEdit.href = `edit.html?subId=${subId}&editId=${editId}`;
+            } else if (btnEdit) {
+                btnEdit.style.display = 'none';
+            }
+
+            const btnDelete = document.getElementById('btn-delete-sub-schedule');
+            if (btnDelete && subId && editId) {
+                btnDelete.onclick = function() {
+                    if (confirm('Bạn có chắc chắn muốn xóa lịch con này không?')) {
+                        const ok = MWKDataStore.deleteChildScheduleFromUnit(editId, subId);
+                        if (ok) {
+                            if (window.showToast) window.showToast('Đã xóa lịch con thành công!', 'success');
+                            setTimeout(() => { window.location.href = `../detail/detail.html?id=${editId}`; }, 300);
+                        }
+                    }
+                };
+            } else if (btnDelete) {
+                btnDelete.style.display = 'none';
+            }
         });
     </script>
 </body>

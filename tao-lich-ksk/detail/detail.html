@@ -236,7 +236,8 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(window.location.search);
-            currentId = urlParams.get('id') ? parseInt(urlParams.get('id')) : null;
+            const rawId = urlParams.get('id');
+            currentId = rawId ? (parseInt(rawId) || rawId) : null;
 
             if (!currentId) {
                 alert('Không tìm thấy thông tin lịch KSK!');
@@ -253,6 +254,19 @@
 
             renderDetailView();
         });
+
+        function confirmDeleteChildSchedule(subId, masterId) {
+            if (!subId || !masterId) return;
+            if (confirm('Bạn có chắc chắn muốn xóa lịch con này không?')) {
+                const ok = MWKDataStore.deleteChildScheduleFromUnit(masterId, subId);
+                if (ok) {
+                    if (window.showToast) window.showToast('Đã xóa lịch con thành công!', 'success');
+                    setTimeout(() => { window.location.reload(); }, 300);
+                } else {
+                    if (window.showToast) window.showToast('Không thể xóa lịch con.', 'error');
+                }
+            }
+        }
 
         function renderDetailView() {
             // Master Header Card: Shows unit code and name only. NEVER render status badge at master level.
@@ -464,9 +478,17 @@
                                 <div>Khách <strong class="text-[#1F2937] font-bold ml-1">${guests}</strong></div>
                                 <div>Nhân sự <strong class="text-[#27496D] font-bold ml-1">${staff}</strong></div>
                             </div>
-                            <a href="../${subTypeFolder}/detail.html?subId=${schedule.scheduleId || schedule.id}&editId=${currentItem.id}" class="text-[#27496D] hover:underline font-semibold flex items-center gap-1 text-xs" title="Xem chi tiết lịch con">
-                                <i class="fa-regular fa-eye text-xs"></i> Xem chi tiết
-                            </a>
+                            <div class="flex items-center gap-2">
+                                <a href="../${subTypeFolder}/detail.html?subId=${schedule.scheduleId || schedule.id}&editId=${currentItem.id}" class="text-[#27496D] hover:underline font-semibold flex items-center gap-1 text-xs" title="Xem chi tiết">
+                                    <i class="fa-regular fa-eye text-xs"></i> Xem
+                                </a>
+                                <a href="../${subTypeFolder}/edit.html?subId=${schedule.scheduleId || schedule.id}&editId=${currentItem.id}" class="text-[#27496D] hover:underline font-semibold flex items-center gap-1 text-xs" title="Sửa">
+                                    <i class="fa-regular fa-pen-to-square text-xs"></i> Sửa
+                                </a>
+                                <button type="button" onclick="confirmDeleteChildSchedule('${schedule.scheduleId || schedule.id}', '${currentItem.id}')" class="text-[#D32F2F] hover:underline font-semibold flex items-center gap-1 text-xs cursor-pointer" title="Xóa">
+                                    <i class="fa-regular fa-trash-can text-xs"></i> Xóa
+                                </button>
+                            </div>
                         </div>
                         ${reasonBoxHtml}
                     </div>
@@ -517,11 +539,10 @@
                         if (Array.isArray(item.step2Data[key])) {
                             item.step2Data[key].forEach(child => {
                                 const keySt = MWKDataStore.normalizeScheduleStatusKey(child.trangThai || child.status);
-                                if (keySt === 'TAO_MOI' || keySt === 'TRA_LAI' || keySt === 'NHAP') {
+                                if (keySt === 'TAO_MOI' || keySt === 'TRA_LAI') {
                                     child.trangThai = 'CHO_TONG_HOP';
                                     child.status = 'Chờ tổng hợp';
                                     child.ngayGuiTongHop = new Date().toISOString();
-                                    delete child.lyDoTra;
                                 }
                             });
                         }

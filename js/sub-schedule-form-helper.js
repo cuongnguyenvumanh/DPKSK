@@ -184,13 +184,6 @@
                 scheduleType: scheduleType,
                 loaiLich: cfg.typeLabel || 'Lịch khám',
 
-                // Status & Return preservation
-                trangThai: existingItem?.trangThai || 'TAO_MOI',
-                status: existingItem?.status || 'Tạo mới',
-                lyDoTra: existingItem?.lyDoTra || '',
-                ngayTra: existingItem?.ngayTra || null,
-                nguoiTra: existingItem?.nguoiTra || null,
-
                 // Section 1
                 ngayDienLich: document.getElementById('ngayDienLich')?.value || '',
                 phongKinhDoanh: document.getElementById('phongKinhDoanh')?.value || '',

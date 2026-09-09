@@ -937,9 +937,7 @@
         }
 
         function confirmReturnSchedule() {
-            const reasonInput = document.getElementById('return-reason-input');
-            const reason = reasonInput ? reasonInput.value.trim() : '';
-
+            const reason = document.getElementById('return-reason-input').value.trim();
             if (!reason) {
                 if (window.showToast) {
                     window.showToast('Vui lòng nhập lý do trả lại lịch!', 'error');
@@ -949,59 +947,19 @@
                 return;
             }
 
-            const item = MWKDataStore.getKskScheduleById(currentId);
-            if (!item) return;
-
-            let updatedCount = 0;
-
-            if (item.step2Data) {
-                ['taiVien', 'ngoaiVien', 'lichPhuong'].forEach(typeKey => {
-                    const list = item.step2Data[typeKey];
-                    if (Array.isArray(list)) {
-                        list.forEach((child, i) => {
-                            const subId = String(child.subUniqueId || child.id || child.scheduleId || child.maLich || `${currentId}_${typeKey.toLowerCase()}_${i}`);
-                            if (selectedSubScheduleIds.has(subId) || selectedSubScheduleIds.size === 0) {
-                                child.trangThai = 'TRA_LAI';
-                                child.status = 'Trả lại';
-                                child.lyDoTra = reason;
-                                child.ngayTra = new Date().toISOString();
-                                child.nguoiTra = 'Trần Thị Mai (Cán bộ Tổng hợp)';
-                                updatedCount++;
-                            }
-                        });
-                    }
-                });
-            }
-
-            if (Array.isArray(item.childSchedules)) {
-                item.childSchedules.forEach(child => {
-                    const subId = String(child.subUniqueId || child.id || child.scheduleId || child.maLich || '');
-                    if (selectedSubScheduleIds.has(subId) || selectedSubScheduleIds.size === 0) {
-                        child.trangThai = 'TRA_LAI';
-                        child.status = 'Trả lại';
-                        child.lyDoTra = reason;
-                        child.ngayTra = new Date().toISOString();
-                        child.nguoiTra = 'Trần Thị Mai (Cán bộ Tổng hợp)';
-                    }
-                });
-            }
-
             MWKDataStore.updateKskSchedule(currentId, {
-                step2Data: item.step2Data,
-                childSchedules: item.childSchedules,
                 status: 'Trả lại',
-                trangThai: 'TRA_LAI',
+                trangThai: 'TRA_CHINH_SUA',
                 daGuiTongHop: false,
                 lyDoTra: reason,
                 ngayTra: new Date().toISOString(),
                 nguoiTra: 'Trần Thị Mai (Cán bộ Tổng hợp)'
             }, 'Trần Thị Mai (Cán bộ Tổng hợp)');
 
-            selectedSubScheduleIds.clear();
             closeReturnModal();
 
             if (window.showToast) {
-                window.showToast(`Đã trả lại thành công ${updatedCount || 1} lịch con về cho Cán bộ tạo lịch!`, 'success');
+                window.showToast('Đã trả về lịch khám cho cán bộ tạo lịch thành công!', 'success');
             }
 
             setTimeout(() => {

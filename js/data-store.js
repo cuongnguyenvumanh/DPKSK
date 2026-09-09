@@ -898,7 +898,15 @@
             }
         },
         getKskScheduleById: function(id) {
-            return this.getKskSchedules().find(s => s.id === id);
+            if (id === null || id === undefined) return null;
+            const strId = String(id);
+            return this.getKskSchedules().find(s => 
+                String(s.id) === strId || 
+                String(s.unitId) === strId || 
+                String(s.code) === strId ||
+                String(s.customerCode) === strId ||
+                String(s.maDoiTuong) === strId
+            );
         },
         getScheduleStatusInfo: function(schedule) {
             const rawStatus = (typeof schedule === 'object' && schedule !== null)
@@ -1302,7 +1310,12 @@
         },
         updateKskSchedule: function(id, updatedFields, actorName = 'Nguyễn Văn An (Cán bộ lập lịch)') {
             const list = this.getKskSchedules();
-            const index = list.findIndex(s => s.id === id);
+            const strId = String(id);
+            const index = list.findIndex(s => 
+                String(s.id) === strId || 
+                String(s.unitId) === strId || 
+                String(s.code) === strId
+            );
             if (index !== -1) {
                 const oldItem = list[index];
                 const existingHistory = Array.isArray(oldItem.history) ? oldItem.history : [];
@@ -1332,10 +1345,10 @@
                             updatedFields.nguoiTongHop = actorName;
                         }
                     }
-                    else if (targetStatus === 'Trả lại' || targetStatus === 'TRA_LAI' || targetStatus === 'TRA_CHINH_SUA') {
+                    else if (targetStatus === 'Trả lại' || targetStatus === 'TRA_CHINH_SUA') {
                         actionName = 'Trả lại CB Tổng hợp';
                         updatedFields.status = 'Trả lại';
-                        updatedFields.trangThai = 'TRA_LAI';
+                        updatedFields.trangThai = 'TRA_CHINH_SUA';
                         updatedFields.daGuiTongHop = false;
                     }
                     else if (targetStatus === 'Chờ duyệt' || targetStatus === 'CHO_DUYET') {
@@ -1408,8 +1421,46 @@
             }
         },
         deleteKskSchedule: function(id) {
-            const list = this.getKskSchedules().filter(s => s.id !== id);
+            const strId = String(id);
+            const list = this.getKskSchedules().filter(s => 
+                String(s.id) !== strId && 
+                String(s.unitId) !== strId && 
+                String(s.code) !== strId
+            );
             this.saveKskSchedules(list);
+        },
+        deleteChildScheduleFromUnit: function(unitId, scheduleId) {
+            let unit = this.getKskScheduleById(unitId);
+            if (!unit) {
+                const allSchedules = this.getKskSchedules();
+                unit = allSchedules.find(m => {
+                    const childs = this.getUnitChildSchedules(m);
+                    return childs.some(c => String(c.id) === String(scheduleId) || String(c.scheduleId) === String(scheduleId));
+                });
+            }
+            if (!unit || !unit.step2Data) return false;
+
+            const strSubId = String(scheduleId);
+            let deleted = false;
+
+            ['taiVien', 'ngoaiVien', 'lichPhuong'].forEach(key => {
+                if (Array.isArray(unit.step2Data[key])) {
+                    const beforeLen = unit.step2Data[key].length;
+                    unit.step2Data[key] = unit.step2Data[key].filter(c => 
+                        String(c.id) !== strSubId && 
+                        String(c.scheduleId) !== strSubId && 
+                        String(c.maLich) !== strSubId
+                    );
+                    if (unit.step2Data[key].length < beforeLen) {
+                        deleted = true;
+                    }
+                }
+            });
+
+            if (deleted) {
+                this.updateKskSchedule(unit.id, { step2Data: unit.step2Data });
+            }
+            return deleted;
         },
         getKskScheduleHistory: function(id) {
             const item = this.getKskScheduleById(id);

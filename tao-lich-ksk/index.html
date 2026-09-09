@@ -991,7 +991,7 @@
                 leftRowsHtml += `
                     <div class="grid-row" data-index="${index}" onmouseenter="setRowHover(${index}, true)" onmouseleave="setRowHover(${index}, false)">
                         <div class="grid-cell w-[48px] justify-center">
-                            <input type="checkbox" value="${item.id}" class="row-checkbox w-4 h-4 text-[#27496D] rounded-[2px] border-[#D9DEE5] ${canSelect ? 'cursor-pointer' : 'cursor-not-allowed opacity-40'}" ${canSelect ? '' : 'disabled'} ${isChecked ? 'checked' : ''} onchange="toggleRowSelect(${item.id}, this)">
+                            <input type="checkbox" value="${item.id}" class="row-checkbox w-4 h-4 text-[#27496D] rounded-[2px] border-[#D9DEE5] ${canSelect ? 'cursor-pointer' : 'cursor-not-allowed opacity-40'}" ${canSelect ? '' : 'disabled'} ${isChecked ? 'checked' : ''} onchange="toggleRowSelect('${item.id}', this)">
                         </div>
                         <div class="grid-cell w-[50px] justify-center text-[#6B7280] font-medium">${stt}</div>
                         <div class="grid-cell w-[260px] font-bold text-[#1F2937] truncate" title="${tenDonVi}">
@@ -1046,7 +1046,7 @@
                     `;
 
                     const btnDeleteHtml = `
-                        <button type="button" onclick="openDeleteModal(${item.id})" class="w-8 h-8 rounded-[4px] bg-white border border-[#D9DEE5] hover:bg-[#FDECEC] hover:border-red-300 text-[#D32F2F] flex items-center justify-center flex-shrink-0 transition-colors shadow-2xs cursor-pointer" title="Xóa">
+                        <button type="button" onclick="openDeleteModal('${item.id}')" class="w-8 h-8 rounded-[4px] bg-white border border-[#D9DEE5] hover:bg-[#FDECEC] hover:border-red-300 text-[#D32F2F] flex items-center justify-center flex-shrink-0 transition-colors shadow-2xs cursor-pointer" title="Xóa">
                             <i class="fa-regular fa-trash-can text-xs"></i>
                         </button>
                     `;
@@ -1054,7 +1054,7 @@
                     let btnSendHtml = '';
                     if (canSend) {
                         btnSendHtml = `
-                            <button type="button" onclick="openSingleSendModal(${item.id})" class="w-8 h-8 rounded-[4px] bg-white border border-[#D9DEE5] hover:bg-[#E6F4EA] hover:border-green-300 text-[#2E7D32] flex items-center justify-center flex-shrink-0 transition-colors shadow-2xs cursor-pointer" title="Gửi tổng hợp">
+                            <button type="button" onclick="openSingleSendModal('${item.id}')" class="w-8 h-8 rounded-[4px] bg-white border border-[#D9DEE5] hover:bg-[#E6F4EA] hover:border-green-300 text-[#2E7D32] flex items-center justify-center flex-shrink-0 transition-colors shadow-2xs cursor-pointer" title="Gửi tổng hợp">
                                 <i class="fa-solid fa-paper-plane text-xs"></i>
                             </button>
                         `;
@@ -1152,11 +1152,10 @@
                     if (Array.isArray(item.step2Data[key])) {
                         item.step2Data[key].forEach(child => {
                             const keySt = MWKDataStore.normalizeScheduleStatusKey(child.trangThai || child.status);
-                            if (keySt === 'TAO_MOI' || keySt === 'TRA_LAI' || keySt === 'NHAP') {
+                            if (keySt === 'TAO_MOI' || keySt === 'TRA_LAI') {
                                 child.trangThai = 'CHO_TONG_HOP';
                                 child.status = 'Chờ tổng hợp';
                                 child.ngayGuiTongHop = new Date().toISOString();
-                                delete child.lyDoTra;
                             }
                         });
                     }
