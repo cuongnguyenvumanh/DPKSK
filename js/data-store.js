@@ -2451,7 +2451,7 @@
                     contactPerson: "Nguyễn Vũ Mạnh Cường",
                     contactPhone: "0912345678",
                     examDate: "2026-09-10",
-                    status: "CHO_CB_DUYET",
+                    status: "DA_DUYET",
                     submittedAt: "2026-09-05T08:30:00.000Z",
                     submittedBy: "Trần Thị Mai (Cán bộ Tổng hợp)",
                     childSchedules: [
@@ -2460,74 +2460,74 @@
                             tongLichId: "TONG-09-2026-001",
                             scheduleType: "LICH_TUAN",
                             loaiHinh: "Tại viện",
-                            unitName: "Tập đoàn Công nghệ FPT",
+                            unitName: "Công ty Cổ phần Phần mềm MISA",
                             examDate: "2026-09-10",
                             session: "Sáng (07:30 - 11:30)",
                             quantity: 120,
                             facility: "MEDLATEC Ba Đình",
                             diaDiemKham: "42-44 Nghĩa Dũng, Ba Đình, Hà Nội",
                             personInCharge: "Nguyễn Văn An",
-                            status: "CHO_CB_DUYET",
-                            approvalStep: 1,
+                            status: "DA_DUYET",
+                            approvalStep: 2,
                             submittedAt: "2026-09-05T08:30:00.000Z",
                             submittedBy: "Trần Thị Mai (Cán bộ Tổng hợp)",
-                            deadline: "2026-09-09T17:00:00",
+                            deadline: null,
                             isOverdue: false,
-                            categories: ["Khám Nội tổng quát", "Siêu âm ổ bụng", "Lấy máu xét nghiệm"],
-                            locations: ["Tầng 1 - Tiếp đón", "Tầng 2 - Siêu âm"],
+                            categories: ["Khám Nội tổng quát", "Siêu âm ổ bụng", "Lấy máu xét nghiệm", "Khám Mắt & Đo thị lực"],
+                            locations: ["Tầng 6 - Phòng 601, 602"],
                             staffCount: 12,
                             history: [
-                                { actor: "Trần Thị Mai (Cán bộ Tổng hợp)", timestamp: "08:30 - 05/09/2026", action: "Gửi CB Duyệt", details: "Gửi đợt lịch tổng TONG-09-2026-001 sang CB Duyệt." }
+                                { actor: "BGĐ Khối KSK", timestamp: "08:30 - 05/09/2026", action: "Phê duyệt Hoàn tất", details: "BGĐ Khối KSK phê duyệt." }
                             ]
                         },
                         {
                             scheduleId: "SCH002",
                             tongLichId: "TONG-09-2026-001",
                             scheduleType: "LICH_TUAN",
-                            loaiHinh: "Ngoại viện",
-                            unitName: "Tập đoàn Công nghệ FPT",
-                            examDate: "2026-09-11",
+                            loaiHinh: "Tại viện",
+                            unitName: "Công ty TNHH Hafele Việt Nam",
+                            examDate: "2026-09-10",
                             session: "Sáng (07:30 - 11:30)",
-                            quantity: 150,
-                            facility: "Ngoại viện",
-                            diaDiemKham: "Tòa nhà FPT Cầu Giấy, Duy Tân, Hà Nội",
+                            quantity: 100,
+                            facility: "MEDLATEC Ba Đình",
+                            diaDiemKham: "42-44 Nghĩa Dũng, Ba Đình, Hà Nội",
                             personInCharge: "Lê Hoàng Nam",
-                            status: "CHO_CB_DUYET",
-                            approvalStep: 1,
+                            status: "DA_DUYET",
+                            approvalStep: 2,
                             submittedAt: "2026-09-05T08:30:00.000Z",
                             submittedBy: "Trần Thị Mai (Cán bộ Tổng hợp)",
-                            deadline: "2026-09-09T17:00:00",
+                            deadline: null,
                             isOverdue: false,
-                            categories: ["Khám Nội", "X-quang lưu động", "Lấy máu xét nghiệm"],
-                            locations: ["Sảnh Tầng 1 FPT Tower"],
-                            staffCount: 16,
+                            categories: ["Khám Nội", "Khám Tai Mũi Họng", "Lấy máu xét nghiệm"],
+                            locations: ["Tầng 6 - Phòng 601, 602"],
+                            staffCount: 10,
                             history: [
-                                { actor: "Trần Thị Mai (Cán bộ Tổng hợp)", timestamp: "08:30 - 05/09/2026", action: "Gửi CB Duyệt", details: "Gửi đợt lịch tổng TONG-09-2026-001 sang CB Duyệt." }
+                                { actor: "BGĐ Khối KSK", timestamp: "08:30 - 05/09/2026", action: "Phê duyệt Hoàn tất", details: "BGĐ Khối KSK phê duyệt." }
                             ]
                         },
                         {
                             scheduleId: "SCH003",
                             tongLichId: "TONG-09-2026-001",
                             scheduleType: "LICH_TUAN",
-                            loaiHinh: "Ngoại viện",
-                            unitName: "Tập đoàn Công nghệ FPT",
-                            examDate: "2026-09-12",
-                            session: "Chiều (13:30 - 17:00)",
+                            loaiHinh: "Tại viện",
+                            unitName: "Công ty Cổ phần VCP",
+                            examDate: "2026-09-10",
+                            session: "Sáng (07:30 - 11:30)",
                             quantity: 80,
-                            facility: "Ngoại viện",
-                            diaDiemKham: "FPT Software Keangnam, Nam Từ Liêm, Hà Nội",
+                            facility: "MEDLATEC Ba Đình",
+                            diaDiemKham: "42-44 Nghĩa Dũng, Ba Đình, Hà Nội",
                             personInCharge: "Lê Hoàng Nam",
-                            status: "CHO_CB_DUYET",
-                            approvalStep: 1,
+                            status: "DA_DUYET",
+                            approvalStep: 2,
                             submittedAt: "2026-09-05T08:30:00.000Z",
                             submittedBy: "Trần Thị Mai (Cán bộ Tổng hợp)",
-                            deadline: "2026-09-09T17:00:00",
+                            deadline: null,
                             isOverdue: false,
-                            categories: ["Khám Nội", "Khám Mắt", "Lấy máu xét nghiệm"],
-                            locations: ["Phòng họp Tầng 12 Keangnam"],
+                            categories: ["Khám Nội", "Khám Mắt", "Khám Răng Hàm Mặt"],
+                            locations: ["Tầng 6 - Phòng 601, 602"],
                             staffCount: 8,
                             history: [
-                                { actor: "Trần Thị Mai (Cán bộ Tổng hợp)", timestamp: "08:30 - 05/09/2026", action: "Gửi CB Duyệt", details: "Gửi đợt lịch tổng TONG-09-2026-001 sang CB Duyệt." }
+                                { actor: "BGĐ Khối KSK", timestamp: "08:30 - 05/09/2026", action: "Phê duyệt Hoàn tất", details: "BGĐ Khối KSK phê duyệt." }
                             ]
                         }
                     ]
@@ -2539,7 +2539,7 @@
                     contactPerson: "Trần Thị Mai",
                     contactPhone: "0987654321",
                     examDate: "2026-09-14",
-                    status: "DANG_DUYET_BUOC_1",
+                    status: "DA_DUYET",
                     submittedAt: "2026-09-04T09:15:00.000Z",
                     submittedBy: "Trần Thị Mai (Cán bộ Tổng hợp)",
                     childSchedules: [
@@ -3094,6 +3094,618 @@
             masterList.unshift(newMaster);
             this.saveApprovalSchedules(masterList);
             return newMasterId;
+        },
+
+        getApprovedKskSchedules: function() {
+            const result = [];
+            const masterList = this.getApprovalSchedules();
+
+            masterList.forEach(master => {
+                if (Array.isArray(master.childSchedules)) {
+                    master.childSchedules.forEach(child => {
+                        const s = (child.status || '').toUpperCase();
+                        if (s === 'DA_DUYET' || s === 'DA_DUYET_TONG_HOP') {
+                            const rawType = child.scheduleType || master.tongLichType || 'LICH_TUAN';
+                            const loaiHinh = child.loaiHinh || (rawType === 'LICH_PHUONG' ? 'Tại phường' : (child.facility === 'Ngoại viện' ? 'Ngoại viện' : 'Tại viện'));
+                            
+                            let startTime = child.startTime || '07:30';
+                            let endTime = child.endTime || '11:30';
+                            if (child.session && child.session.includes('(')) {
+                                const match = child.session.match(/\((.*?)\)/);
+                                if (match && match[1]) {
+                                    const parts = match[1].split('-');
+                                    if (parts.length === 2) {
+                                        startTime = parts[0].trim();
+                                        endTime = parts[1].trim();
+                                    }
+                                }
+                            }
+
+                            const item = {
+                                ...child,
+                                id: child.scheduleId || child.id,
+                                scheduleId: child.scheduleId || child.id,
+                                tongLichId: child.tongLichId || master.tongLichId,
+                                unitName: child.unitName || master.unitName,
+                                customerName: child.unitName || master.unitName,
+                                loaiHinh: loaiHinh,
+                                loaiLich: loaiHinh,
+                                scheduleType: rawType,
+                                examDate: child.examDate || master.examDate || '2026-09-15',
+                                tuNgay: child.tuNgay || child.examDate || master.examDate || '2026-09-15',
+                                denNgay: child.denNgay || child.examDate || master.examDate || '2026-09-15',
+                                startTime: startTime,
+                                endTime: endTime,
+                                session: child.session || `Sáng (${startTime} - ${endTime})`,
+                                quantity: child.quantity || child.soLuongKhach || child.soLuong || 100,
+                                facility: child.facility || 'Ba Đình',
+                                diaDiemKham: child.diaDiemKham || 'Medlatec Ba Đình',
+                                personInCharge: child.personInCharge || master.contactPerson || 'Nguyễn Văn An',
+                                status: child.status,
+                                coordination: child.coordination || {
+                                    thietLapStatus: 'CHUA_THIET_LAP_CBTK',
+                                    cbtk: {
+                                        cbtkId: '',
+                                        cbtkName: '',
+                                        cbtkPhone: '',
+                                        cbtkTitle: '',
+                                        cbtkAssignDate: '',
+                                        cbtkNote: ''
+                                    },
+                                    staffDiagram: { bs: 0, dd: 0, ktv: 0, layMau: 0, tiepDon: 0, tuVan: 0 },
+                                    dieuPhoiStatus: 'CHUA_DIEU_PHOI',
+                                    coordinationStaff: []
+                                }
+                            };
+                            result.push(item);
+                        }
+                    });
+                }
+            });
+
+            const kskList = this.getKskSchedules();
+            kskList.forEach(ksk => {
+                const s = (ksk.status || ksk.trangThai || '').toUpperCase();
+                if (s === 'DA_DUYET' || s === 'DA_DUYET_TONG_HOP') {
+                    if (!result.some(r => String(r.scheduleId) === String(ksk.id) || String(r.scheduleId) === String(ksk.maLich))) {
+                        result.push({
+                            ...ksk,
+                            id: ksk.id || ksk.maLich,
+                            scheduleId: ksk.maLich || `KSK-${ksk.id}`,
+                            unitName: ksk.customerName || ksk.teamName || 'Đơn vị KSK',
+                            loaiHinh: ksk.loaiLich || 'Tại viện',
+                            loaiLich: ksk.loaiLich || 'Tại viện',
+                            scheduleType: ksk.scheduleForm === 'Lịch phát sinh' ? 'LICH_PHAT_SINH' : 'LICH_TUAN',
+                            examDate: ksk.examDate || '2026-09-15',
+                            tuNgay: ksk.tuNgay || ksk.examDate || '2026-09-15',
+                            denNgay: ksk.denNgay || ksk.examDate || '2026-09-15',
+                            startTime: ksk.startTime || '07:30',
+                            endTime: ksk.endTime || '11:30',
+                            session: ksk.session || 'Sáng (07:30 - 11:30)',
+                            quantity: ksk.estimatedCount || ksk.soLuong || 100,
+                            facility: ksk.facility || 'Ba Đình',
+                            diaDiemKham: ksk.examLocation || 'Địa điểm khám KSK',
+                            personInCharge: ksk.personInCharge || 'Nguyễn Văn An',
+                            status: ksk.status || 'DA_DUYET',
+                            coordination: ksk.coordination || {
+                                thietLapStatus: 'CHUA_THIET_LAP_CBTK',
+                                cbtk: { cbtkId: '', cbtkName: '', cbtkPhone: '', cbtkTitle: '', cbtkAssignDate: '', cbtkNote: '' },
+                                staffDiagram: { bs: 0, dd: 0, ktv: 0, layMau: 0, tiepDon: 0, tuVan: 0 },
+                                dieuPhoiStatus: 'CHUA_DIEU_PHOI',
+                                coordinationStaff: []
+                            }
+                        });
+                    }
+                }
+            });
+
+            return result;
+        },
+
+        assignCbtkToSchedule: function(scheduleId, cbtkData) {
+            let updated = false;
+            const masterList = this.getApprovalSchedules();
+
+            masterList.forEach(master => {
+                if (Array.isArray(master.childSchedules)) {
+                    master.childSchedules.forEach(child => {
+                        if (String(child.scheduleId) === String(scheduleId) || String(child.id) === String(scheduleId)) {
+                            if (!child.coordination) {
+                                child.coordination = {
+                                    thietLapStatus: 'CHUA_THIET_LAP_CBTK',
+                                    cbtk: {},
+                                    staffDiagram: {},
+                                    dieuPhoiStatus: 'CHUA_DIEU_PHOI',
+                                    coordinationStaff: []
+                                };
+                            }
+                            child.coordination.cbtk = { ...cbtkData };
+                            if (cbtkData && (cbtkData.cbtkId || cbtkData.cbtkName)) {
+                                const hasDiagram = child.coordination.staffDiagram && Object.values(child.coordination.staffDiagram).some(v => v > 0);
+                                child.coordination.thietLapStatus = hasDiagram ? 'HOAN_THANH_THIET_LAP' : 'CHUA_LAP_SO_DO';
+                            } else {
+                                child.coordination.thietLapStatus = 'CHUA_THIET_LAP_CBTK';
+                            }
+                            updated = true;
+                        }
+                    });
+                }
+            });
+
+            if (updated) {
+                this.saveApprovalSchedules(masterList);
+                return true;
+            }
+
+            const kskList = this.getKskSchedules();
+            kskList.forEach(ksk => {
+                if (String(ksk.id) === String(scheduleId) || String(ksk.maLich) === String(scheduleId)) {
+                    if (!ksk.coordination) {
+                        ksk.coordination = {
+                            thietLapStatus: 'CHUA_THIET_LAP_CBTK',
+                            cbtk: {},
+                            staffDiagram: {},
+                            dieuPhoiStatus: 'CHUA_DIEU_PHOI',
+                            coordinationStaff: []
+                        };
+                    }
+                    ksk.coordination.cbtk = { ...cbtkData };
+                    if (cbtkData && (cbtkData.cbtkId || cbtkData.cbtkName)) {
+                        const hasDiagram = ksk.coordination.staffDiagram && Object.values(ksk.coordination.staffDiagram).some(v => v > 0);
+                        ksk.coordination.thietLapStatus = hasDiagram ? 'HOAN_THANH_THIET_LAP' : 'CHUA_LAP_SO_DO';
+                    } else {
+                        ksk.coordination.thietLapStatus = 'CHUA_THIET_LAP_CBTK';
+                    }
+                    updated = true;
+                }
+            });
+
+            if (updated) {
+                this.saveKskSchedules(kskList);
+                return true;
+            }
+            return false;
+        },
+
+        saveStaffDiagram: function(scheduleId, diagramData) {
+            let updated = false;
+            const masterList = this.getApprovalSchedules();
+
+            masterList.forEach(master => {
+                if (Array.isArray(master.childSchedules)) {
+                    master.childSchedules.forEach(child => {
+                        if (String(child.scheduleId) === String(scheduleId) || String(child.id) === String(scheduleId)) {
+                            if (!child.coordination) {
+                                child.coordination = {
+                                    thietLapStatus: 'CHUA_THIET_LAP_CBTK',
+                                    cbtk: {},
+                                    staffDiagram: {},
+                                    dieuPhoiStatus: 'CHUA_DIEU_PHOI',
+                                    coordinationStaff: []
+                                };
+                            }
+                            child.coordination.staffDiagram = { ...diagramData };
+                            const hasCbtk = child.coordination.cbtk && (child.coordination.cbtk.cbtkId || child.coordination.cbtk.cbtkName);
+                            child.coordination.thietLapStatus = hasCbtk ? 'HOAN_THANH_THIET_LAP' : 'CHUA_LAP_SO_DO';
+                            updated = true;
+                        }
+                    });
+                }
+            });
+
+            if (updated) {
+                this.saveApprovalSchedules(masterList);
+                return true;
+            }
+
+            const kskList = this.getKskSchedules();
+            kskList.forEach(ksk => {
+                if (String(ksk.id) === String(scheduleId) || String(ksk.maLich) === String(scheduleId)) {
+                    if (!ksk.coordination) {
+                        ksk.coordination = {
+                            thietLapStatus: 'CHUA_THIET_LAP_CBTK',
+                            cbtk: {},
+                            staffDiagram: {},
+                            dieuPhoiStatus: 'CHUA_DIEU_PHOI',
+                            coordinationStaff: []
+                        };
+                    }
+                    ksk.coordination.staffDiagram = { ...diagramData };
+                    const hasCbtk = ksk.coordination.cbtk && (ksk.coordination.cbtk.cbtkId || ksk.coordination.cbtk.cbtkName);
+                    ksk.coordination.thietLapStatus = hasCbtk ? 'HOAN_THANH_THIET_LAP' : 'CHUA_LAP_SO_DO';
+                    updated = true;
+                }
+            });
+
+            if (updated) {
+                this.saveKskSchedules(kskList);
+                return true;
+            }
+            return false;
+        },
+
+        assignCoordinationStaff: function(scheduleId, staffData) {
+            let updated = false;
+            const masterList = this.getApprovalSchedules();
+
+            masterList.forEach(master => {
+                if (Array.isArray(master.childSchedules)) {
+                    master.childSchedules.forEach(child => {
+                        if (String(child.scheduleId) === String(scheduleId) || String(child.id) === String(scheduleId)) {
+                            if (!child.coordination) {
+                                child.coordination = {
+                                    thietLapStatus: 'CHUA_THIET_LAP_CBTK',
+                                    cbtk: {},
+                                    staffDiagram: {},
+                                    dieuPhoiStatus: 'CHUA_DIEU_PHOI',
+                                    coordinationStaff: []
+                                };
+                            }
+                            child.coordination.coordinationStaff = Array.isArray(staffData) ? staffData : [];
+                            child.coordination.dieuPhoiStatus = child.coordination.coordinationStaff.length > 0 ? 'HOAN_THANH' : 'CHUA_DIEU_PHOI';
+                            updated = true;
+                        }
+                    });
+                }
+            });
+
+            if (updated) {
+                this.saveApprovalSchedules(masterList);
+                return true;
+            }
+
+            const kskList = this.getKskSchedules();
+            kskList.forEach(ksk => {
+                if (String(ksk.id) === String(scheduleId) || String(ksk.maLich) === String(scheduleId)) {
+                    if (!ksk.coordination) {
+                        ksk.coordination = {
+                            thietLapStatus: 'CHUA_THIET_LAP_CBTK',
+                            cbtk: {},
+                            staffDiagram: {},
+                            dieuPhoiStatus: 'CHUA_DIEU_PHOI',
+                            coordinationStaff: []
+                        };
+                    }
+                    ksk.coordination.coordinationStaff = Array.isArray(staffData) ? staffData : [];
+                    ksk.coordination.dieuPhoiStatus = ksk.coordination.coordinationStaff.length > 0 ? 'HOAN_THANH' : 'CHUA_DIEU_PHOI';
+                    updated = true;
+                }
+            });
+
+            if (updated) {
+                this.saveKskSchedules(kskList);
+                return true;
+            }
+            return false;
+        },
+
+        checkPersonnelScheduleConflict: function(params) {
+            let personId, excludeId, tuNgay, denNgay, gioTu, gioDen;
+            if (typeof params === 'object' && params !== null) {
+                personId = params.personId || params.personName;
+                excludeId = params.scheduleId || params.excludeScheduleId;
+                tuNgay = params.tuNgay || params.examDate;
+                denNgay = params.denNgay || params.tuNgay || params.examDate;
+                gioTu = params.gioTu || params.startTime || '07:30';
+                gioDen = params.gioDen || params.endTime || '17:00';
+            } else {
+                personId = arguments[0];
+                tuNgay = arguments[1];
+                denNgay = arguments[1];
+                gioTu = arguments[2] || '07:30';
+                gioDen = arguments[3] || '17:00';
+                excludeId = arguments[4];
+            }
+
+            if (!personId) return { hasConflict: false, conflicts: [] };
+
+            const conflicts = [];
+            const approvedSchedules = this.getApprovedKskSchedules();
+
+            function toMinutes(tStr) {
+                if (!tStr) return 0;
+                const p = tStr.trim().split(':');
+                return (parseInt(p[0], 10) || 0) * 60 + (parseInt(p[1], 10) || 0);
+            }
+
+            const targetStartM = toMinutes(gioTu);
+            const targetEndM = toMinutes(gioDen);
+
+            approvedSchedules.forEach(sch => {
+                if (excludeId && (String(sch.scheduleId) === String(excludeId) || String(sch.id) === String(excludeId))) {
+                    return;
+                }
+
+                const schTu = sch.tuNgay || sch.examDate;
+                const schDen = sch.denNgay || sch.tuNgay || sch.examDate;
+
+                if (tuNgay <= schDen && denNgay >= schTu) {
+                    const schStartM = toMinutes(sch.startTime || '07:30');
+                    const schEndM = toMinutes(sch.endTime || '17:00');
+
+                    if (targetStartM < schEndM && targetEndM > schStartM) {
+                        const coord = sch.coordination || {};
+                        const cbtk = coord.cbtk || {};
+                        const staffList = coord.coordinationStaff || [];
+
+                        let matchedRole = '';
+                        if (cbtk.cbtkId === personId || cbtk.cbtkName === personId) {
+                            matchedRole = 'CBTK (Trưởng đoàn)';
+                        } else if (staffList.some(st => st.staffId === personId || st.name === personId)) {
+                            matchedRole = 'Nhân sự điều phối';
+                        }
+
+                        if (matchedRole) {
+                            conflicts.push({
+                                scheduleId: sch.scheduleId || sch.id,
+                                unitName: sch.unitName || sch.customerName || 'Đơn vị KSK',
+                                date: sch.examDate || schTu,
+                                startTime: sch.startTime || '07:30',
+                                endTime: sch.endTime || '17:00',
+                                role: matchedRole,
+                                location: sch.diaDiemKham || sch.facility || ''
+                            });
+                        }
+                    }
+                }
+            });
+
+            return {
+                hasConflict: conflicts.length > 0,
+                conflicts: conflicts
+            };
+        },
+
+        // --- 9. DEPLOYMENT LAYER (ĐOÀN TRIỂN KHAI) APIs ---
+        getDeployments: function() {
+            const rawStored = localStorage.getItem('mwk_deployments_v1');
+            let metaMap = {};
+            if (rawStored) {
+                try { metaMap = JSON.parse(rawStored) || {}; } catch(e) {}
+            }
+
+            const approvedSchedules = this.getApprovedKskSchedules();
+            const groupsMap = {};
+
+            approvedSchedules.forEach(sch => {
+                const dateKey = sch.examDate || sch.tuNgay || '2026-09-15';
+                const facKey = sch.facility || sch.diaDiemKham || 'Ba Đình';
+                const locKey = Array.isArray(sch.locations) && sch.locations.length > 0 ? sch.locations.join(', ') : (sch.session || 'Sáng');
+                
+                const groupKey = `${dateKey}___${facKey}___${locKey}`;
+                if (!groupsMap[groupKey]) {
+                    groupsMap[groupKey] = {
+                        key: groupKey,
+                        ngayThucHien: dateKey,
+                        coSoKham: facKey,
+                        viTriKham: locKey,
+                        buoi: sch.session || 'Sáng (07:30 - 11:30)',
+                        scheduleType: sch.scheduleType || 'LICH_TUAN',
+                        loaiHinh: sch.loaiHinh || 'Tại viện',
+                        scheduleIds: [],
+                        schedules: []
+                    };
+                }
+                groupsMap[groupKey].scheduleIds.push(sch.scheduleId);
+                groupsMap[groupKey].schedules.push(sch);
+            });
+
+            const deployments = [];
+            let index = 1;
+            Object.keys(groupsMap).forEach(gKey => {
+                const grp = groupsMap[gKey];
+                const depId = `DP${String(index).padStart(3, '0')}`;
+                index++;
+
+                const storedMeta = metaMap[depId] || metaMap[gKey] || {};
+
+                const allCategories = new Set();
+                let totalPax = 0;
+                grp.schedules.forEach(s => {
+                    totalPax += (s.quantity || s.soLuongKhach || s.soLuong || 0);
+                    if (Array.isArray(s.categories)) {
+                        s.categories.forEach(c => allCategories.add(c));
+                    }
+                });
+
+                const categoriesArr = Array.from(allCategories);
+                const diagram = storedMeta.diagram || this.generateClinicalDiagram(categoriesArr, totalPax, grp.loaiHinh);
+
+                const cbtk = storedMeta.cbtk || (grp.schedules[0].coordination ? grp.schedules[0].coordination.cbtk : {}) || {};
+                const coordinationStaff = storedMeta.coordinationStaff || (grp.schedules[0].coordination ? grp.schedules[0].coordination.coordinationStaff : []) || [];
+                
+                // --- CALCULATION OF DEPLOYMENT/COORDINATION STATUS ---
+                let thietLapStatus = 'CHUA_GAN_CBTK';
+                const hasCbtk = cbtk && (cbtk.cbtkId || cbtk.cbtkName);
+
+                if (!hasCbtk) {
+                    thietLapStatus = 'CHUA_GAN_CBTK';
+                } else if (grp.loaiHinh === 'Ngoại viện') {
+                    thietLapStatus = 'CHO_DIEU_PHOI';
+                } else {
+                    // Tại viện & Tại phường
+                    if (!storedMeta.diagram) {
+                        thietLapStatus = 'DA_GAN_CBTK';
+                    } else {
+                        let totalNeeded = 0;
+                        let totalAssigned = coordinationStaff.length;
+
+                        (diagram || []).forEach(r => {
+                            totalNeeded += (r.needBS || 0) + (r.needDD || 0);
+                        });
+
+                        if (storedMeta.isTransferred) {
+                            thietLapStatus = 'CHO_DIEU_PHOI';
+                        } else if (totalAssigned < totalNeeded) {
+                            thietLapStatus = 'THIEU_NHAN_SU';
+                        } else {
+                            thietLapStatus = 'HOAN_THANH_DIEU_PHOI';
+                        }
+                    }
+                }
+
+                let dieuPhoiStatus = (coordinationStaff.length > 0) ? 'HOAN_THANH' : 'CHUA_DIEU_PHOI';
+
+                deployments.push({
+                    deploymentId: depId,
+                    groupKey: gKey,
+                    ngayThucHien: grp.ngayThucHien,
+                    coSoKham: grp.coSoKham,
+                    viTriKham: grp.viTriKham,
+                    buoi: grp.buoi,
+                    scheduleType: grp.scheduleType,
+                    loaiHinh: storedMeta.loaiHinh || grp.loaiHinh,
+                    totalPax: totalPax,
+                    scheduleIds: grp.scheduleIds,
+                    schedules: grp.schedules,
+                    categories: categoriesArr,
+                    cbtk: cbtk,
+                    diagram: diagram,
+                    coordinationStaff: coordinationStaff,
+                    thietLapStatus: thietLapStatus,
+                    dieuPhoiStatus: dieuPhoiStatus,
+                    isTransferred: !!storedMeta.isTransferred
+                });
+            });
+
+            return deployments;
+        },
+
+        getDeployment: function(depId) {
+            const list = this.getDeployments();
+            return list.find(d => d.deploymentId === depId || d.groupKey === depId);
+        },
+
+        saveDeploymentMeta: function(depId, metaObj) {
+            const rawStored = localStorage.getItem('mwk_deployments_v1');
+            let metaMap = {};
+            if (rawStored) {
+                try { metaMap = JSON.parse(rawStored) || {}; } catch(e) {}
+            }
+
+            metaMap[depId] = {
+                ...(metaMap[depId] || {}),
+                ...metaObj
+            };
+
+            localStorage.setItem('mwk_deployments_v1', JSON.stringify(metaMap));
+            window.dispatchEvent(new CustomEvent('mwk_deployments_changed', { detail: metaMap }));
+
+            const targetDep = this.getDeployment(depId);
+            if (targetDep && Array.isArray(targetDep.scheduleIds)) {
+                targetDep.scheduleIds.forEach(schId => {
+                    if (metaObj.cbtk) this.assignCbtkToSchedule(schId, metaObj.cbtk);
+                    if (metaObj.coordinationStaff) this.assignCoordinationStaff(schId, metaObj.coordinationStaff);
+                });
+            }
+            return true;
+        },
+
+        saveDeploymentCbtk: function(depId, cbtkData) {
+            return this.saveDeploymentMeta(depId, { cbtk: cbtkData });
+        },
+
+        saveDeploymentDiagram: function(depId, diagramData) {
+            return this.saveDeploymentMeta(depId, { diagram: diagramData });
+        },
+
+        assignDeploymentStaff: function(depId, staffList) {
+            return this.saveDeploymentMeta(depId, { coordinationStaff: staffList });
+        },
+
+        transferDeploymentToCoordination: function(depId) {
+            return this.saveDeploymentMeta(depId, { isTransferred: true, thietLapStatus: 'CHO_DIEU_PHOI' });
+        },
+
+        generateClinicalDiagram: function(categories, totalPax, loaiHinh) {
+            if (loaiHinh === 'Ngoại viện') return [];
+
+            const p = totalPax || 100;
+            return [
+                {
+                    floor: 'Tầng 6',
+                    locationName: 'Phòng Khám Nội',
+                    specialty: 'Khám Nội tổng quát',
+                    needBS: Math.max(1, Math.ceil(p / 80)),
+                    needDD: 1,
+                    pakdBS: Math.max(1, Math.ceil(p / 80)),
+                    pakdDD: 1,
+                    assignedBS: 0,
+                    assignedDD: 0,
+                    equipmentNeed: 'Ống nghe, Huyết áp kế, Nhiệt kế'
+                },
+                {
+                    floor: 'Tầng 6',
+                    locationName: 'Khu vực Lấy mẫu',
+                    specialty: 'Lấy máu xét nghiệm',
+                    needBS: 0,
+                    needDD: Math.max(1, Math.ceil(p / 60)),
+                    pakdBS: 0,
+                    pakdDD: Math.max(1, Math.ceil(p / 60)),
+                    assignedBS: 0,
+                    assignedDD: 0,
+                    equipmentNeed: 'Bộ kim lấy máu, Ống nghiệm, Khay lấy mẫu'
+                },
+                {
+                    floor: 'Tầng 6',
+                    locationName: 'Phòng Khám Mắt',
+                    specialty: 'Khám Mắt & Đo thị lực',
+                    needBS: 1,
+                    needDD: 0,
+                    pakdBS: 1,
+                    pakdDD: 0,
+                    assignedBS: 0,
+                    assignedDD: 0,
+                    equipmentNeed: 'Bảng đo thị lực, Đèn soi đáy mắt'
+                },
+                {
+                    floor: 'Tầng 6',
+                    locationName: 'Phòng Tai Mũi Họng',
+                    specialty: 'Khám Tai Mũi Họng',
+                    needBS: 1,
+                    needDD: 0,
+                    pakdBS: 1,
+                    pakdDD: 0,
+                    assignedBS: 0,
+                    assignedDD: 0,
+                    equipmentNeed: 'Máy nội soi Tai Mũi Họng'
+                },
+                {
+                    floor: 'Tầng 8',
+                    locationName: 'Phòng Siêu âm 01 & 02',
+                    specialty: 'Siêu âm ổ bụng & Tuyến giáp',
+                    needBS: Math.max(1, Math.ceil(p / 70)),
+                    needDD: 0,
+                    pakdBS: Math.max(1, Math.ceil(p / 70)),
+                    pakdDD: 0,
+                    assignedBS: 0,
+                    assignedDD: 0,
+                    equipmentNeed: 'Máy siêu âm 4D (2 hệ thống)'
+                },
+                {
+                    floor: 'Tầng 8',
+                    locationName: 'Phòng Điện tim',
+                    specialty: 'Điện tâm đồ (ECG)',
+                    needBS: 0,
+                    needDD: 1,
+                    pakdBS: 0,
+                    pakdDD: 1,
+                    assignedBS: 0,
+                    assignedDD: 0,
+                    equipmentNeed: 'Máy điện tim 12 chuyển đạo'
+                }
+            ];
+        },
+
+        getNhanSuMasterData: function() {
+            const data = localStorage.getItem(STORAGE_KEYS.REPORT_NHAN_SU);
+            if (data) {
+                try {
+                    const parsed = JSON.parse(data);
+                    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                } catch(e) {}
+            }
+            return DEFAULT_NHAN_SU_REPORTS;
         }
     };
 

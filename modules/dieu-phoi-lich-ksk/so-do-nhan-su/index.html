@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xây dựng Sơ đồ nhân sự - MEDLATEC</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome 6 Pro CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Global System HIS Styles -->
+    <link rel="stylesheet" href="../../../css/style.css">
+    <!-- Local Module Styles -->
+    <link rel="stylesheet" href="./assets/index.css">
+    <link rel="shortcut icon" href="#">
+</head>
+<body class="bg-[#F4F5F7] text-[#1F2937] antialiased flex h-screen overflow-hidden" data-depth="nested" data-active-nav="nav-dieu-phoi-can-thiet-lap" data-breadcrumb="Xây dựng Sơ đồ nhân sự">
+
+    <!-- Unified Sidebar Component -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Outer Flex Container -->
+    <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+        <!-- Unified Header Component -->
+        <div id="header-container"></div>
+
+        <!-- Main Workspace Scrollable Area -->
+        <main class="flex-1 overflow-y-auto p-4 md:p-6 space-y-5 custom-scrollbar">
+
+            <!-- Page Header -->
+            <div class="flex items-center justify-between bg-white p-4 rounded-[4px] border border-[#D9DEE5] shadow-2xs">
+                <div>
+                    <h1 class="text-xl font-bold text-[#1F2937] flex items-center gap-2.5">
+                        <i class="fa-solid fa-sitemap text-[#27496D] text-lg"></i>
+                        <span>Xây dựng Sơ đồ nhân sự theo Định mức PAKD</span>
+                    </h1>
+                    <p class="text-xs text-[#6B7280] mt-1">Lập kế hoạch định mức nhân sự cho 6 nhóm vị trí khám KSK (Áp dụng lịch Tại viện & Tại phường).</p>
+                </div>
+                <div>
+                    <a href="../danh-sach-can-thiet-lap/index.html" class="btn-secondary sys-control-h36 text-xs flex items-center gap-1.5 px-3">
+                        <i class="fa-solid fa-arrow-left"></i> Quay lại Danh sách
+                    </a>
+                </div>
+            </div>
+
+            <!-- Content Container -->
+            <div class="bg-white p-5 rounded-[4px] border border-[#D9DEE5] shadow-2xs space-y-5 text-xs">
+                <!-- Select Schedule -->
+                <div class="flex flex-col md:flex-row md:items-center gap-4 bg-slate-50 p-4 rounded border border-slate-200">
+                    <div class="flex-1">
+                        <label class="block font-semibold text-slate-700 mb-1">Chọn Lịch khám KSK cần xây dựng sơ đồ:</label>
+                        <select id="select-diagram-schedule" class="sys-select sys-control-h36 text-xs w-full">
+                            <!-- Options loaded dynamically -->
+                        </select>
+                    </div>
+                    <div id="schedule-info-badge" class="text-xs space-y-1">
+                        <span id="badge-loai-lich" class="px-2 py-0.5 rounded text-[11px] font-semibold bg-blue-100 text-blue-800">Tại viện</span>
+                        <div class="text-slate-600">Ngày khám: <strong id="lbl-diagram-date" class="text-slate-800">---</strong></div>
+                    </div>
+                </div>
+
+                <!-- Not Applicable Alert for Ngoại viện -->
+                <div id="alert-ngoai-vien" class="hidden bg-amber-50 border-l-4 border-amber-500 p-4 rounded text-amber-900 font-medium flex items-center gap-3">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-600 text-xl"></i>
+                    <div>
+                        <strong>Thông báo:</strong> Không áp dụng sơ đồ nhân sự tại viện/phường cho loại lịch Ngoại viện.
+                    </div>
+                </div>
+
+                <!-- Diagram Form Table (6 Position Groups) -->
+                <div id="diagram-table-area" class="space-y-4">
+                    <table class="w-full text-left border-collapse border border-slate-200 text-xs">
+                        <thead>
+                            <tr class="bg-[#F8FAFC] text-[#4B5563] border-b border-[#D9DEE5] font-semibold uppercase text-[11px] tracking-wider">
+                                <th class="p-3 border border-slate-200">Vị trí / Phòng</th>
+                                <th class="p-3 border border-slate-200">Chuyên khoa</th>
+                                <th class="p-3 border border-slate-200 w-28 text-center">Nhu cầu (Tính toán)</th>
+                                <th class="p-3 border border-slate-200 w-36 text-center">Định mức PAKD</th>
+                                <th class="p-3 border border-slate-200 w-28 text-center">Đã phân công</th>
+                                <th class="p-3 border border-slate-200 w-28 text-center">Chênh lệch</th>
+                                <th class="p-3 border border-slate-200 w-24 text-center">Trạng thái</th>
+                                <th class="p-3 border border-slate-200">Trang thiết bị cần</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-diagram" class="divide-y divide-slate-200">
+                            <!-- Dynamic 6 position rows -->
+                        </tbody>
+                    </table>
+
+                    <div class="flex justify-end gap-2 pt-3 border-t">
+                        <a href="../danh-sach-can-thiet-lap/index.html" class="btn-secondary sys-control-h36 text-xs px-4">Hủy</a>
+                        <button type="button" id="btn-save-diagram-page" class="btn-primary sys-control-h36 text-xs px-5 bg-[#27496D] text-white">Lưu Sơ đồ Nhân sự</button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Essential Scripts -->
+    <script src="../../../js/data-store.js"></script>
+    <script src="../../../js/main.js"></script>
+    <script src="./index.js"></script>
+</body>
+</html>

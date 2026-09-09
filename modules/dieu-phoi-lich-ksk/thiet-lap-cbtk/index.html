@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thiết lập CBTK - MEDLATEC</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome 6 Pro CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Global System HIS Styles -->
+    <link rel="stylesheet" href="../../../css/style.css">
+    <!-- Local Module Styles -->
+    <link rel="stylesheet" href="./assets/index.css">
+    <link rel="shortcut icon" href="#">
+</head>
+<body class="bg-[#F4F5F7] text-[#1F2937] antialiased flex h-screen overflow-hidden" data-depth="nested" data-active-nav="nav-dieu-phoi-can-thiet-lap" data-breadcrumb="Thiết lập Cán bộ triển khai">
+
+    <!-- Unified Sidebar Component -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Outer Flex Container -->
+    <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+        <!-- Unified Header Component -->
+        <div id="header-container"></div>
+
+        <!-- Main Workspace Scrollable Area -->
+        <main class="flex-1 overflow-y-auto p-4 md:p-6 space-y-5 custom-scrollbar">
+
+            <!-- Page Header -->
+            <div class="flex items-center justify-between bg-white p-4 rounded-[4px] border border-[#D9DEE5] shadow-2xs">
+                <div>
+                    <h1 class="text-xl font-bold text-[#1F2937] flex items-center gap-2.5">
+                        <i class="fa-solid fa-user-gear text-[#27496D] text-lg"></i>
+                        <span>Thiết lập Cán bộ triển khai (CBTK / Trưởng đoàn)</span>
+                    </h1>
+                    <p class="text-xs text-[#6B7280] mt-1">Phân công Trưởng đoàn khám và kiểm tra xung đột thời gian với các đợt khám khác.</p>
+                </div>
+                <div>
+                    <a href="../danh-sach-can-thiet-lap/index.html" class="btn-secondary sys-control-h36 text-xs flex items-center gap-1.5 px-3">
+                        <i class="fa-solid fa-arrow-left"></i> Quay lại Danh sách
+                    </a>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                <!-- Left: Readonly Schedule Info Card -->
+                <div class="lg:col-span-1 bg-white p-5 rounded-[4px] border border-[#D9DEE5] shadow-2xs space-y-4 text-xs">
+                    <h2 class="font-bold text-[#27496D] uppercase border-b pb-2 text-xs flex items-center gap-2">
+                        <i class="fa-solid fa-calendar-day"></i> Thông tin Lịch khám KSK
+                    </h2>
+                    <div class="space-y-3">
+                        <div>
+                            <span class="text-slate-500 font-semibold block">Chọn Lịch khám:</span>
+                            <select id="select-schedule-page" class="sys-select sys-control-h36 text-xs w-full mt-1">
+                                <!-- Loaded dynamically -->
+                            </select>
+                        </div>
+                        <div class="border-t pt-3 space-y-2">
+                            <div><span class="text-slate-500">Mã lịch:</span> <strong id="lbl-schedule-id" class="text-[#27496D]">---</strong></div>
+                            <div><span class="text-slate-500">Tên đơn vị:</span> <span id="lbl-unit-name" class="font-semibold text-slate-800">---</span></div>
+                            <div><span class="text-slate-500">Loại lịch:</span> <span id="lbl-loai-lich" class="font-semibold text-slate-800">---</span></div>
+                            <div><span class="text-slate-500">Ngày khám:</span> <span id="lbl-exam-date" class="font-semibold text-slate-800">---</span></div>
+                            <div><span class="text-slate-500">Khung giờ:</span> <span id="lbl-session" class="text-slate-800">---</span></div>
+                            <div><span class="text-slate-500">Địa điểm:</span> <span id="lbl-location" class="text-slate-800">---</span></div>
+                            <div><span class="text-slate-500">Số lượng khách:</span> <strong id="lbl-quantity" class="text-slate-800">---</strong></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: CBTK Assignment Form & Conflict Detector -->
+                <div class="lg:col-span-2 bg-white p-5 rounded-[4px] border border-[#D9DEE5] shadow-2xs space-y-4 text-xs">
+                    <h2 class="font-bold text-[#27496D] uppercase border-b pb-2 text-xs flex items-center gap-2">
+                        <i class="fa-solid fa-user-check"></i> Thông tin Phân công CBTK
+                    </h2>
+
+                    <!-- Live Conflict Alert Box -->
+                    <div id="page-cbtk-conflict-alert" class="hidden bg-amber-50 border-l-4 border-amber-500 p-4 rounded text-xs text-amber-900 space-y-1">
+                        <div class="font-bold text-amber-800 flex items-center gap-2 text-sm">
+                            <i class="fa-solid fa-triangle-exclamation text-amber-600"></i>
+                            <span>CẢNH BÁO TRÙNG LỊCH CÁN BỘ TRIỂN KHAI</span>
+                        </div>
+                        <p id="page-cbtk-conflict-desc" class="text-amber-800">CBTK chọn đã có lịch phân công khác trùng thời gian.</p>
+                    </div>
+
+                    <form id="form-cbtk-page" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block font-semibold text-slate-700 mb-1">CBTK / Trưởng đoàn *</label>
+                                <select id="page-cbtk-select" class="sys-select sys-control-h36 text-xs w-full" required>
+                                    <option value="">-- Chọn cán bộ --</option>
+                                    <option value="BS001" data-name="BS. Nguyễn Văn An" data-phone="0912345678" data-title="Bác sĩ Chuyên khoa II - Trưởng đoàn">BS. Nguyễn Văn An (Bác sĩ CKII)</option>
+                                    <option value="ĐD001" data-name="ĐD. Trần Thị Bích" data-phone="0987654321" data-title="Trưởng kíp Điều dưỡng">ĐD. Trần Thị Bích (Trưởng kíp)</option>
+                                    <option value="BS002" data-name="BS. Lê Hoàng Cường" data-phone="0905556677" data-title="Thạc sĩ Bác sĩ">BS. Lê Hoàng Cường (Thạc sĩ BS)</option>
+                                    <option value="BS003" data-name="BS. Đỗ Mỹ Hạnh" data-phone="0934445566" data-title="Bác sĩ CK I">BS. Đỗ Mỹ Hạnh (Bác sĩ CKI)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-slate-700 mb-1">Số điện thoại liên hệ</label>
+                                <input type="text" id="page-cbtk-phone" class="sys-input sys-control-h36 text-xs w-full" placeholder="Số điện thoại CBTK">
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-slate-700 mb-1">Chức danh / Đơn vị</label>
+                                <input type="text" id="page-cbtk-title" class="sys-input sys-control-h36 text-xs w-full" placeholder="Chức danh">
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-slate-700 mb-1">Ngày phân công</label>
+                                <input type="date" id="page-cbtk-date" class="sys-input sys-control-h36 text-xs w-full">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">Ghi chú phân công</label>
+                            <textarea id="page-cbtk-note" rows="3" class="sys-input text-xs w-full p-2" placeholder="Ghi chú chi tiết phân công CBTK..."></textarea>
+                        </div>
+
+                        <div class="flex justify-end gap-2 pt-3 border-t">
+                            <a href="../danh-sach-can-thiet-lap/index.html" class="btn-secondary sys-control-h36 text-xs px-4">Hủy</a>
+                            <button type="submit" class="btn-primary sys-control-h36 text-xs px-5 bg-[#27496D] text-white">Lưu phân công CBTK</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Essential Scripts -->
+    <script src="../../../js/data-store.js"></script>
+    <script src="../../../js/main.js"></script>
+    <script src="./index.js"></script>
+</body>
+</html>

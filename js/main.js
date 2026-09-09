@@ -54,6 +54,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     const navDinhMucNhanSu = document.getElementById('nav-dinh-muc-nhan-su');
     const navCoSoKham = document.getElementById('nav-co-so-kham');
     const navCauHinhPhuCap = document.getElementById('nav-cau-hinh-phu-cap');
+    const navDieuPhoiCanThietLap = document.getElementById('nav-dieu-phoi-can-thiet-lap');
+    const navDieuPhoiLichKsk = document.getElementById('nav-dieu-phoi-lich-ksk');
     const breadcrumbHome = document.getElementById('breadcrumb-home-link');
 
     if (logoLink) logoLink.href = basePath + 'bao-cao-thong-ke/bao-cao-doan-kham/bao-cao-doan-kham.html';
@@ -63,13 +65,14 @@ document.addEventListener('DOMContentLoaded', async function () {
     if (navCbDuyetLichKsk) navCbDuyetLichKsk.href = basePath + 'modules/cb-duyet-lich-ksk/cb-duyet.html';
     if (navDuKienLichKsk) navDuKienLichKsk.href = basePath + 'du-kien-lich-ksk/calendar.html';
     if (navReportDoanKham) navReportDoanKham.href = basePath + 'bao-cao-thong-ke/bao-cao-doan-kham/bao-cao-doan-kham.html';
-    if (navReportDoanKham) navReportDoanKham.href = basePath + 'bao-cao-thong-ke/bao-cao-doan-kham/bao-cao-doan-kham.html';
     if (navReportNhanSu) navReportNhanSu.href = basePath + 'bao-cao-thong-ke/bao-cao-nhan-su/bao-cao-nhan-su.html';
     if (navDanhMucKham) navDanhMucKham.href = basePath + 'cau-hinh-he-thong/danh-muc-kham/danh-muc-kham.html';
     if (navDinhMucNhanSu) navDinhMucNhanSu.href = basePath + 'cau-hinh-he-thong/cau-hinh-dinh-muc/index.html';
 
     if (navCoSoKham) navCoSoKham.href = basePath + 'cau-hinh-he-thong/co-so-kham/co-so-kham.html';
     if (navCauHinhPhuCap) navCauHinhPhuCap.href = basePath + 'cau-hinh-he-thong/cau-hinh-phu-cap/cau-hinh-phu-cap.html';
+    if (navDieuPhoiCanThietLap) navDieuPhoiCanThietLap.href = basePath + 'modules/dieu-phoi-lich-ksk/danh-sach-can-thiet-lap/index.html';
+    if (navDieuPhoiLichKsk) navDieuPhoiLichKsk.href = basePath + 'modules/dieu-phoi-lich-ksk/dieu-phoi/index.html';
     if (breadcrumbHome) breadcrumbHome.href = basePath + 'bao-cao-thong-ke/bao-cao-doan-kham/bao-cao-doan-kham.html';
 
     // Highlight Active Sidebar Item based on data-active-nav attribute on <body>
@@ -188,6 +191,29 @@ document.addEventListener('DOMContentLoaded', async function () {
             } else {
                 kskManageSubmenu.classList.add('hidden');
                 kskManageArrow.classList.add('-rotate-90');
+            }
+        });
+    }
+
+    // Bind Submenu Accordion Toggle for ĐIỀU PHỐI LỊCH KSK
+    const dieuPhoiManageToggle = document.getElementById('dieu-phoi-manage-toggle');
+    const dieuPhoiManageSubmenu = document.getElementById('dieu-phoi-manage-submenu');
+    const dieuPhoiManageArrow = document.getElementById('dieu-phoi-manage-arrow');
+
+    if (dieuPhoiManageToggle && dieuPhoiManageSubmenu && dieuPhoiManageArrow) {
+        dieuPhoiManageToggle.addEventListener('click', function () {
+            if (sidebar && sidebar.classList.contains('sidebar-collapsed')) {
+                sidebar.classList.remove('sidebar-collapsed');
+                sidebar.classList.add('sidebar-expanded');
+                localStorage.setItem('mwk_sidebar_state', 'expanded');
+            }
+
+            if (dieuPhoiManageSubmenu.classList.contains('hidden')) {
+                dieuPhoiManageSubmenu.classList.remove('hidden');
+                dieuPhoiManageArrow.classList.remove('-rotate-90');
+            } else {
+                dieuPhoiManageSubmenu.classList.add('hidden');
+                dieuPhoiManageArrow.classList.add('-rotate-90');
             }
         });
     }

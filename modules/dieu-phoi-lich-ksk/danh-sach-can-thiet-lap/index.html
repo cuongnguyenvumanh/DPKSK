@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách cần thiết lập CBTK & Sơ đồ - MEDLATEC</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome 6 Pro CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Global System HIS Styles -->
+    <link rel="stylesheet" href="../../../css/style.css">
+    <!-- Local Module Styles -->
+    <link rel="stylesheet" href="./assets/index.css">
+    <link rel="shortcut icon" href="#">
+</head>
+<body class="bg-[#F4F5F7] text-[#1F2937] antialiased flex h-screen overflow-hidden" data-depth="nested" data-active-nav="nav-dieu-phoi-can-thiet-lap" data-breadcrumb="Danh sách cần thiết lập CBTK & Sơ đồ">
+
+    <!-- Unified Sidebar Component -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Outer Flex Container -->
+    <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+        <!-- Unified Header Component -->
+        <div id="header-container"></div>
+
+        <!-- Main Workspace Scrollable Area -->
+        <main class="flex-1 overflow-y-auto p-4 md:p-6 space-y-5 custom-scrollbar">
+
+            <!-- Page Header & Top Bar -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 rounded-[4px] border border-[#D9DEE5] shadow-2xs">
+                <div>
+                    <h1 class="text-xl font-bold text-[#1F2937] flex items-center gap-2.5">
+                        <i class="fa-solid fa-clipboard-list text-[#27496D] text-lg"></i>
+                        <span>Danh sách cần thiết lập CBTK & Sơ đồ</span>
+                    </h1>
+                    <p class="text-xs text-[#6B7280] mt-1">
+                        Quản lý và lập kế hoạch gán Cán bộ triển khai (CBTK / Trưởng đoàn) và xây dựng Sơ đồ nhân sự cho các lịch khám KSK đã được phê duyệt.
+                    </p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button type="button" id="btn-export-excel" class="btn-secondary sys-control-h36 text-xs flex items-center gap-1.5 px-3 bg-emerald-50 text-emerald-700 border-emerald-300 hover:bg-emerald-100">
+                        <i class="fa-solid fa-file-excel text-emerald-600"></i>
+                        <span>Xuất Excel</span>
+                    </button>
+                    <button type="button" id="btn-refresh-data" class="btn-secondary sys-control-h36 text-xs flex items-center gap-1.5 px-3">
+                        <i class="fa-solid fa-rotate text-[#27496D]"></i>
+                        <span>Làm mới</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summary Metric Cards (4 Dynamic Cards) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Card 1: Tổng lịch cần thiết lập -->
+                <div class="his-card p-4 rounded-[4px] border border-[#D9DEE5] bg-white flex items-center justify-between shadow-2xs">
+                    <div class="space-y-1">
+                        <span class="text-xs font-semibold text-[#6B7280] uppercase tracking-wider">Tổng lịch đã duyệt</span>
+                        <div class="text-2xl font-bold text-[#27496D]" id="sum-total-approved">0</div>
+                        <span class="text-[11px] text-[#2563EB] font-medium flex items-center gap-1">
+                            <i class="fa-solid fa-circle-check text-[10px]"></i> Đã qua bước CB Duyệt
+                        </span>
+                    </div>
+                    <div class="w-11 h-11 rounded-[4px] bg-[#E8F1FB] text-[#27496D] flex items-center justify-center text-lg flex-shrink-0">
+                        <i class="fa-solid fa-calendar-check"></i>
+                    </div>
+                </div>
+
+                <!-- Card 2: Chưa gán CBTK -->
+                <div class="his-card p-4 rounded-[4px] border border-[#D9DEE5] bg-white flex items-center justify-between shadow-2xs">
+                    <div class="space-y-1">
+                        <span class="text-xs font-semibold text-[#6B7280] uppercase tracking-wider">Chưa gán CBTK</span>
+                        <div class="text-2xl font-bold text-red-600" id="sum-no-cbtk">0</div>
+                        <span class="text-[11px] text-red-500 font-medium flex items-center gap-1">
+                            <i class="fa-solid fa-user-xmark text-[10px]"></i> Cần phân công Trưởng đoàn
+                        </span>
+                    </div>
+                    <div class="w-11 h-11 rounded-[4px] bg-red-50 text-red-600 flex items-center justify-center text-lg flex-shrink-0">
+                        <i class="fa-solid fa-user-gear"></i>
+                    </div>
+                </div>
+
+                <!-- Card 3: Chưa có sơ đồ -->
+                <div class="his-card p-4 rounded-[4px] border border-[#D9DEE5] bg-white flex items-center justify-between shadow-2xs">
+                    <div class="space-y-1">
+                        <span class="text-xs font-semibold text-[#6B7280] uppercase tracking-wider">Chưa có sơ đồ</span>
+                        <div class="text-2xl font-bold text-amber-600" id="sum-no-diagram">0</div>
+                        <span class="text-[11px] text-amber-600 font-medium flex items-center gap-1">
+                            <i class="fa-solid fa-sitemap text-[10px]"></i> Cần lập định mức nhân sự
+                        </span>
+                    </div>
+                    <div class="w-11 h-11 rounded-[4px] bg-amber-50 text-amber-600 flex items-center justify-center text-lg flex-shrink-0">
+                        <i class="fa-solid fa-diagram-project"></i>
+                    </div>
+                </div>
+
+                <!-- Card 4: Đã hoàn tất -->
+                <div class="his-card p-4 rounded-[4px] border border-[#D9DEE5] bg-white flex items-center justify-between shadow-2xs">
+                    <div class="space-y-1">
+                        <span class="text-xs font-semibold text-[#6B7280] uppercase tracking-wider">Đã hoàn tất</span>
+                        <div class="text-2xl font-bold text-emerald-600" id="sum-completed">0</div>
+                        <span class="text-[11px] text-emerald-600 font-medium flex items-center gap-1">
+                            <i class="fa-solid fa-check-double text-[10px]"></i> Đã đủ CBTK & Sơ đồ
+                        </span>
+                    </div>
+                    <div class="w-11 h-11 rounded-[4px] bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg flex-shrink-0">
+                        <i class="fa-solid fa-square-check"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Type Navigation Tabs -->
+            <div class="flex items-center gap-1 border-b border-[#D9DEE5] pb-0 text-xs font-semibold text-slate-600 overflow-x-auto custom-scrollbar">
+                <button type="button" class="tab-type-btn active-tab px-4 py-2 rounded-t border-b-2 border-[#27496D] text-[#27496D] bg-white font-bold flex items-center gap-1.5 shadow-2xs" data-type="">
+                    <i class="fa-solid fa-list-ul"></i>
+                    <span>Tất cả</span>
+                    <span id="count-tab-all" class="bg-slate-100 text-slate-700 text-[10px] px-1.5 py-0.5 rounded-full">0</span>
+                </button>
+                <button type="button" class="tab-type-btn px-4 py-2 rounded-t text-slate-600 hover:text-[#27496D] hover:bg-slate-50 font-medium flex items-center gap-1.5" data-type="Tại viện">
+                    <i class="fa-solid fa-hospital text-blue-600"></i>
+                    <span>Tại viện</span>
+                    <span id="count-tab-tai-vien" class="bg-blue-50 text-blue-700 text-[10px] px-1.5 py-0.5 rounded-full">0</span>
+                </button>
+                <button type="button" class="tab-type-btn px-4 py-2 rounded-t text-slate-600 hover:text-[#27496D] hover:bg-slate-50 font-medium flex items-center gap-1.5" data-type="Tại phường">
+                    <i class="fa-solid fa-house-medical text-amber-600"></i>
+                    <span>Tại phường</span>
+                    <span id="count-tab-tai-phuong" class="bg-amber-50 text-amber-700 text-[10px] px-1.5 py-0.5 rounded-full">0</span>
+                </button>
+                <button type="button" class="tab-type-btn px-4 py-2 rounded-t text-slate-600 hover:text-[#27496D] hover:bg-slate-50 font-medium flex items-center gap-1.5" data-type="Ngoại viện">
+                    <i class="fa-solid fa-truck-medical text-purple-600"></i>
+                    <span>Ngoại viện</span>
+                    <span id="count-tab-ngoai-vien" class="bg-purple-50 text-purple-700 text-[10px] px-1.5 py-0.5 rounded-full">0</span>
+                </button>
+            </div>
+
+            <!-- Filter Toolbar -->
+            <div class="bg-white p-4 rounded-[4px] border border-[#D9DEE5] shadow-2xs space-y-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                    <!-- Date From -->
+                    <div>
+                        <label class="block text-[11px] font-semibold text-[#4B5563] mb-1">Từ ngày</label>
+                        <input type="date" id="filter-date-from" class="sys-input sys-control-h36 text-xs w-full">
+                    </div>
+                    <!-- Date To -->
+                    <div>
+                        <label class="block text-[11px] font-semibold text-[#4B5563] mb-1">Đến ngày</label>
+                        <input type="date" id="filter-date-to" class="sys-input sys-control-h36 text-xs w-full">
+                    </div>
+                    <!-- Schedule Type Filter -->
+                    <div>
+                        <label class="block text-[11px] font-semibold text-[#4B5563] mb-1">Loại lịch</label>
+                        <select id="filter-loai-lich" class="sys-select sys-control-h36 text-xs w-full">
+                            <option value="">-- Tất cả loại lịch --</option>
+                            <option value="Tại viện">Tại viện</option>
+                            <option value="Ngoại viện">Ngoại viện</option>
+                            <option value="Tại phường">Tại phường</option>
+                        </select>
+                    </div>
+                    <!-- Setup Status Filter -->
+                    <div>
+                        <label class="block text-[11px] font-semibold text-[#4B5563] mb-1">Trạng thái thiết lập</label>
+                        <select id="filter-trang-thai" class="sys-select sys-control-h36 text-xs w-full">
+                            <option value="">-- Tất cả trạng thái --</option>
+                            <option value="CHUA_GAN_CBTK">Chưa gán CBTK</option>
+                            <option value="DA_GAN_CBTK">Đã gán CBTK</option>
+                            <option value="THIEU_NHAN_SU">Thiếu nhân sự</option>
+                            <option value="CHO_DIEU_PHOI">Chờ điều phối</option>
+                            <option value="HOAN_THANH_DIEU_PHOI">Hoàn thành điều phối</option>
+                        </select>
+                    </div>
+                    <!-- Search Input -->
+                    <div class="sm:col-span-2 md:col-span-4 lg:col-span-1">
+                        <label class="block text-[11px] font-semibold text-[#4B5563] mb-1">Tìm kiếm</label>
+                        <div class="relative">
+                            <input type="text" id="filter-keyword" placeholder="Nhập mã lịch, tên đơn vị..." class="sys-input sys-control-h36 text-xs pl-8 w-full">
+                            <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Location Context List Data Area -->
+            <div id="location-groups-container" class="space-y-4">
+                <!-- Location Group Cards rendered dynamically by index.js -->
+            </div>
+
+        </main>
+    </div>
+
+    <!-- CBTK Drawer Modal -->
+    <div id="cbtk-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex justify-end hidden">
+        <div class="w-full max-w-lg bg-white h-full shadow-2xl flex flex-col justify-between overflow-hidden transform transition-all duration-300">
+            <div class="p-4 bg-[#27496D] text-white flex items-center justify-between">
+                <h3 class="text-sm font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-user-gear"></i>
+                    <span>Thiết lập Cán bộ triển khai (CBTK)</span>
+                </h3>
+                <button type="button" id="btn-close-cbtk-modal" class="text-slate-300 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="p-5 flex-1 overflow-y-auto space-y-4 custom-scrollbar">
+                <!-- Info banner -->
+                <div class="bg-slate-50 border border-slate-200 p-3 rounded text-xs space-y-1">
+                    <div class="flex justify-between font-bold text-slate-800">
+                        <span id="cbtk-info-unit">Đơn vị KSK</span>
+                        <span id="cbtk-info-code" class="text-[#27496D]">SCH001</span>
+                    </div>
+                    <div class="text-slate-600">Ngày khám: <span id="cbtk-info-date" class="font-semibold text-slate-800">2026-09-15</span> | Khung giờ: <span id="cbtk-info-time" class="font-semibold text-slate-800">07:30 - 11:30</span></div>
+                    <div class="text-slate-600">Địa điểm: <span id="cbtk-info-location">MEDLATEC Ba Đình</span></div>
+                </div>
+
+                <!-- Conflict Alert Banner (Dynamic) -->
+                <div id="cbtk-conflict-alert" class="hidden bg-amber-50 border-l-4 border-amber-500 p-3 rounded text-xs text-amber-800 space-y-1">
+                    <div class="font-bold flex items-center gap-1.5 text-amber-900">
+                        <i class="fa-solid fa-triangle-exclamation text-amber-600 text-sm"></i>
+                        <span>Cảnh báo trùng lịch CBTK!</span>
+                    </div>
+                    <p id="cbtk-conflict-desc">CBTK đã được phân công ở đợt khám khác trong khoảng thời gian này.</p>
+                </div>
+
+                <form id="form-cbtk" class="space-y-3 text-xs">
+                    <input type="hidden" id="cbtk-target-schedule-id">
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Chọn CBTK / Trưởng đoàn khám <span class="text-red-500">*</span></label>
+                        <select id="cbtk-select-person" class="sys-select sys-control-h36 text-xs w-full" required>
+                            <option value="">-- Chọn cán bộ --</option>
+                            <option value="BS001" data-name="BS. Nguyễn Văn An" data-phone="0912345678" data-title="Bác sĩ Chuyên khoa II - Trưởng đoàn">BS. Nguyễn Văn An (Bác sĩ CKII)</option>
+                            <option value="ĐD001" data-name="ĐD. Trần Thị Bích" data-phone="0987654321" data-title="Trưởng kíp Điều dưỡng">ĐD. Trần Thị Bích (Trưởng kíp)</option>
+                            <option value="BS002" data-name="BS. Lê Hoàng Cường" data-phone="0905556677" data-title="Thạc sĩ Bác sĩ">BS. Lê Hoàng Cường (Thạc sĩ BS)</option>
+                            <option value="BS003" data-name="BS. Đỗ Mỹ Hạnh" data-phone="0934445566" data-title="Bác sĩ CK I">BS. Đỗ Mỹ Hạnh (Bác sĩ CKI)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Số điện thoại liên hệ</label>
+                        <input type="text" id="cbtk-input-phone" class="sys-input sys-control-h36 text-xs w-full" placeholder="Nhập SĐT CBTK">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Chức danh / Đơn vị quản lý</label>
+                        <input type="text" id="cbtk-input-title" class="sys-input sys-control-h36 text-xs w-full" placeholder="Nhập chức danh">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Ngày phân công</label>
+                        <input type="date" id="cbtk-input-date" class="sys-input sys-control-h36 text-xs w-full">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Ghi chú phân công</label>
+                        <textarea id="cbtk-input-note" rows="3" class="sys-input text-xs w-full p-2" placeholder="Ghi chú thêm..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-end gap-2">
+                <button type="button" id="btn-cancel-cbtk" class="btn-secondary sys-control-h36 text-xs px-4">Hủy</button>
+                <button type="button" id="btn-save-cbtk" class="btn-primary sys-control-h36 text-xs px-4 bg-[#27496D] text-white">Lưu CBTK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sơ đồ nhân sự Drawer Modal -->
+    <div id="diagram-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex justify-end hidden">
+        <div class="w-full max-w-xl bg-white h-full shadow-2xl flex flex-col justify-between overflow-hidden transform transition-all duration-300">
+            <div class="p-4 bg-[#27496D] text-white flex items-center justify-between">
+                <h3 class="text-sm font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-sitemap"></i>
+                    <span>Xây dựng Sơ đồ nhân sự theo định mức PAKD</span>
+                </h3>
+                <button type="button" id="btn-close-diagram-modal" class="text-slate-300 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="p-5 flex-1 overflow-y-auto space-y-4 custom-scrollbar text-xs">
+                <input type="hidden" id="diagram-target-schedule-id">
+                <!-- Info banner -->
+                <div class="bg-slate-50 border border-slate-200 p-3 rounded space-y-1">
+                    <div class="flex justify-between font-bold text-slate-800">
+                        <span id="diagram-info-unit">Đơn vị KSK</span>
+                        <span id="diagram-info-type" class="text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">Tại viện</span>
+                    </div>
+                    <div class="text-slate-600">Mã lịch: <span id="diagram-info-code" class="font-semibold text-slate-800">SCH001</span> | Ngày: <span id="diagram-info-date" class="font-semibold text-slate-800">2026-09-15</span></div>
+                </div>
+
+                <div id="diagram-not-applicable" class="hidden bg-amber-50 border border-amber-200 p-4 rounded text-amber-800 text-center font-medium">
+                    <i class="fa-solid fa-circle-info text-amber-600 text-lg mb-1 block"></i>
+                    Không áp dụng sơ đồ định mức tại viện/phường cho loại lịch Ngoại viện.
+                </div>
+
+                <div id="diagram-form-container" class="space-y-4">
+                    <p class="text-slate-600 italic">Nhập số lượng nhân sự định mức PAKD cần thiết cho 6 nhóm vị trí chính:</p>
+
+                    <table class="w-full text-left border-collapse border border-slate-200">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 font-semibold uppercase text-[10px]">
+                                <th class="p-2.5 border border-slate-200">Vị trí nhân sự</th>
+                                <th class="p-2.5 border border-slate-200 w-24 text-center">Định mức PAKD</th>
+                                <th class="p-2.5 border border-slate-200 w-24 text-center">Đã gán thực tế</th>
+                                <th class="p-2.5 border border-slate-200 w-24 text-center">Chênh lệch</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            <tr>
+                                <td class="p-2.5 border font-semibold text-slate-800">1. Bác sĩ khám</td>
+                                <td class="p-2 border"><input type="number" min="0" id="diagram-bs" class="sys-input text-xs w-full text-center" value="2"></td>
+                                <td class="p-2 border text-center font-semibold" id="actual-bs">0</td>
+                                <td class="p-2 border text-center font-semibold" id="diff-bs">0</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2.5 border font-semibold text-slate-800">2. Điều dưỡng</td>
+                                <td class="p-2 border"><input type="number" min="0" id="diagram-dd" class="sys-input text-xs w-full text-center" value="4"></td>
+                                <td class="p-2 border text-center font-semibold" id="actual-dd">0</td>
+                                <td class="p-2 border text-center font-semibold" id="diff-dd">0</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2.5 border font-semibold text-slate-800">3. Kỹ thuật viên (X-quang, Siêu âm, XN)</td>
+                                <td class="p-2 border"><input type="number" min="0" id="diagram-ktv" class="sys-input text-xs w-full text-center" value="2"></td>
+                                <td class="p-2 border text-center font-semibold" id="actual-ktv">0</td>
+                                <td class="p-2 border text-center font-semibold" id="diff-ktv">0</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2.5 border font-semibold text-slate-800">4. Lấy mẫu xét nghiệm</td>
+                                <td class="p-2 border"><input type="number" min="0" id="diagram-laymau" class="sys-input text-xs w-full text-center" value="3"></td>
+                                <td class="p-2 border text-center font-semibold" id="actual-laymau">0</td>
+                                <td class="p-2 border text-center font-semibold" id="diff-laymau">0</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2.5 border font-semibold text-slate-800">5. Tiếp đón & Phân luồng</td>
+                                <td class="p-2 border"><input type="number" min="0" id="diagram-tiepdon" class="sys-input text-xs w-full text-center" value="2"></td>
+                                <td class="p-2 border text-center font-semibold" id="actual-tiepdon">0</td>
+                                <td class="p-2 border text-center font-semibold" id="diff-tiepdon">0</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2.5 border font-semibold text-slate-800">6. Tư vấn & Hỗ trợ khách hàng</td>
+                                <td class="p-2 border"><input type="number" min="0" id="diagram-tuvan" class="sys-input text-xs w-full text-center" value="1"></td>
+                                <td class="p-2 border text-center font-semibold" id="actual-tuvan">0</td>
+                                <td class="p-2 border text-center font-semibold" id="diff-tuvan">0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-end gap-2">
+                <button type="button" id="btn-cancel-diagram" class="btn-secondary sys-control-h36 text-xs px-4">Đóng</button>
+                <button type="button" id="btn-save-diagram" class="btn-primary sys-control-h36 text-xs px-4 bg-[#27496D] text-white">Lưu Sơ đồ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detail View Modal -->
+    <div id="detail-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center hidden p-4">
+        <div class="w-full max-w-2xl bg-white rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="p-4 bg-[#27496D] text-white flex items-center justify-between">
+                <h3 class="text-sm font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>Chi tiết Lịch KSK</span>
+                </h3>
+                <button type="button" id="btn-close-detail-modal" class="text-slate-300 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="p-5 overflow-y-auto flex-1 space-y-4 custom-scrollbar text-xs" id="detail-modal-body">
+                <!-- Loaded dynamically -->
+            </div>
+            <div class="p-3 bg-slate-50 border-t border-slate-200 flex justify-end">
+                <button type="button" id="btn-dismiss-detail" class="btn-secondary sys-control-h36 text-xs px-4">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Essential Scripts -->
+    <script src="../../../js/data-store.js"></script>
+    <script src="../../../js/main.js"></script>
+    <script src="./index.js"></script>
+</body>
+</html>

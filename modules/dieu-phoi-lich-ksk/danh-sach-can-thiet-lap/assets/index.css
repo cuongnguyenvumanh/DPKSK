@@ -1,0 +1,50 @@
+/* Global HIS Module Styles for Danh sách cần thiết lập */
+.his-card {
+    background-color: #ffffff;
+    border: 1px solid #D9DEE5;
+    border-radius: 4px;
+    transition: all 0.2s ease-in-out;
+}
+
+.his-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.badge-red {
+    background-color: #FEE2E2;
+    color: #991B1B;
+    border: 1px solid #FCA5A5;
+}
+
+.badge-amber {
+    background-color: #FEF3C7;
+    color: #92400E;
+    border: 1px solid #FCD34D;
+}
+
+.badge-emerald {
+    background-color: #D1FAE5;
+    color: #065F46;
+    border: 1px solid #6EE7B7;
+}
+
+.badge-blue {
+    background-color: #E0F2FE;
+    color: #075985;
+    border: 1px solid #7DD3FC;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #F1F5F9;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #CBD5E1;
+    border-radius: 3px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #94A3B8;
+}

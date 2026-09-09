@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Điều phối lịch KSK - MEDLATEC</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome 6 Pro CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Global System HIS Styles -->
+    <link rel="stylesheet" href="../../../css/style.css">
+    <!-- Local Module Styles -->
+    <link rel="stylesheet" href="./assets/index.css">
+    <link rel="shortcut icon" href="#">
+</head>
+<body class="bg-[#F4F5F7] text-[#1F2937] antialiased flex h-screen overflow-hidden" data-depth="nested" data-active-nav="nav-dieu-phoi-lich-ksk" data-breadcrumb="Điều phối lịch KSK">
+
+    <!-- Unified Sidebar Component -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Outer Flex Container -->
+    <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+        <!-- Unified Header Component -->
+        <div id="header-container"></div>
+
+        <!-- Main Workspace Scrollable Area -->
+        <main class="flex-1 overflow-y-auto p-4 md:p-6 space-y-5 custom-scrollbar">
+
+            <!-- Page Header Bar -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 rounded-[4px] border border-[#D9DEE5] shadow-2xs">
+                <div>
+                    <h1 class="text-xl font-bold text-[#1F2937] flex items-center gap-2.5">
+                        <i class="fa-solid fa-sliders text-[#27496D] text-lg"></i>
+                        <span>Điều phối lịch KSK</span>
+                    </h1>
+                    <p class="text-xs text-[#6B7280] mt-1">
+                        Quản lý và điều phối nhân sự (CBNV / CTV) theo Đơn vị, Ngày khám và Ca khám; kiểm tra trùng lịch nhân sự thời gian thực.
+                    </p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button type="button" id="btn-export-dieu-phoi" class="btn-secondary sys-control-h36 text-xs flex items-center gap-1.5 px-3 bg-emerald-50 text-emerald-700 border-emerald-300 hover:bg-emerald-100">
+                        <i class="fa-solid fa-file-excel text-emerald-600"></i>
+                        <span>Xuất Excel</span>
+                    </button>
+                    <button type="button" id="btn-refresh-dieu-phoi" class="btn-secondary sys-control-h36 text-xs flex items-center gap-1.5 px-3">
+                        <i class="fa-solid fa-rotate text-[#27496D]"></i>
+                        <span>Làm mới</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Tabs: Lịch tuần vs Lịch phát sinh -->
+            <div class="bg-white rounded-[4px] border border-[#D9DEE5] shadow-2xs overflow-hidden">
+                <div class="flex border-b border-[#D9DEE5] bg-[#F8FAFC]">
+                    <button type="button" id="tab-btn-tuan" class="tab-btn-active px-6 py-3 text-xs font-semibold flex items-center gap-2 border-r border-[#D9DEE5] focus:outline-none">
+                        <i class="fa-solid fa-calendar-week"></i>
+                        <span>LỊCH TUẦN</span>
+                        <span id="badge-count-tuan" class="ml-1 px-1.5 py-0.5 rounded-full text-[10px] bg-slate-200 text-slate-700">0</span>
+                    </button>
+                    <button type="button" id="tab-btn-phat-sinh" class="px-6 py-3 text-xs font-semibold text-slate-600 hover:text-slate-900 flex items-center gap-2 focus:outline-none">
+                        <i class="fa-solid fa-bolt text-amber-500"></i>
+                        <span>LỊCH PHÁT SINH</span>
+                        <span id="badge-count-phat-sinh" class="ml-1 px-1.5 py-0.5 rounded-full text-[10px] bg-amber-100 text-amber-800">0</span>
+                    </button>
+                </div>
+
+                <!-- Sub-tabs: 3 Statuses (Chưa điều phối | Đang điều phối | Hoàn thành) -->
+                <div class="p-4 bg-slate-50/50 border-b border-[#D9DEE5] flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-center gap-2">
+                        <button type="button" id="subtab-all" class="subtab-btn-active px-3 py-1.5 rounded text-xs font-medium border border-slate-300">
+                            Tất cả (<span id="cnt-sub-all">0</span>)
+                        </button>
+                        <button type="button" id="subtab-chua-dieu-phoi" class="px-3 py-1.5 rounded text-xs font-medium bg-white text-slate-700 border border-slate-300 hover:bg-slate-100">
+                            Chưa điều phối (<span id="cnt-sub-chua">0</span>)
+                        </button>
+                        <button type="button" id="subtab-dang-dieu-phoi" class="px-3 py-1.5 rounded text-xs font-medium bg-white text-slate-700 border border-slate-300 hover:bg-slate-100">
+                            Đang điều phối (<span id="cnt-sub-dang">0</span>)
+                        </button>
+                        <button type="button" id="subtab-hoan-thanh" class="px-3 py-1.5 rounded text-xs font-medium bg-white text-slate-700 border border-slate-300 hover:bg-slate-100">
+                            Hoàn thành (<span id="cnt-sub-hoan-thanh">0</span>)
+                        </button>
+                    </div>
+
+                    <!-- Search Filter -->
+                    <div class="w-full sm:w-64">
+                        <div class="relative">
+                            <input type="text" id="search-dieu-phoi" placeholder="Tìm theo tên đơn vị, ngày..." class="sys-input sys-control-h36 text-xs pl-8 w-full">
+                            <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Data List Container (Grouped by Unit / Delegation / Date) -->
+                <div class="p-4 space-y-4" id="dieu-phoi-list-container">
+                    <!-- Dynamic Group Cards rendered here -->
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Day Detail & Staff Assignment Drawer Modal -->
+    <div id="assign-staff-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex justify-end hidden">
+        <div class="w-full max-w-2xl bg-white h-full shadow-2xl flex flex-col justify-between overflow-hidden transform transition-all duration-300">
+            <div class="p-4 bg-[#27496D] text-white flex items-center justify-between">
+                <h3 class="text-sm font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <span>Chi tiết ngày & Phân công Nhân sự Điều phối</span>
+                </h3>
+                <button type="button" id="btn-close-assign-modal" class="text-slate-300 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="p-5 flex-1 overflow-y-auto space-y-5 custom-scrollbar text-xs">
+                <!-- Schedule Summary Card -->
+                <div class="bg-slate-50 border border-slate-200 p-4 rounded space-y-2">
+                    <div class="flex justify-between items-center font-bold text-slate-800">
+                        <span id="assign-info-unit" class="text-sm text-[#27496D]">Đơn vị KSK</span>
+                        <span id="assign-info-code" class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">SCH001</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-slate-600">
+                        <div>Ngày khám: <strong id="assign-info-date" class="text-slate-800">2026-09-15</strong></div>
+                        <div>Khung giờ: <strong id="assign-info-time" class="text-slate-800">07:30 - 11:30</strong></div>
+                        <div>Địa điểm: <span id="assign-info-location" class="text-slate-800">MEDLATEC Ba Đình</span></div>
+                        <div>CBTK / Trưởng đoàn: <strong id="assign-info-cbtk" class="text-slate-800">BS. Nguyễn Văn An</strong></div>
+                    </div>
+                </div>
+
+                <!-- Demand vs Assigned Quota Summary -->
+                <div class="space-y-2">
+                    <h4 class="font-bold text-slate-800 border-b pb-1 flex items-center gap-1.5">
+                        <i class="fa-solid fa-chart-pie text-[#27496D]"></i> Nhu cầu vs Nhân sự đã gán
+                    </h4>
+                    <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 text-center text-xs" id="assign-quota-summary">
+                        <!-- Calculated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Add New Staff Form Section -->
+                <div class="border border-slate-200 p-4 rounded bg-slate-50/50 space-y-3">
+                    <h4 class="font-bold text-[#27496D] flex items-center gap-1.5">
+                        <i class="fa-solid fa-user-plus"></i> Thêm nhân sự mới (CBNV / CTV)
+                    </h4>
+
+                    <!-- Conflict Alert Box -->
+                    <div id="staff-conflict-alert" class="hidden bg-red-50 border-l-4 border-red-500 p-3 rounded text-xs text-red-900 space-y-1">
+                        <div class="font-bold text-red-800 flex items-center gap-1.5">
+                            <i class="fa-solid fa-circle-exclamation text-red-600"></i>
+                            <span>CẢNH BÁO TRÙNG LỊCH NHÂN SỰ!</span>
+                        </div>
+                        <p id="staff-conflict-desc" class="text-red-800">Nhân sự này đã được gán đợt khám khác trùng thời gian.</p>
+                    </div>
+
+                    <form id="form-add-staff" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <input type="hidden" id="assign-target-schedule-id">
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">Chọn Nhân sự <span class="text-red-500">*</span></label>
+                            <select id="staff-select-person" class="sys-select sys-control-h36 text-xs w-full" required>
+                                <option value="">-- Chọn nhân sự --</option>
+                                <optgroup label="Bác sĩ">
+                                    <option value="BS. Nguyễn Văn An" data-type="CBNV" data-pos="Bác sĩ">BS. Nguyễn Văn An (CBNV)</option>
+                                    <option value="BS. Lê Hoàng Cường" data-type="CBNV" data-pos="Bác sĩ">BS. Lê Hoàng Cường (CBNV)</option>
+                                    <option value="BS. Đỗ Mỹ Hạnh" data-type="CBNV" data-pos="Bác sĩ">BS. Đỗ Mỹ Hạnh (CBNV)</option>
+                                </optgroup>
+                                <optgroup label="Điều dưỡng">
+                                    <option value="ĐD. Trần Thị Bích" data-type="CBNV" data-pos="Điều dưỡng">ĐD. Trần Thị Bích (CBNV)</option>
+                                    <option value="ĐD. Hoàng Văn Giang" data-type="CTV" data-pos="Điều dưỡng">ĐD. Hoàng Văn Giang (CTV)</option>
+                                    <option value="ĐD. Nguyễn Thu Trang" data-type="CTV" data-pos="Điều dưỡng">ĐD. Nguyễn Thu Trang (CTV)</option>
+                                </optgroup>
+                                <optgroup label="Kỹ thuật viên / Lấy mẫu">
+                                    <option value="KTV. Phạm Quốc Dũng" data-type="CTV" data-pos="Kỹ thuật viên">KTV. Phạm Quốc Dũng (CTV)</option>
+                                    <option value="KTV. Ngô Tấn Khoa" data-type="CTV" data-pos="Kỹ thuật viên">KTV. Ngô Tấn Khoa (CTV)</option>
+                                    <option value="LM. Trần Văn Nam" data-type="CTV" data-pos="Lấy mẫu xét nghiệm">LM. Trần Văn Nam (CTV)</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">Loại nhân sự</label>
+                            <select id="staff-input-type" class="sys-select sys-control-h36 text-xs w-full">
+                                <option value="CBNV">CBNV (Cơ hữu)</option>
+                                <option value="CTV">CTV (Cộng tác viên)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">Vị trí / Vai trò <span class="text-red-500">*</span></label>
+                            <select id="staff-input-pos" class="sys-select sys-control-h36 text-xs w-full" required>
+                                <option value="Bác sĩ">Bác sĩ khám</option>
+                                <option value="Điều dưỡng">Điều dưỡng</option>
+                                <option value="Kỹ thuật viên">Kỹ thuật viên</option>
+                                <option value="Lấy mẫu xét nghiệm">Lấy mẫu xét nghiệm</option>
+                                <option value="Tiếp đón & Phân luồng">Tiếp đón & Phân luồng</option>
+                                <option value="Tư vấn & Hỗ trợ">Tư vấn & Hỗ trợ</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">Ghi chú / Ca làm việc</label>
+                            <input type="text" id="staff-input-note" class="sys-input sys-control-h36 text-xs w-full" placeholder="Ví dụ: Ca sáng 07:30 - 11:30">
+                        </div>
+                        <div class="sm:col-span-2 flex justify-end">
+                            <button type="submit" class="btn-primary sys-control-h36 text-xs px-4 bg-[#27496D] text-white">
+                                <i class="fa-solid fa-plus"></i> Thêm vào danh sách
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Assigned Staff Table -->
+                <div class="space-y-2">
+                    <h4 class="font-bold text-slate-800 border-b pb-1 flex items-center justify-between">
+                        <span>Danh sách Nhân sự đã gán cho đợt này</span>
+                        <span id="cnt-assigned-staff-badge" class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold">0 nhân sự</span>
+                    </h4>
+                    <table class="w-full text-left border-collapse border border-slate-200 text-xs">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 font-semibold uppercase text-[10px]">
+                                <th class="p-2 border border-slate-200 w-10 text-center">STT</th>
+                                <th class="p-2 border border-slate-200">Họ tên Nhân sự</th>
+                                <th class="p-2 border border-slate-200 w-24 text-center">Loại</th>
+                                <th class="p-2 border border-slate-200 w-32">Vị trí</th>
+                                <th class="p-2 border border-slate-200">Ghi chú</th>
+                                <th class="p-2 border border-slate-200 w-12 text-center">Xóa</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-assigned-staff" class="divide-y divide-slate-200">
+                            <!-- Dynamic rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-end gap-2">
+                <button type="button" id="btn-close-assign-drawer" class="btn-secondary sys-control-h36 text-xs px-4">Đóng</button>
+                <button type="button" id="btn-save-coordination-staff" class="btn-primary sys-control-h36 text-xs px-5 bg-[#27496D] text-white">Lưu thông tin Điều phối</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ngoại viện Clinical Diagram Drawer Modal -->
+    <div id="ngoai-vien-diagram-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex justify-end hidden">
+        <div class="w-full max-w-xl bg-white h-full shadow-2xl flex flex-col justify-between overflow-hidden transform transition-all duration-300">
+            <div class="p-4 bg-purple-900 text-white flex items-center justify-between">
+                <h3 class="text-sm font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-sitemap"></i>
+                    <span>Thiết lập Sơ đồ khám Ngoại viện</span>
+                </h3>
+                <button type="button" id="btn-close-nv-diagram-modal" class="text-purple-200 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="p-5 flex-1 overflow-y-auto space-y-4 custom-scrollbar text-xs">
+                <div class="bg-purple-50 border border-purple-200 p-3 rounded space-y-1">
+                    <div class="flex justify-between font-bold text-purple-900">
+                        <span id="nv-diagram-info-unit">Công ty ABC</span>
+                        <span id="nv-diagram-info-code" class="text-purple-700 font-bold">DP001</span>
+                    </div>
+                    <div class="text-purple-800">
+                        Ngày khám: <span id="nv-diagram-info-date" class="font-semibold">2026-09-14</span> | 
+                        Địa điểm: <span id="nv-diagram-info-location" class="font-semibold">KCN Bắc Thăng Long</span>
+                    </div>
+                </div>
+                
+                <input type="hidden" id="nv-diagram-target-dep-id">
+                
+                <div id="nv-diagram-form-container" class="space-y-3">
+                    <p class="text-slate-600 italic">Nhập số lượng bác sĩ, điều dưỡng & thiết bị cần thiết cho các phòng khám Ngoại viện:</p>
+                    <table class="w-full text-left border-collapse border border-slate-200 text-xs">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 font-semibold uppercase text-[10px]">
+                                <th class="p-2 border border-slate-200">Vị trí / Phòng khám</th>
+                                <th class="p-2 border border-slate-200">Chuyên khoa</th>
+                                <th class="p-2 border border-slate-200 w-36 text-center">Nhu cầu (BS / ĐD)</th>
+                                <th class="p-2 border border-slate-200">Trang thiết bị cần</th>
+                            </tr>
+                        </thead>
+                        <tbody id="nv-diagram-tbody" class="divide-y divide-slate-200 bg-white">
+                            <!-- Dynamic rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-end gap-2">
+                <button type="button" id="btn-cancel-nv-diagram" class="btn-secondary sys-control-h36 text-xs px-4">Hủy</button>
+                <button type="button" id="btn-save-nv-diagram" class="btn-primary sys-control-h36 text-xs px-4 bg-purple-800 text-white hover:bg-purple-900">Lưu Sơ đồ Ngoại viện</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Essential Scripts -->
+    <script src="../../../js/data-store.js"></script>
+    <script src="../../../js/main.js"></script>
+    <script src="./index.js"></script>
+</body>
+</html>
