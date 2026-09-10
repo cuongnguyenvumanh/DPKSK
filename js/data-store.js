@@ -3511,12 +3511,22 @@
                 const categoriesArr = Array.from(allCategories);
                 const diagram = storedMeta.diagram || this.generateClinicalDiagram(categoriesArr, totalPax, grp.loaiHinh);
 
-                const cbtk = storedMeta.cbtk || (grp.schedules[0].coordination ? grp.schedules[0].coordination.cbtk : {}) || {};
+                // Normalize cbtk on each child schedule
+                grp.schedules.forEach(s => {
+                    const childCbtk = (s.coordination && s.coordination.cbtk && (s.coordination.cbtk.cbtkId || s.coordination.cbtk.cbtkName)) 
+                        ? s.coordination.cbtk 
+                        : (s.cbtk || {});
+                    s.cbtk = childCbtk;
+                });
+
+                const assignedCbtkCount = grp.schedules.filter(s => s.cbtk && (s.cbtk.cbtkId || s.cbtk.cbtkName)).length;
+                const firstAssignedCbtk = grp.schedules.find(s => s.cbtk && (s.cbtk.cbtkId || s.cbtk.cbtkName))?.cbtk || storedMeta.cbtk || {};
+                const cbtk = firstAssignedCbtk;
                 const coordinationStaff = storedMeta.coordinationStaff || (grp.schedules[0].coordination ? grp.schedules[0].coordination.coordinationStaff : []) || [];
                 
                 // --- CALCULATION OF DEPLOYMENT/COORDINATION STATUS ---
                 let thietLapStatus = 'CHUA_GAN_CBTK';
-                const hasCbtk = cbtk && (cbtk.cbtkId || cbtk.cbtkName);
+                const hasCbtk = assignedCbtkCount > 0;
 
                 if (!hasCbtk) {
                     thietLapStatus = 'CHUA_GAN_CBTK';
@@ -3560,6 +3570,7 @@
                     schedules: grp.schedules,
                     categories: categoriesArr,
                     cbtk: cbtk,
+                    assignedCbtkCount: assignedCbtkCount,
                     diagram: diagram,
                     coordinationStaff: coordinationStaff,
                     thietLapStatus: thietLapStatus,
@@ -3603,6 +3614,10 @@
 
         saveDeploymentCbtk: function(depId, cbtkData) {
             return this.saveDeploymentMeta(depId, { cbtk: cbtkData });
+        },
+
+        saveScheduleCbtk: function(scheduleId, cbtkData) {
+            return this.assignCbtkToSchedule(scheduleId, cbtkData);
         },
 
         saveDeploymentDiagram: function(depId, diagramData) {

@@ -1,16 +1,16 @@
 /**
- * MODULE: THIẾT LẬP CBTK (DEPLOYMENT LAYER REAL DATA)
+ * MODULE: THIẾT LẬP CBTK (INDIVIDUAL SCHEDULE LAYER REAL DATA)
  */
 document.addEventListener('DOMContentLoaded', function () {
-    let deployments = [];
+    let approvedSchedules = [];
     let nhanSuMasterList = [];
 
     function init() {
         if (!window.MWKDataStore) return;
         nhanSuMasterList = MWKDataStore.getNhanSuMasterData();
-        deployments = MWKDataStore.getDeployments();
+        approvedSchedules = MWKDataStore.getApprovedKskSchedules();
         populateCbtkSelect();
-        populateDeploymentSelect();
+        populateScheduleSelect();
     }
 
     function populateCbtkSelect() {
@@ -28,58 +28,61 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    function populateDeploymentSelect() {
+    function populateScheduleSelect() {
         const select = document.getElementById('select-schedule-page');
         select.innerHTML = '';
 
-        if (deployments.length === 0) {
-            select.innerHTML = '<option value="">-- Không có Đoàn triển khai đã duyệt --</option>';
+        if (approvedSchedules.length === 0) {
+            select.innerHTML = '<option value="">-- Không có Lịch KSK đã duyệt --</option>';
             return;
         }
 
-        deployments.forEach(item => {
+        approvedSchedules.forEach(item => {
             const opt = document.createElement('option');
-            opt.value = item.deploymentId;
-            const unitNames = item.schedules.map(s => s.unitName).join(', ');
-            opt.text = `${item.deploymentId} - ${unitNames} (${item.ngayThucHien})`;
+            const schId = item.scheduleId || item.id;
+            opt.value = schId;
+            const unitName = item.unitName || item.customerName || 'Đơn vị KSK';
+            const dateStr = item.examDate || item.tuNgay || '';
+            opt.text = `${schId} - ${unitName} (${dateStr})`;
             select.appendChild(opt);
         });
 
         const urlParams = new URLSearchParams(window.location.search);
-        const paramId = urlParams.get('deploymentId') || urlParams.get('scheduleId');
-        if (paramId && deployments.some(d => d.deploymentId === paramId)) {
+        const paramId = urlParams.get('scheduleId') || urlParams.get('deploymentId');
+        if (paramId && approvedSchedules.some(s => String(s.scheduleId) === String(paramId) || String(s.id) === String(paramId))) {
             select.value = paramId;
         }
 
-        loadSelectedDeployment();
+        loadSelectedSchedule();
     }
 
-    function loadSelectedDeployment() {
-        const depId = document.getElementById('select-schedule-page').value;
-        const item = deployments.find(d => d.deploymentId === depId);
+    function loadSelectedSchedule() {
+        const scheduleId = document.getElementById('select-schedule-page').value;
+        const item = approvedSchedules.find(s => String(s.scheduleId) === String(scheduleId) || String(s.id) === String(scheduleId));
 
         if (!item) return;
 
-        document.getElementById('lbl-schedule-id').innerText = item.deploymentId;
-        document.getElementById('lbl-unit-name').innerText = item.schedules.map(s => s.unitName).join('; ');
-        document.getElementById('lbl-loai-lich').innerText = item.loaiHinh;
-        document.getElementById('lbl-exam-date').innerText = item.ngayThucHien;
-        document.getElementById('lbl-session').innerText = item.buoi;
-        document.getElementById('lbl-location').innerText = `${item.coSoKham} - ${item.viTriKham}`;
-        document.getElementById('lbl-quantity').innerText = `${item.totalPax} khách (${item.schedules.length} lịch thành phần)`;
+        const schId = item.scheduleId || item.id;
+        document.getElementById('lbl-schedule-id').innerText = schId;
+        document.getElementById('lbl-unit-name').innerText = item.unitName || item.customerName || '---';
+        document.getElementById('lbl-loai-lich').innerText = item.loaiHinh || item.loaiLich || '---';
+        document.getElementById('lbl-exam-date').innerText = item.examDate || item.tuNgay || '---';
+        document.getElementById('lbl-session').innerText = item.session || '---';
+        document.getElementById('lbl-location').innerText = `${item.facility || 'Ba Đình'} - ${item.diaDiemKham || item.examLocation || ''}`;
+        document.getElementById('lbl-quantity').innerText = `${item.quantity || item.soLuongKhach || item.soLuong || 0} khách`;
 
-        const cbtk = item.cbtk || {};
+        const cbtk = item.cbtk || (item.coordination ? item.coordination.cbtk : {}) || {};
         const cbtkSelect = document.getElementById('page-cbtk-select');
         cbtkSelect.value = cbtk.cbtkName || cbtk.cbtkId || '';
         document.getElementById('page-cbtk-phone').value = cbtk.cbtkPhone || '';
         document.getElementById('page-cbtk-title').value = cbtk.cbtkTitle || '';
-        document.getElementById('page-cbtk-date').value = cbtk.cbtkAssignDate || item.ngayThucHien;
+        document.getElementById('page-cbtk-date').value = cbtk.cbtkAssignDate || item.examDate || item.tuNgay || '';
         document.getElementById('page-cbtk-note').value = cbtk.cbtkNote || '';
 
         checkConflict();
     }
 
-    document.getElementById('select-schedule-page').addEventListener('change', loadSelectedDeployment);
+    document.getElementById('select-schedule-page').addEventListener('change', loadSelectedSchedule);
 
     document.getElementById('page-cbtk-select').addEventListener('change', function () {
         const opt = this.options[this.selectedIndex];
@@ -91,9 +94,9 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     function checkConflict() {
-        const depId = document.getElementById('select-schedule-page').value;
+        const scheduleId = document.getElementById('select-schedule-page').value;
         const personId = document.getElementById('page-cbtk-select').value;
-        const item = deployments.find(d => d.deploymentId === depId);
+        const item = approvedSchedules.find(s => String(s.scheduleId) === String(scheduleId) || String(s.id) === String(scheduleId));
         const alertBox = document.getElementById('page-cbtk-conflict-alert');
 
         if (!personId || !item) {
@@ -103,8 +106,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const res = MWKDataStore.checkPersonnelScheduleConflict({
             personId: personId,
-            scheduleId: depId,
-            examDate: item.ngayThucHien,
+            scheduleId: scheduleId,
+            examDate: item.examDate || item.tuNgay,
             startTime: '07:30',
             endTime: '17:00'
         });
@@ -122,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.getElementById('form-cbtk-page').addEventListener('submit', function (e) {
         e.preventDefault();
-        const depId = document.getElementById('select-schedule-page').value;
+        const scheduleId = document.getElementById('select-schedule-page').value;
         const cbtkSelect = document.getElementById('page-cbtk-select');
         const personId = cbtkSelect.value;
         const opt = cbtkSelect.options[cbtkSelect.selectedIndex];
@@ -141,9 +144,9 @@ document.addEventListener('DOMContentLoaded', function () {
             cbtkNote: document.getElementById('page-cbtk-note').value.trim()
         };
 
-        const success = MWKDataStore.saveDeploymentCbtk(depId, cbtkData);
+        const success = MWKDataStore.saveScheduleCbtk(scheduleId, cbtkData);
         if (success) {
-            if (window.showToast) window.showToast('Đã lưu phân công CBTK cho Đoàn triển khai thành công!');
+            if (window.showToast) window.showToast('Đã lưu phân công CBTK cho lịch KSK thành công!');
             setTimeout(() => {
                 window.location.href = '../danh-sach-can-thiet-lap/index.html';
             }, 600);

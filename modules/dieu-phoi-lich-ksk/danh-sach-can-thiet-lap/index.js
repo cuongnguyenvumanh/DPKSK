@@ -211,8 +211,10 @@ document.addEventListener('DOMContentLoaded', function () {
             // Render LEVEL 2: Location Context Cards
             facObj.contexts.forEach((item, index) => {
                 const thietLapStatus = item.thietLapStatus || 'CHUA_GAN_CBTK';
-                const cbtk = item.cbtk || {};
                 const isNgoaiVien = item.loaiHinh === 'Ngoại viện';
+
+                const assignedCbtkCount = (item.schedules || []).filter(s => s.cbtk && (s.cbtk.cbtkId || s.cbtk.cbtkName)).length;
+                const totalSchedulesCount = (item.schedules || []).length;
 
                 // Status Badges (6 specific business statuses)
                 let statusBadgeHtml = '';
@@ -235,13 +237,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     loaiLichBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-medium bg-amber-50 text-amber-700 border border-amber-200">Tại phường</span>`;
                 }
 
+                let cbtkSummaryBadge = `<span class="px-2.5 py-0.5 rounded text-xs font-semibold ${assignedCbtkCount === totalSchedulesCount ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : (assignedCbtkCount > 0 ? 'bg-amber-100 text-amber-800 border border-amber-300' : 'bg-red-100 text-red-800 border border-red-300')}"><i class="fa-solid fa-user-tie"></i> CBTK: ${assignedCbtkCount}/${totalSchedulesCount} lịch đã gán</span>`;
+
                 // Action Buttons per schedule type
-                let actionButtonsHtml = `
-                    <button type="button" class="btn-assign-cbtk sys-control-h36 text-xs px-3 bg-[#27496D] text-white rounded hover:bg-[#1F3D5A] font-medium flex items-center gap-1.5 shadow-2xs" data-id="${item.deploymentId}">
-                        <i class="fa-solid fa-user-gear text-xs"></i>
-                        <span>Gán CBTK</span>
-                    </button>
-                `;
+                let actionButtonsHtml = '';
 
                 if (isNgoaiVien) {
                     actionButtonsHtml += `
@@ -276,41 +275,34 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Render LEVEL 3: Child Unit Schedules Table
                 let childRowsHtml = (item.schedules || []).map((sch, idx) => {
+                    const schId = sch.scheduleId || sch.id;
                     const unitName = sch.unitName || sch.customerName || 'Đơn vị KSK';
                     const paxCount = sch.quantity || sch.soLuongKhach || sch.soLuong || 0;
-                    const personInCharge = sch.salesStaff || sch.personInCharge || sch.canBoPhuTrach || 'Kinh doanh';
+                    const schCbtk = sch.cbtk || (sch.coordination ? sch.coordination.cbtk : {}) || {};
+                    const hasSchCbtk = !!(schCbtk.cbtkName || schCbtk.cbtkId);
+
+                    const cbtkTextHtml = hasSchCbtk 
+                        ? `<span class="font-semibold text-[#27496D]"><i class="fa-solid fa-user-tie text-xs mr-1"></i>${schCbtk.cbtkName}</span> ${schCbtk.cbtkPhone ? `<span class="text-slate-500 text-[11px]">(${schCbtk.cbtkPhone})</span>` : ''}` 
+                        : `<span class="text-red-500 font-medium italic"><i class="fa-solid fa-user-xmark text-xs mr-1"></i>Chưa gán</span>`;
+
+                    const btnCbtkRow = hasSchCbtk
+                        ? `<button type="button" class="btn-assign-cbtk-row sys-control-h28 text-[11px] px-2 bg-amber-50 text-amber-800 border border-amber-300 rounded hover:bg-amber-100 font-semibold flex items-center justify-center gap-1 mx-auto" data-schedule-id="${schId}"><i class="fa-solid fa-user-pen text-xs"></i> Sửa CBTK</button>`
+                        : `<button type="button" class="btn-assign-cbtk-row sys-control-h28 text-[11px] px-2 bg-[#27496D] text-white rounded hover:bg-[#1F3D5A] font-medium flex items-center justify-center gap-1 mx-auto" data-schedule-id="${schId}"><i class="fa-solid fa-user-plus text-xs"></i> Gán CBTK</button>`;
 
                     return `
                         <tr class="hover:bg-slate-50 text-xs">
                             <td class="p-2 border border-slate-200 text-center font-medium text-slate-500">${idx + 1}</td>
-                            <td class="p-2 border border-slate-200 font-bold text-[#27496D]">${sch.scheduleId || sch.id}</td>
+                            <td class="p-2 border border-slate-200 font-bold text-[#27496D]">${schId}</td>
                             <td class="p-2 border border-slate-200 font-semibold text-slate-800">${unitName}</td>
                             <td class="p-2 border border-slate-200 text-center">
                                 <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-700 border border-slate-200">${sch.loaiHinh || item.loaiHinh || 'Tại viện'}</span>
                             </td>
                             <td class="p-2 border border-slate-200 text-center font-bold text-slate-800">${paxCount} pax</td>
-                            <td class="p-2 border border-slate-200 text-slate-600">${personInCharge}</td>
+                            <td class="p-2 border border-slate-200">${cbtkTextHtml}</td>
+                            <td class="p-2 border border-slate-200 text-center">${btnCbtkRow}</td>
                         </tr>
                     `;
                 }).join('');
-
-                const cbtkBannerHtml = cbtk.cbtkName ? `
-                    <div class="px-4 py-2 bg-blue-50/60 border-t border-b border-slate-200 text-xs flex flex-wrap items-center justify-between gap-2 text-slate-700">
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-user-tie text-[#27496D] text-sm"></i>
-                            <span>CBTK / Trưởng đoàn: <strong class="text-[#27496D]">${cbtk.cbtkName}</strong> ${cbtk.cbtkPhone ? `<span class="text-slate-500">(${cbtk.cbtkPhone})</span>` : ''} ${cbtk.cbtkTitle ? `<span class="text-slate-500">- ${cbtk.cbtkTitle}</span>` : ''}</span>
-                        </div>
-                        <div class="text-[11px] text-slate-500">Phân công ngày: <strong>${cbtk.cbtkAssignDate || item.ngayThucHien}</strong></div>
-                    </div>
-                ` : `
-                    <div class="px-4 py-2 bg-red-50/50 border-t border-b border-slate-200 text-xs flex items-center justify-between text-red-700">
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-user-xmark text-red-500 text-sm"></i>
-                            <span>Chưa gán Cán bộ triển khai (CBTK / Trưởng đoàn) cho Vị trí này</span>
-                        </div>
-                        <span class="text-[11px] text-red-500 font-medium">Cần phân công ngay</span>
-                    </div>
-                `;
 
                 contextsContainerHtml += `
                     <div class="location-context-card bg-white rounded border border-slate-200 p-4 space-y-3 shadow-2xs pt-4 first:pt-0">
@@ -329,6 +321,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                         <i class="fa-solid fa-calendar-day text-slate-400"></i> ${item.ngayThucHien}
                                     </span>
                                     ${loaiLichBadge}
+                                    ${cbtkSummaryBadge}
                                     ${statusBadgeHtml}
                                 </div>
                                 <div class="text-xs text-slate-500 flex flex-wrap items-center gap-3">
@@ -340,9 +333,6 @@ document.addEventListener('DOMContentLoaded', function () {
                                 ${actionButtonsHtml}
                             </div>
                         </div>
-
-                        <!-- CBTK Summary Banner -->
-                        ${cbtkBannerHtml}
 
                         <!-- LEVEL 3: Child Unit Schedules Table -->
                         <div class="space-y-1.5">
@@ -360,7 +350,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                         <th class="p-2 border border-slate-200">Tên Đơn vị KSK (Khách hàng)</th>
                                         <th class="p-2 border border-slate-200 w-24 text-center">Loại lịch</th>
                                         <th class="p-2 border border-slate-200 w-24 text-center">SL Khách</th>
-                                        <th class="p-2 border border-slate-200">CB phụ trách</th>
+                                        <th class="p-2 border border-slate-200">CBTK / Trưởng đoàn</th>
+                                        <th class="p-2 border border-slate-200 w-28 text-center">Thao tác CBTK</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-slate-200 bg-white">
@@ -381,9 +372,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function bindTableActionButtons() {
-        document.querySelectorAll('.btn-assign-cbtk').forEach(btn => {
+        document.querySelectorAll('.btn-assign-cbtk-row').forEach(btn => {
             btn.addEventListener('click', function () {
-                openCbtkModal(this.getAttribute('data-id'));
+                openCbtkModal(this.getAttribute('data-schedule-id'));
             });
         });
 
@@ -417,13 +408,38 @@ document.addEventListener('DOMContentLoaded', function () {
     const cbtkModal = document.getElementById('cbtk-modal');
     const cbtkSelectPerson = document.getElementById('cbtk-select-person');
 
-    function openCbtkModal(depId) {
-        const item = currentDeployments.find(d => d.deploymentId === depId);
-        if (!item) return;
+    function openCbtkModal(scheduleId) {
+        let schItem = null;
+        let parentDep = null;
 
-        const unitNamesStr = item.schedules.map(s => s.unitName || s.customerName).join(', ');
+        for (const dep of currentDeployments) {
+            const found = (dep.schedules || []).find(s => String(s.scheduleId) === String(scheduleId) || String(s.id) === String(scheduleId));
+            if (found) {
+                schItem = found;
+                parentDep = dep;
+                break;
+            }
+        }
 
-        document.getElementById('cbtk-target-schedule-id').value = item.deploymentId;
+        if (!schItem) {
+            const approved = MWKDataStore.getApprovedKskSchedules();
+            const found = approved.find(s => String(s.scheduleId) === String(scheduleId) || String(s.id) === String(scheduleId));
+            if (found) {
+                schItem = found;
+                parentDep = currentDeployments.find(d => (d.scheduleIds || []).includes(found.scheduleId)) || {
+                    deploymentId: scheduleId,
+                    coSoKham: found.facility || 'Cơ sở khám',
+                    viTriKham: found.examLocation || 'Vị trí khám',
+                    ngayThucHien: found.examDate || found.tuNgay || '',
+                    buoi: found.session || 'Sáng'
+                };
+            }
+        }
+
+        if (!schItem) return;
+
+        const targetId = schItem.scheduleId || schItem.id;
+        document.getElementById('cbtk-target-schedule-id').value = targetId;
         
         const infoUnitEl = document.getElementById('cbtk-info-unit');
         const infoCodeEl = document.getElementById('cbtk-info-code');
@@ -431,17 +447,17 @@ document.addEventListener('DOMContentLoaded', function () {
         const infoTimeEl = document.getElementById('cbtk-info-time');
         const infoLocEl = document.getElementById('cbtk-info-location');
 
-        if (infoUnitEl) infoUnitEl.innerText = unitNamesStr;
-        if (infoCodeEl) infoCodeEl.innerText = item.deploymentId;
-        if (infoDateEl) infoDateEl.innerText = item.ngayThucHien;
-        if (infoTimeEl) infoTimeEl.innerText = item.buoi;
-        if (infoLocEl) infoLocEl.innerText = `${item.coSoKham} - ${item.viTriKham}`;
+        if (infoUnitEl) infoUnitEl.innerText = schItem.unitName || schItem.customerName || 'Đơn vị KSK';
+        if (infoCodeEl) infoCodeEl.innerText = targetId;
+        if (infoDateEl) infoDateEl.innerText = schItem.examDate || schItem.tuNgay || parentDep.ngayThucHien;
+        if (infoTimeEl) infoTimeEl.innerText = schItem.session || parentDep.buoi;
+        if (infoLocEl) infoLocEl.innerText = `${parentDep.coSoKham} - ${parentDep.viTriKham}`;
 
-        const cbtk = item.cbtk || {};
+        const cbtk = schItem.cbtk || (schItem.coordination ? schItem.coordination.cbtk : {}) || {};
         cbtkSelectPerson.value = cbtk.cbtkName || cbtk.cbtkId || '';
         document.getElementById('cbtk-input-phone').value = cbtk.cbtkPhone || '';
         document.getElementById('cbtk-input-title').value = cbtk.cbtkTitle || '';
-        document.getElementById('cbtk-input-date').value = cbtk.cbtkAssignDate || item.ngayThucHien;
+        document.getElementById('cbtk-input-date').value = cbtk.cbtkAssignDate || schItem.examDate || parentDep.ngayThucHien;
         document.getElementById('cbtk-input-note').value = cbtk.cbtkNote || '';
 
         checkCbtkConflict();
@@ -464,20 +480,28 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function checkCbtkConflict() {
-        const depId = document.getElementById('cbtk-target-schedule-id').value;
+        const scheduleId = document.getElementById('cbtk-target-schedule-id').value;
         const personId = cbtkSelectPerson.value;
-        const item = currentDeployments.find(d => d.deploymentId === depId);
         const conflictAlert = document.getElementById('cbtk-conflict-alert');
 
-        if (!personId || !item || !conflictAlert) {
+        if (!personId || !scheduleId || !conflictAlert) {
             if (conflictAlert) conflictAlert.classList.add('hidden');
             return;
         }
 
+        let examDate = '2026-09-15';
+        for (const dep of currentDeployments) {
+            const found = (dep.schedules || []).find(s => String(s.scheduleId) === String(scheduleId) || String(s.id) === String(scheduleId));
+            if (found) {
+                examDate = found.examDate || dep.ngayThucHien;
+                break;
+            }
+        }
+
         const conflictResult = MWKDataStore.checkPersonnelScheduleConflict({
             personId: personId,
-            scheduleId: depId,
-            examDate: item.ngayThucHien,
+            scheduleId: scheduleId,
+            examDate: examDate,
             startTime: '07:30',
             endTime: '17:00'
         });
@@ -500,7 +524,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('btn-cancel-cbtk')?.addEventListener('click', closeCbtkModal);
 
     document.getElementById('btn-save-cbtk')?.addEventListener('click', function () {
-        const depId = document.getElementById('cbtk-target-schedule-id').value;
+        const scheduleId = document.getElementById('cbtk-target-schedule-id').value;
         const personId = cbtkSelectPerson.value;
         const selectedOpt = cbtkSelectPerson.options[cbtkSelectPerson.selectedIndex];
 
@@ -518,9 +542,9 @@ document.addEventListener('DOMContentLoaded', function () {
             cbtkNote: document.getElementById('cbtk-input-note').value.trim()
         };
 
-        const success = MWKDataStore.saveDeploymentCbtk(depId, cbtkData);
+        const success = MWKDataStore.saveScheduleCbtk(scheduleId, cbtkData);
         if (success) {
-            if (window.showToast) window.showToast('Đã lưu Cán bộ triển khai thành công!');
+            if (window.showToast) window.showToast('Đã lưu Cán bộ triển khai cho lịch thành công!');
             closeCbtkModal();
             loadAndRenderDeployments();
         } else {

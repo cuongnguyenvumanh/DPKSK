@@ -244,11 +244,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Render LEVEL 2: Location Context Cards
             facObj.contexts.forEach(item => {
-                const cbtk = item.cbtk || {};
                 const diagram = item.diagram || [];
                 const staffList = item.coordinationStaff || [];
                 const status = item.dieuPhoiStatus || 'CHUA_DIEU_PHOI';
                 const isNgoaiVien = item.loaiHinh === 'Ngoại viện';
+
+                const assignedCbtkCount = (item.schedules || []).filter(s => s.cbtk && (s.cbtk.cbtkId || s.cbtk.cbtkName)).length;
+                const totalSchedulesCount = (item.schedules || []).length;
 
                 let sourceBadgeHtml = '';
                 if (isNgoaiVien) {
@@ -297,16 +299,24 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Render LEVEL 3: Child Unit Schedules Table
                 let childRowsHtml = '';
                 (item.schedules || []).forEach((sch, idx) => {
+                    const schId = sch.scheduleId || sch.id;
+                    const schCbtk = sch.cbtk || (sch.coordination ? sch.coordination.cbtk : {}) || {};
+                    const hasSchCbtk = !!(schCbtk.cbtkName || schCbtk.cbtkId);
+                    const cbtkTextHtml = hasSchCbtk 
+                        ? `<span class="font-semibold text-[#27496D]"><i class="fa-solid fa-user-tie text-xs mr-1"></i>${schCbtk.cbtkName}</span> ${schCbtk.cbtkPhone ? `<span class="text-slate-500 text-[11px]">(${schCbtk.cbtkPhone})</span>` : ''}` 
+                        : `<span class="text-red-500 font-medium italic"><i class="fa-solid fa-user-xmark text-xs mr-1"></i>Chưa gán</span>`;
+
                     childRowsHtml += `
                         <tr class="hover:bg-slate-50 text-xs">
                             <td class="p-2 border border-slate-200 text-center font-medium text-slate-500">${idx + 1}</td>
-                            <td class="p-2 border border-slate-200 font-bold text-[#27496D]">${sch.scheduleId}</td>
+                            <td class="p-2 border border-slate-200 font-bold text-[#27496D]">${schId}</td>
                             <td class="p-2 border border-slate-200 font-semibold text-slate-800">${sch.unitName || sch.customerName}</td>
                             <td class="p-2 border border-slate-200 text-center">
                                 <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-700 border border-slate-200">${sch.loaiHinh || item.loaiHinh || 'Tại viện'}</span>
                             </td>
                             <td class="p-2 border border-slate-200 text-center font-bold text-slate-800">${sch.quantity || sch.soLuongKhach || 0} pax</td>
-                            <td class="p-2 border border-slate-200 text-slate-600">${sch.salesStaff || sch.nguoiPhuTrach || 'Kinh doanh'}</td>
+                            <td class="p-2 border border-slate-200">${cbtkTextHtml}</td>
+                            <td class="p-2 border border-slate-200 text-slate-600">${sch.salesStaff || sch.personInCharge || sch.nguoiPhuTrach || 'Kinh doanh'}</td>
                         </tr>
                     `;
                 });
@@ -334,7 +344,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 </div>
                                 <div class="text-xs text-slate-500 flex flex-wrap items-center gap-3">
                                     <span>Mã Vị trí: <strong class="text-slate-800">${item.deploymentId}</strong></span>
-                                    <span>CBTK / Trưởng đoàn: <strong class="text-[#27496D]">${cbtk.cbtkName || cbtk.name || '-- Chưa gán --'}</strong></span>
+                                    <span>CBTK / Trưởng đoàn: <strong class="text-[#27496D]">${assignedCbtkCount}/${totalSchedulesCount} lịch đã gán</strong></span>
                                 </div>
                             </div>
                             
@@ -366,6 +376,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                         <th class="p-2 border border-slate-200">Tên Đơn vị KSK (Khách hàng)</th>
                                         <th class="p-2 border border-slate-200 w-24 text-center">Loại lịch</th>
                                         <th class="p-2 border border-slate-200 w-24 text-center">SL Khách</th>
+                                        <th class="p-2 border border-slate-200">CBTK / Trưởng đoàn</th>
                                         <th class="p-2 border border-slate-200">CB phụ trách</th>
                                     </tr>
                                 </thead>
